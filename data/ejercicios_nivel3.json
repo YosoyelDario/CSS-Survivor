@@ -1,0 +1,12 @@
+[
+	{ "propiedad": "transform", "valor": "rotate(45deg)", "enunciado": "Enemigo rotado 45 grados" },
+	{ "propiedad": "transform", "valor": "rotate(90deg)", "enunciado": "Enemigo rotado 90 grados" },
+	{ "propiedad": "transform", "valor": "rotate(30deg)", "enunciado": "Enemigo rotado 30 grados" },
+	{ "propiedad": "transform", "valor": "rotate(-45deg)", "enunciado": "Enemigo rotado -45 grados" },
+	{ "propiedad": "transform", "valor": "rotate(180deg)", "enunciado": "Enemigo invertido" },
+	{ "propiedad": "transform", "valor": "rotate(60deg)", "enunciado": "Enemigo rotado 60 grados" },
+	{ "propiedad": "transform", "valor": "rotate(15deg)", "enunciado": "Enemigo levemente inclinado" },
+	{ "propiedad": "transform", "valor": "rotate(120deg)", "enunciado": "Enemigo muy rotado" },
+	{ "propiedad": "transform", "valor": "rotate(45deg)", "enunciado": "Enemigo rotado (variante boss)" },
+	{ "propiedad": "transform", "valor": "rotate(90deg)", "enunciado": "Enemigo rotado (variante boss)" }
+]

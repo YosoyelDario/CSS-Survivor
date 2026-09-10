@@ -1,0 +1,12 @@
+[
+	{ "propiedad": "border-radius", "valor": "50%", "enunciado": "Enemigo circular" },
+	{ "propiedad": "width", "valor": "80px", "enunciado": "Enemigo angosto" },
+	{ "propiedad": "height", "valor": "80px", "enunciado": "Enemigo bajo" },
+	{ "propiedad": "width", "valor": "150px", "enunciado": "Enemigo ancho" },
+	{ "propiedad": "height", "valor": "150px", "enunciado": "Enemigo alto" },
+	{ "propiedad": "border-radius", "valor": "0%", "enunciado": "Enemigo cuadrado" },
+	{ "propiedad": "border-color", "valor": "yellow", "enunciado": "Enemigo con contorno amarillo" },
+	{ "propiedad": "width", "valor": "40px", "enunciado": "Enemigo muy angosto" },
+	{ "propiedad": "height", "valor": "40px", "enunciado": "Enemigo muy bajo" },
+	{ "propiedad": "border-radius", "valor": "25%", "enunciado": "Enemigo con esquinas redondeadas" }
+]
