@@ -1,0 +1,12 @@
+[
+	{ "propiedad": "color", "valor": "red", "enunciado": "Enemigo con texto rojo" },
+	{ "propiedad": "background-color", "valor": "blue", "enunciado": "Enemigo con fondo azul" },
+	{ "propiedad": "font-size", "valor": "24px", "enunciado": "Enemigo con etiqueta grande (24px)" },
+	{ "propiedad": "opacity", "valor": "0.5", "enunciado": "Enemigo semi-transparente" },
+	{ "propiedad": "border-color", "valor": "green", "enunciado": "Enemigo con borde verde" },
+	{ "propiedad": "color", "valor": "purple", "enunciado": "Enemigo con texto morado" },
+	{ "propiedad": "background-color", "valor": "orange", "enunciado": "Enemigo con fondo naranja" },
+	{ "propiedad": "opacity", "valor": "0.2", "enunciado": "Enemigo casi invisible" },
+	{ "propiedad": "font-size", "valor": "12px", "enunciado": "Enemigo con etiqueta pequeña" },
+	{ "propiedad": "border-color", "valor": "black", "enunciado": "Enemigo con borde negro" }
+]

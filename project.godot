@@ -1,0 +1,22 @@
+; Engine configuration file.
+; Proyecto base: CSS Survivor (OII-433)
+
+config_version=5
+
+[application]
+
+config/name="CSS Survivor"
+run/main_scene="res://scenes/Main.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+
+[autoload]
+
+CssEngine="*res://scripts/autoload/CssEngine.gd"
+Validator="*res://scripts/autoload/Validator.gd"
+LogManager="*res://scripts/autoload/LogManager.gd"
+TurnManager="*res://scripts/autoload/TurnManager.gd"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
