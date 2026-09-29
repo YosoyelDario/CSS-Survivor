@@ -1,0 +1,135 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ComoJugar.gd" id="1_script"]
+[ext_resource type="Theme" path="res://themes/tema_css_survivor.tres" id="2_tema"]
+
+[node name="ComoJugar" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_tema")
+script = ExtResource("1_script")
+
+[node name="Fondo" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.043, 0.071, 0.125, 1)
+
+[node name="Margen" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_bottom = 16
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_top = 16
+
+[node name="Raiz" type="VBoxContainer" parent="Margen"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Cabecera" type="PanelContainer" parent="Margen/Raiz"]
+layout_mode = 2
+
+[node name="MargenCabecera" type="MarginContainer" parent="Margen/Raiz/Cabecera"]
+layout_mode = 2
+theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_top = 10
+
+[node name="Fila" type="HBoxContainer" parent="Margen/Raiz/Cabecera/MargenCabecera"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="BotonVolver" type="Button" parent="Margen/Raiz/Cabecera/MargenCabecera/Fila"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "< Volver"
+
+[node name="Titulo" type="Label" parent="Margen/Raiz/Cabecera/MargenCabecera/Fila"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "CÓMO JUGAR"
+horizontal_alignment = 1
+
+[node name="Equilibrio" type="Control" parent="Margen/Raiz/Cabecera/MargenCabecera/Fila"]
+layout_mode = 2
+custom_minimum_size = Vector2(90, 0)
+
+[node name="Desplazable" type="ScrollContainer" parent="Margen/Raiz"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Contenido" type="VBoxContainer" parent="Margen/Raiz/Desplazable"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="TituloObjetivo" type="Label" parent="Margen/Raiz/Desplazable/Contenido"]
+layout_mode = 2
+text = "OBJETIVO"
+
+[node name="TextoObjetivo" type="Label" parent="Margen/Raiz/Desplazable/Contenido"]
+layout_mode = 2
+text = "Tu sitio web está siendo atacado por bugs visuales. Cada enemigo te hace una pregunta sobre CSS. Si respondes bien, el bug desaparece y una parte del sitio se repara. Repara el 100% para completar el nivel."
+autowrap_mode = 3
+
+[node name="TituloTurnos" type="Label" parent="Margen/Raiz/Desplazable/Contenido"]
+layout_mode = 2
+text = "CÓMO SE JUEGA"
+
+[node name="TextoTurnos" type="Label" parent="Margen/Raiz/Desplazable/Contenido"]
+layout_mode = 2
+text = "Siempre atacas al enemigo que está al frente, marcado con una señal. Lee la pregunta y elige una de las 4 alternativas. Cada nivel tiene 3 oleadas de enemigos."
+autowrap_mode = 3
+
+[node name="TituloTipos" type="Label" parent="Margen/Raiz/Desplazable/Contenido"]
+layout_mode = 2
+text = "TIPOS DE PREGUNTA"
+
+[node name="TextoTipos" type="Label" parent="Margen/Raiz/Desplazable/Contenido"]
+layout_mode = 2
+text = "Teórico: te pregunta qué propiedad usar o qué hace un código.\nPráctico: mira el defecto del enemigo y elige el código que lo arregla.\nCompletar código: elige la propiedad que falta en el código.\nMulti-objetivo: elige la combinación completa que arregla varios defectos a la vez."
+autowrap_mode = 3
+
+[node name="TituloVidas" type="Label" parent="Margen/Raiz/Desplazable/Contenido"]
+layout_mode = 2
+text = "VIDAS"
+
+[node name="TextoVidas" type="Label" parent="Margen/Raiz/Desplazable/Contenido"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+autowrap_mode = 3
+
+[node name="TituloPuntos" type="Label" parent="Margen/Raiz/Desplazable/Contenido"]
+layout_mode = 2
+text = "PUNTOS"
+
+[node name="TextoPuntos" type="Label" parent="Margen/Raiz/Desplazable/Contenido"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+autowrap_mode = 3
+
+[node name="TituloPista" type="Label" parent="Margen/Raiz/Desplazable/Contenido"]
+layout_mode = 2
+text = "PISTAS"
+
+[node name="TextoPista" type="Label" parent="Margen/Raiz/Desplazable/Contenido"]
+layout_mode = 2
+text = "Si te equivocas, verás una pista que te orienta sin darte la respuesta, y el enemigo te hará otra pregunta del mismo tipo. Al terminar el nivel podrás ver las respuestas correctas de lo que fallaste."
+autowrap_mode = 3

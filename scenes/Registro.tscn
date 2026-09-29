@@ -1,0 +1,106 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/Registro.gd" id="1_script"]
+[ext_resource type="Theme" path="res://themes/tema_css_survivor.tres" id="2_tema"]
+
+[node name="Registro" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_tema")
+script = ExtResource("1_script")
+
+[node name="Fondo" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.043, 0.071, 0.125, 1)
+
+[node name="Centro" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Centro"]
+custom_minimum_size = Vector2(460, 0)
+layout_mode = 2
+
+[node name="Margen" type="MarginContainer" parent="Centro/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="Contenido" type="VBoxContainer" parent="Centro/Panel/Margen"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Titulo" type="Label" parent="Centro/Panel/Margen/Contenido"]
+layout_mode = 2
+text = "CSS SURVIVOR"
+horizontal_alignment = 1
+
+[node name="Subtitulo" type="Label" parent="Centro/Panel/Margen/Contenido"]
+layout_mode = 2
+text = "Ingresa con tu correo para guardar tu progreso"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="EtiquetaCorreo" type="Label" parent="Centro/Panel/Margen/Contenido"]
+layout_mode = 2
+text = "Correo"
+
+[node name="CampoCorreo" type="LineEdit" parent="Centro/Panel/Margen/Contenido"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "nombre@dominio.com"
+virtual_keyboard_type = 5
+
+[node name="SeccionNuevo" type="VBoxContainer" parent="Centro/Panel/Margen/Contenido"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="EtiquetaAlias" type="Label" parent="Centro/Panel/Margen/Contenido/SeccionNuevo"]
+layout_mode = 2
+text = "Alias (es el nombre que verán otros jugadores)"
+autowrap_mode = 3
+
+[node name="CampoAlias" type="LineEdit" parent="Centro/Panel/Margen/Contenido/SeccionNuevo"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Tu alias"
+
+[node name="TextoConsentimiento" type="Label" parent="Centro/Panel/Margen/Contenido/SeccionNuevo"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="CasillaConsentimiento" type="CheckBox" parent="Centro/Panel/Margen/Contenido/SeccionNuevo"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Acepto participar"
+
+[node name="Mensaje" type="Label" parent="Centro/Panel/Margen/Contenido"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.45, 0.45, 1)
+autowrap_mode = 3
+
+[node name="BotonContinuar" type="Button" parent="Centro/Panel/Margen/Contenido"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Continuar"

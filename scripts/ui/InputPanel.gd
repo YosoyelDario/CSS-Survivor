@@ -1,48 +1,55 @@
 extends Control
 class_name InputPanel
-## Muestra chips (seleccion) o un LineEdit (texto libre) segun el modo del
-## ejercicio activo. Ambos modos emiten la misma senal hacia BattleArena.
 
-signal respuesta_enviada(propiedad: String, valor: String)
+signal opcion_elegida(indice: int)
 
-var modo: String = "seleccion"  # "seleccion" | "texto"
-var propiedad_actual: String = ""
+var lbl_enunciado: Label
+var contenedor_botones: GridContainer # Cambiamos VBox a Grid
 
-func mostrar_ejercicio(ejercicio: Dictionary) -> void:
-	propiedad_actual = ejercicio.get("propiedad", "")
-	modo = ejercicio.get("modo", "seleccion")
-	for hijo in get_children():
+func _ready() -> void:
+	# Contenedor principal que ordena el texto arriba y los botones abajo
+	var layout_principal = VBoxContainer.new()
+	layout_principal.set_anchors_preset(PRESET_FULL_RECT)
+	layout_principal.add_theme_constant_override("separation", 20)
+	add_child(layout_principal)
+	
+	lbl_enunciado = Label.new()
+	lbl_enunciado.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	lbl_enunciado.custom_minimum_size = Vector2(800, 60)
+	lbl_enunciado.add_theme_font_size_override("font_size", 20)
+	layout_principal.add_child(lbl_enunciado)
+	
+	# Usamos un GridContainer de 2 columnas para el formato 2x2 de los mockups
+	contenedor_botones = GridContainer.new()
+	contenedor_botones.columns = 2
+	contenedor_botones.add_theme_constant_override("h_separation", 20)
+	contenedor_botones.add_theme_constant_override("v_separation", 15)
+	layout_principal.add_child(contenedor_botones)
+
+func mostrar_ejercicio(pregunta_completa: Dictionary) -> void:
+	for hijo in contenedor_botones.get_children():
 		hijo.queue_free()
-	if modo == "seleccion":
-		_mostrar_chips(ejercicio)
-	else:
-		_mostrar_input_texto()
-
-func _mostrar_chips(ejercicio: Dictionary) -> void:
-	var contenedor := HBoxContainer.new()
-	add_child(contenedor)
-	for alt in ejercicio.get("alternativas", []):
+		
+	var ej: Dictionary = pregunta_completa.get("ejercicio", {})
+	var opciones: Array = pregunta_completa.get("opciones", [])
+	var tipo: String = ej.get("tipo", "teorico")
+	
+	var texto_pantalla := "[%s] %s" % [tipo.to_upper(), ej.get("enunciado", "")]
+	if tipo == "completar" and ej.has("codigo"):
+		texto_pantalla += "\n\n" + str(ej.get("codigo", ""))
+		
+	lbl_enunciado.text = texto_pantalla
+	
+	for i in range(opciones.size()):
 		var boton := Button.new()
-		boton.text = alt
-		boton.pressed.connect(func(): _on_chip_elegido(alt))
-		contenedor.add_child(boton)
+		boton.text = str(opciones[i])
+		# Tamaño más parecido a las tarjetas de los mockups
+		boton.custom_minimum_size = Vector2(380, 60) 
+		boton.pressed.connect(func(): _on_boton_presionado(i))
+		contenedor_botones.add_child(boton)
 
-func _mostrar_input_texto() -> void:
-	var contenedor := HBoxContainer.new()
-	add_child(contenedor)
-	var campo := LineEdit.new()
-	campo.placeholder_text = "propiedad: valor;"
-	campo.custom_minimum_size = Vector2(240, 0)
-	contenedor.add_child(campo)
-	var boton := Button.new()
-	boton.text = "Disparar"
-	boton.pressed.connect(func(): _on_texto_enviado(campo.text))
-	contenedor.add_child(boton)
-
-func _on_chip_elegido(alt: String) -> void:
-	var partes := Validator.extraer_propiedad_valor(alt)
-	respuesta_enviada.emit(partes[0], partes[1])
-
-func _on_texto_enviado(texto: String) -> void:
-	var partes := Validator.extraer_propiedad_valor(texto)
-	respuesta_enviada.emit(partes[0], partes[1])
+func _on_boton_presionado(indice: int) -> void:
+	for boton in contenedor_botones.get_children():
+		if boton is Button:
+			boton.disabled = true
+	opcion_elegida.emit(indice)

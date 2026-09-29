@@ -1,20 +1,14 @@
 extends Node2D
-## Script raiz de la escena Main. Conecta enemigo, jugador, panel de input,
-## validador y log en un ciclo de turno simplificado.
-##
-## OJO: esta es la BASE del proyecto, no la version final. El avance de
-## enemigos lejos -> medio -> frente (TurnManager.Estado.AVANCE_ENEMIGOS)
-## todavia no esta conectado a un timer/turno real: por ahora los enemigos
-## nacen directo en FRENTE para que el loop principal sea jugable de inmediato.
-## Siguiente paso: implementar el avance por oleadas antes de que llegue a FRENTE.
+## Script raíz de la escena de Batalla. 
+## Funciona como la vista del juego: dibuja los enemigos y el UI
+## basándose en las decisiones lógicas de TurnManager y LevelRun.
 
 const ENEMY_SCENE := preload("res://scenes/Enemy.tscn")
 
 @export var nivel_actual: int = 1
-@export var id_jugador: String = "jugador_demo@alumnos.ucv.cl"
-
-var ejercicios: Array = []
-var enemigo_objetivo: Enemy = null
+var partida: LevelRun 
+var nodos_enemigos: Array = [] # Nodos instanciados, alineados al array lógico 'partida.enemigos'
+var _tiempo_inicio_turno_ms: int = 0
 
 @onready var player: Player = $Player
 @onready var enemy_row: Node2D = $EnemyRow
@@ -22,74 +16,179 @@ var enemigo_objetivo: Enemy = null
 @onready var input_panel: InputPanel = $UI/InputPanel
 
 func _ready() -> void:
-	input_panel.respuesta_enviada.connect(_on_respuesta_enviada)
-	_cargar_ejercicios(nivel_actual)
-	_spawn_oleada()
+	# El InputPanel emitirá un índice (0 a 3) tras la Fase 4.
+	input_panel.opcion_elegida.connect(_on_opcion_elegida)
+	
+	_iniciar_partida()
+
+func _iniciar_partida() -> void:
+	partida = LevelRun.new()
+	
+	# Fallback de seguridad: por si se ejecuta Nivel.tscn directamente desde el editor (F6)
+	if SessionManager.jugador_actual.is_empty():
+		push_warning("ADVERTENCIA: Ejecutando Nivel directamente sin pasar por Registro. Iniciando sesión de pruebas temporal.")
+		SessionManager.iniciar_sesion("test@debug.com", "Tester", true)
+
+	var exposicion = SessionManager.jugador_actual.get("contadores_ejercicios", {})
+	var pool_ejercicios = _cargar_ejercicios_json(nivel_actual) 
+	
+	partida.iniciar(nivel_actual, pool_ejercicios, exposicion)
+	
+	TurnManager.estado_cambio.connect(_on_cambio_estado)
+	TurnManager.cambiar_estado(TurnManager.Estado.PREPARANDO_OLEADA)
 	_actualizar_hud()
 
-func _cargar_ejercicios(nivel: int) -> void:
+func _cargar_ejercicios_json(nivel: int) -> Array:
 	var path := "res://data/ejercicios_nivel%d.json" % nivel
 	if not FileAccess.file_exists(path):
-		push_warning("No existe banco de ejercicios: %s" % path)
-		return
+		push_warning("No existe banco de ejercicios en: %s" % path)
+		return []
 	var f := FileAccess.open(path, FileAccess.READ)
-	ejercicios = JSON.parse_string(f.get_as_text())
+	var data = JSON.parse_string(f.get_as_text())
 	f.close()
+	if typeof(data) == TYPE_ARRAY:
+		return data
+	return []
 
-func _spawn_oleada() -> void:
-	TurnManager.iniciar_avance()
-	var carriles := [0, 1, 2]
-	for carril in carriles:
-		var e: Enemy = ENEMY_SCENE.instantiate()
-		var ej: Dictionary = ejercicios[randi() % ejercicios.size()]
-		e.propiedad_requerida = ej.get("propiedad", "color")
-		e.valor_requerido = ej.get("valor", "red")
-		e.carril = carril
-		e.distancia = Enemy.Distancia.FRENTE  # TODO: iniciar en LEJOS cuando exista el avance por turnos
-		e.position = Vector2((carril - 1) * 150, 0)
-		enemy_row.add_child(e)
-	_elegir_objetivo()
-	_mostrar_ejercicio_actual()
+# --- ORQUESTADOR (Máquina de Estados) ---
+func _on_cambio_estado(nuevo_estado: int) -> void:
+	match nuevo_estado:
+		TurnManager.Estado.PREPARANDO_OLEADA:
+			if partida.siguiente_oleada():
+				_instanciar_enemigos_visuales()
+				TurnManager.cambiar_estado(TurnManager.Estado.ELIGIENDO_OBJETIVO)
+			else:
+				TurnManager.cambiar_estado(TurnManager.Estado.FIN_NIVEL)
+				
+		TurnManager.Estado.ELIGIENDO_OBJETIVO:
+			partida.elegir_objetivo()
+			_sincronizar_enemigos_visuales() # Actualiza distancias y marca objetivo
+			partida.asignar_pregunta_objetivo()
+			TurnManager.cambiar_estado(TurnManager.Estado.ESPERANDO_RESPUESTA)
+			
+		TurnManager.Estado.ESPERANDO_RESPUESTA:
+			input_panel.mostrar_ejercicio(partida.pregunta_actual)
+			_tiempo_inicio_turno_ms = Time.get_ticks_msec()
 
-func _elegir_objetivo() -> void:
-	# Regla "solo fila del frente" (Nivel 3, ver notas de diseno Seccion 3).
-	for hijo in enemy_row.get_children():
-		if hijo is Enemy and hijo.distancia == Enemy.Distancia.FRENTE:
-			enemigo_objetivo = hijo
-			return
-	enemigo_objetivo = null
+		TurnManager.Estado.AVANZANDO:
+			_sincronizar_enemigos_visuales()
+			# Si quedan enemigos, elige el siguiente objetivo. Si no, fin de oleada.
+			if partida.enemigos_vivos() > 0:
+				TurnManager.cambiar_estado(TurnManager.Estado.ELIGIENDO_OBJETIVO)
+			else:
+				TurnManager.cambiar_estado(TurnManager.Estado.PREPARANDO_OLEADA)
 
-func _mostrar_ejercicio_actual() -> void:
-	if enemigo_objetivo == null:
-		return
-	TurnManager.iniciar_turno_jugador()
-	var correcta_str := "%s: %s;" % [enemigo_objetivo.propiedad_requerida, enemigo_objetivo.valor_requerido]
-	input_panel.mostrar_ejercicio({
-		"propiedad": enemigo_objetivo.propiedad_requerida,
-		"modo": "seleccion" if nivel_actual < 3 else "texto",
-		"alternativas": [correcta_str, "opacity: 0.5;", "width: 50px;", "border-color: black;"],
-	})
+		TurnManager.Estado.FIN_NIVEL:
+			var resumen = partida.resumen()
+			print("--- FIN DEL NIVEL ---")
+			print("Puntos: ", resumen["puntaje"])
+			print("Completado: ", resumen["completado"])
+			# (Fase 7) Aquí se llamará a la pantalla de Resultados de Nivel.
 
-func _on_respuesta_enviada(propiedad: String, valor: String) -> void:
-	if enemigo_objetivo == null:
-		return
-	var alternativas: Array = []
-	var correcta := TurnManager.resolver_respuesta(enemigo_objetivo, propiedad, valor, id_jugador, alternativas)
-	if correcta:
-		player.actualizar_arma(propiedad, valor)
-		enemigo_objetivo.recibir_impacto()
-		player.puntaje += 10
-	else:
-		player.perder_vida()
+# --- RESPUESTA DEL JUGADOR ---
+func _on_opcion_elegida(indice: int) -> void:
+	if TurnManager.estado != TurnManager.Estado.ESPERANDO_RESPUESTA: return
+	
+	TurnManager.cambiar_estado(TurnManager.Estado.RESOLVIENDO)
+	
+	var tiempo = (Time.get_ticks_msec() - _tiempo_inicio_turno_ms) / 1000.0
+	var resultado = partida.responder(indice, tiempo)
+	
+	var ej = partida.pregunta_actual["ejercicio"]
+	var opciones_mostradas = partida.pregunta_actual["opciones"]
+	var respuesta_txt = opciones_mostradas[indice] if indice >= 0 else ""
+	
+	# Guardamos el Log (Bug #3 y #4 corregido y adaptado al Nivel 1)
+	LogManager.log_evento(
+		ej["enunciado"], 
+		opciones_mostradas, 
+		respuesta_txt, 
+		resultado["correcta"], 
+		tiempo,
+		{"nivel": nivel_actual, "tipo": ej["tipo"], "vidas_restantes": partida.vidas}
+	)
+	
+	SessionManager.guardar_perfil()
+	_mostrar_feedback_visual(resultado)
+
+func _mostrar_feedback_visual(resultado: Dictionary) -> void:
+	TurnManager.cambiar_estado(TurnManager.Estado.MOSTRANDO_FEEDBACK)
 	_actualizar_hud()
-	_elegir_objetivo()
-	if enemigo_objetivo == null:
-		if enemy_row.get_child_count() == 0:
-			_spawn_oleada()
-		else:
-			TurnManager.terminar_nivel()
+	
+	# Mostrar notificaciones de insignias (Gamificación)
+	if not partida.insignias_nuevas.is_empty():
+		for id_insignia in partida.insignias_nuevas:
+			var info_insignia = Config.INSIGNIAS_NIVEL_1.get(id_insignia, {})
+			print("¡NUEVA INSIGNIA DESBLOQUEADA!: ", info_insignia.get("nombre", id_insignia))
+		# Limpiar para no repetirlas en el siguiente turno
+		partida.insignias_nuevas.clear() 
+	
+	var ej = partida.pregunta_actual["ejercicio"]
+	
+	if resultado["correcta"]:
+		# El enemigo se marca como muerto instantáneamente en la lógica, visualmente lo escondemos/eliminamos
+		if partida.objetivo_idx >= 0 and partida.objetivo_idx < nodos_enemigos.size():
+			var obj = nodos_enemigos[partida.objetivo_idx]
+			if is_instance_valid(obj):
+				# Si hay efecto visual de acierto, lo aplicamos (Ej: tintarlo)
+				if ej.has("efecto_visual"):
+					CssEngine.aplicar_diccionario(obj, ej["efecto_visual"])
+				# Pequeña pausa de celebración antes de borrarlo y avanzar
+				await get_tree().create_timer(0.6).timeout
+				obj.queue_free() 
+		
+		TurnManager.cambiar_estado(TurnManager.Estado.AVANZANDO)
 	else:
-		_mostrar_ejercicio_actual()
+		if resultado["game_over"]:
+			TurnManager.cambiar_estado(TurnManager.Estado.FIN_NIVEL)
+		else:
+			# Si falló, mostrar pista
+			print("INCORRECTO! Pista: ", ej.get("pista", ""))
+			# (Fase 4) Esperar que el InputPanel (botón "Continuar") emita señal
+			await get_tree().create_timer(1.5).timeout 
+			partida.reponer_pregunta()
+			TurnManager.cambiar_estado(TurnManager.Estado.ESPERANDO_RESPUESTA)
 
 func _actualizar_hud() -> void:
-	hud.text = "Vidas: %d   Puntaje: %d   Nivel %d" % [player.vidas, player.puntaje, nivel_actual]
+	# Agregamos la Barra de Reparación como texto (placeholder)
+	var porcentaje_rep = partida.reparacion()
+	hud.text = "Vidas: %d | Puntaje: %d | Racha: %d | Reparación: %d%%\nNivel %d" % [
+		partida.vidas, 
+		partida.puntaje, 
+		partida.racha, 
+		int(porcentaje_rep),
+		nivel_actual
+	]
+
+# --- VISUALES DE ENEMIGOS ---
+func _instanciar_enemigos_visuales() -> void:
+	# Limpiar enemigos de la oleada anterior
+	for child in enemy_row.get_children():
+		child.queue_free()
+	nodos_enemigos.clear()
+	
+	# Instanciar basándose en la lista lógica
+	for e_logico in partida.enemigos:
+		var e_visual = ENEMY_SCENE.instantiate()
+		enemy_row.add_child(e_visual)
+		nodos_enemigos.append(e_visual)
+
+func _sincronizar_enemigos_visuales() -> void:
+	# Actualiza la posición Y y X según la distancia y carril lógico de LevelRun
+	for i in range(partida.enemigos.size()):
+		var e_logico = partida.enemigos[i]
+		var e_visual = nodos_enemigos[i]
+		if is_instance_valid(e_visual):
+			if e_logico["vivo"]:
+				e_visual.distancia = e_logico["distancia"]
+				e_visual.carril = e_logico["carril"]
+				# Posicionamiento: carril (0, 1, 2) centrado y Y por distancia
+				e_visual.position = Vector2((e_logico["carril"] - 1) * 150, Enemy.Y_POR_DISTANCIA[e_logico["distancia"]])
+				
+				# Marcar objetivo (bug visual 8.2: flecha o contorno)
+				if i == partida.objetivo_idx:
+					e_visual.modulate = Color(1, 0.5, 0.5) # Ejemplo temporal para resaltar
+				else:
+					e_visual.modulate = Color(1, 1, 1)
+			else:
+				e_visual.hide()

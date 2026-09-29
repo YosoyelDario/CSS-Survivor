@@ -78,3 +78,10 @@ func _aplicar_transform(objetivo: Node, valor: String) -> void:
 	if valor.begins_with("rotate("):
 		var grados := valor.replace("rotate(", "").replace("deg)", "").to_float()
 		objetivo.rotation_degrees = grados
+
+
+## Recibe un diccionario con múltiples propiedades CSS y las aplica todas al objetivo.
+## Utilizado al responder correctamente un ejercicio Práctico, Completar o Multi-objetivo.
+func aplicar_diccionario(objetivo: Node, efectos: Dictionary) -> void:
+	for propiedad in efectos.keys():
+		aplicar(objetivo, propiedad, str(efectos[propiedad]))

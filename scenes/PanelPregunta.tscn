@@ -1,0 +1,89 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/PanelPregunta.gd" id="1_script"]
+
+[node name="PanelPregunta" type="PanelContainer"]
+script = ExtResource("1_script")
+
+[node name="Margen" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_bottom = 16
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_top = 16
+
+[node name="Contenido" type="VBoxContainer" parent="Margen"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="EtiquetaTipo" type="Label" parent="Margen/Contenido"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+
+[node name="TextoPausa" type="Label" parent="Margen/Contenido"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Juego en pausa"
+horizontal_alignment = 1
+
+[node name="CuerpoPregunta" type="VBoxContainer" parent="Margen/Contenido"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Enunciado" type="Label" parent="Margen/Contenido/CuerpoPregunta"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="BloqueCodigo" type="PanelContainer" parent="Margen/Contenido/CuerpoPregunta"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="MargenCodigo" type="MarginContainer" parent="Margen/Contenido/CuerpoPregunta/BloqueCodigo"]
+layout_mode = 2
+theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_top = 10
+
+[node name="Codigo" type="Label" parent="Margen/Contenido/CuerpoPregunta/BloqueCodigo/MargenCodigo"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Opciones" type="GridContainer" parent="Margen/Contenido/CuerpoPregunta"]
+unique_name_in_owner = true
+layout_mode = 2
+columns = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+
+[node name="BotonVerificar" type="Button" parent="Margen/Contenido/CuerpoPregunta"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+disabled = true
+text = "VERIFICAR CÓDIGO"
+
+[node name="PanelFeedback" type="VBoxContainer" parent="Margen/Contenido"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Resultado" type="Label" parent="Margen/Contenido/PanelFeedback"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Pista" type="Label" parent="Margen/Contenido/PanelFeedback"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="BotonContinuar" type="Button" parent="Margen/Contenido/PanelFeedback"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "CONTINUAR"

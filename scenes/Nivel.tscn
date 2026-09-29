@@ -1,0 +1,236 @@
+[gd_scene format=3 uid="uid://d4j2a1utn10ho"]
+
+[ext_resource type="Theme" path="res://themes/tema_css_survivor.tres" id="2_tema"]
+[ext_resource type="PackedScene" path="res://scenes/PanelPregunta.tscn" id="3_panel"]
+
+[node name="Nivel" type="Control" unique_id=628222017]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_tema")
+
+[node name="Fondo" type="ColorRect" parent="." unique_id=1761537939]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.043, 0.071, 0.125, 1)
+
+[node name="Margen" type="MarginContainer" parent="." unique_id=1576530455]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Raiz" type="VBoxContainer" parent="Margen" unique_id=376117145]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HUD" type="PanelContainer" parent="Margen/Raiz" unique_id=2020951036]
+layout_mode = 2
+
+[node name="MargenHUD" type="MarginContainer" parent="Margen/Raiz/HUD" unique_id=1173268411]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Fila" type="HBoxContainer" parent="Margen/Raiz/HUD/MargenHUD" unique_id=1048945325]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="Vidas" type="Label" parent="Margen/Raiz/HUD/MargenHUD/Fila" unique_id=1119539982]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Vidas: 5 / 5"
+
+[node name="Puntaje" type="Label" parent="Margen/Raiz/HUD/MargenHUD/Fila" unique_id=2096366567]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0 PTS"
+
+[node name="Centro" type="VBoxContainer" parent="Margen/Raiz/HUD/MargenHUD/Fila" unique_id=505668514]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Titulo" type="Label" parent="Margen/Raiz/HUD/MargenHUD/Fila/Centro" unique_id=1531304107]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="Subtitulo" type="Label" parent="Margen/Raiz/HUD/MargenHUD/Fila/Centro" unique_id=1170443832]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Oleada" type="Label" parent="Margen/Raiz/HUD/MargenHUD/Fila" unique_id=315307151]
+unique_name_in_owner = true
+layout_mode = 2
+text = "OLEADA 1/3"
+
+[node name="BotonPausa" type="Button" parent="Margen/Raiz/HUD/MargenHUD/Fila" unique_id=1151156662]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Pausa"
+
+[node name="BotonSalirNivel" type="Button" parent="Margen/Raiz/HUD/MargenHUD/Fila" unique_id=1848121455]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Salir al menú"
+
+[node name="AreaBatalla" type="Control" parent="Margen/Raiz" unique_id=1630894103]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 200)
+clip_contents = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Escenario" type="Node2D" parent="Margen/Raiz/AreaBatalla" unique_id=1590764574]
+unique_name_in_owner = true
+
+[node name="FilaEnemigos" type="Node2D" parent="Margen/Raiz/AreaBatalla/Escenario" unique_id=774468341]
+unique_name_in_owner = true
+
+[node name="Jugador" type="Node2D" parent="Margen/Raiz/AreaBatalla/Escenario" unique_id=158858912]
+position = Vector2(0, 80)
+
+[node name="Cuerpo" type="ColorRect" parent="Margen/Raiz/AreaBatalla/Escenario/Jugador" unique_id=1130156165]
+offset_left = 438.0
+offset_top = 104.0
+offset_right = 470.0
+offset_bottom = 138.0
+mouse_filter = 2
+color = Color(0.35, 0.55, 0.85, 1)
+
+[node name="Arma" type="Polygon2D" parent="Margen/Raiz/AreaBatalla/Escenario/Jugador" unique_id=175550621]
+color = Color(0.75, 0.75, 0.75, 1)
+polygon = PackedVector2Array(-3, -40, 3, -40, 3, -14, -3, -14)
+
+[node name="Aviso" type="Label" parent="Margen/Raiz/AreaBatalla" unique_id=1167645856]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 60.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
+horizontal_alignment = 2
+
+[node name="PanelPregunta" parent="Margen/Raiz" unique_id=1293361158 instance=ExtResource("3_panel")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Reparacion" type="PanelContainer" parent="Margen/Raiz" unique_id=658057588]
+layout_mode = 2
+
+[node name="MargenReparacion" type="MarginContainer" parent="Margen/Raiz/Reparacion" unique_id=1267979255]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Fila" type="HBoxContainer" parent="Margen/Raiz/Reparacion/MargenReparacion" unique_id=461887256]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="EtiquetaReparacion" type="Label" parent="Margen/Raiz/Reparacion/MargenReparacion/Fila" unique_id=779808264]
+layout_mode = 2
+text = "REPARACIÓN DEL SITIO"
+
+[node name="BarraReparacion" type="ProgressBar" parent="Margen/Raiz/Reparacion/MargenReparacion/Fila" unique_id=1523474221]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+show_percentage = false
+
+[node name="TextoReparacion" type="Label" parent="Margen/Raiz/Reparacion/MargenReparacion/Fila" unique_id=777095683]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0%"
+
+[node name="CapaFin" type="Control" parent="." unique_id=783956208]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Oscurecer" type="ColorRect" parent="CapaFin" unique_id=711202839]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="Centro" type="CenterContainer" parent="CapaFin" unique_id=845336204]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="CapaFin/Centro" unique_id=486338599]
+custom_minimum_size = Vector2(480, 0)
+layout_mode = 2
+
+[node name="Margen" type="MarginContainer" parent="CapaFin/Centro/Panel" unique_id=2034687929]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="Contenido" type="VBoxContainer" parent="CapaFin/Centro/Panel/Margen" unique_id=206127211]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TituloFin" type="Label" parent="CapaFin/Centro/Panel/Margen/Contenido" unique_id=1031136851]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="DetalleFin" type="Label" parent="CapaFin/Centro/Panel/Margen/Contenido" unique_id=1046793913]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="Botones" type="HBoxContainer" parent="CapaFin/Centro/Panel/Margen/Contenido" unique_id=254134876]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="BotonReintentar" type="Button" parent="CapaFin/Centro/Panel/Margen/Contenido/Botones" unique_id=83446679]
+unique_name_in_owner = true
+layout_mode = 2
+text = "REINTENTAR NIVEL"
+
+[node name="BotonMenu" type="Button" parent="CapaFin/Centro/Panel/Margen/Contenido/Botones" unique_id=1347236218]
+unique_name_in_owner = true
+layout_mode = 2
+text = "VOLVER AL MENÚ"

@@ -1,0 +1,319 @@
+[gd_scene format=3 uid="uid://c0b17wf1x48y"]
+
+[ext_resource type="Script" uid="uid://c3utd42n78vf3" path="res://scripts/ui/MenuPrincipal.gd" id="1_script"]
+[ext_resource type="Theme" path="res://themes/tema_css_survivor.tres" id="2_tema"]
+
+[node name="MenuPrincipal" type="Control" unique_id=789587716]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_tema")
+script = ExtResource("1_script")
+
+[node name="Fondo" type="ColorRect" parent="." unique_id=1898653291]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.043, 0.071, 0.125, 1)
+
+[node name="Margen" type="MarginContainer" parent="." unique_id=934827024]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Raiz" type="VBoxContainer" parent="Margen" unique_id=1030074382]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Cabecera" type="PanelContainer" parent="Margen/Raiz" unique_id=2117621234]
+layout_mode = 2
+
+[node name="MargenCabecera" type="MarginContainer" parent="Margen/Raiz/Cabecera" unique_id=18280051]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Fila" type="HBoxContainer" parent="Margen/Raiz/Cabecera/MargenCabecera" unique_id=19793723]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="Alias" type="Label" parent="Margen/Raiz/Cabecera/MargenCabecera/Fila" unique_id=1228639006]
+unique_name_in_owner = true
+layout_mode = 2
+text = "JUGADOR"
+
+[node name="Nivel" type="Label" parent="Margen/Raiz/Cabecera/MargenCabecera/Fila" unique_id=299392952]
+unique_name_in_owner = true
+layout_mode = 2
+text = "NV. 1"
+
+[node name="Puntos" type="Label" parent="Margen/Raiz/Cabecera/MargenCabecera/Fila" unique_id=513129945]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0 PTS"
+
+[node name="Espacio" type="Control" parent="Margen/Raiz/Cabecera/MargenCabecera/Fila" unique_id=547517153]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BotonRanking" type="Button" parent="Margen/Raiz/Cabecera/MargenCabecera/Fila" unique_id=1017905735]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Ranking"
+
+[node name="BotonAjustes" type="Button" parent="Margen/Raiz/Cabecera/MargenCabecera/Fila" unique_id=1107656259]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Próximamente"
+disabled = true
+text = "Ajustes"
+
+[node name="Cuerpo" type="HBoxContainer" parent="Margen/Raiz" unique_id=300374831]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="PanelMision" type="PanelContainer" parent="Margen/Raiz/Cuerpo" unique_id=1860609544]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.8
+
+[node name="Margen" type="MarginContainer" parent="Margen/Raiz/Cuerpo/PanelMision" unique_id=1823393255]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Contenido" type="VBoxContainer" parent="Margen/Raiz/Cuerpo/PanelMision/Margen" unique_id=939706829]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TituloMision" type="Label" parent="Margen/Raiz/Cuerpo/PanelMision/Margen/Contenido" unique_id=1513849466]
+layout_mode = 2
+text = "TU MISIÓN"
+horizontal_alignment = 1
+
+[node name="TextoMision" type="Label" parent="Margen/Raiz/Cuerpo/PanelMision/Margen/Contenido" unique_id=1644799660]
+layout_mode = 2
+text = "Protege tu sitio web de los bugs CSS."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Espacio" type="Control" parent="Margen/Raiz/Cuerpo/PanelMision/Margen/Contenido" unique_id=746038071]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextoAprende" type="Label" parent="Margen/Raiz/Cuerpo/PanelMision/Margen/Contenido" unique_id=1180038145]
+layout_mode = 2
+text = "Aprende resolviendo ejercicios. Cada respuesta correcta repara una parte de tu sitio."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Centro" type="VBoxContainer" parent="Margen/Raiz/Cuerpo" unique_id=1952727149]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.4
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Titulo" type="Label" parent="Margen/Raiz/Cuerpo/Centro" unique_id=1066349570]
+layout_mode = 2
+text = "CSS SURVIVOR"
+horizontal_alignment = 1
+
+[node name="Lema" type="Label" parent="Margen/Raiz/Cuerpo/Centro" unique_id=1806270191]
+layout_mode = 2
+text = "DEFEND YOUR WEB. DOMINA CSS."
+horizontal_alignment = 1
+
+[node name="Botones" type="VBoxContainer" parent="Margen/Raiz/Cuerpo/Centro" unique_id=663171634]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BotonJugar" type="Button" parent="Margen/Raiz/Cuerpo/Centro/Botones" unique_id=2113086854]
+unique_name_in_owner = true
+layout_mode = 2
+text = "JUGAR"
+
+[node name="BotonNiveles" type="Button" parent="Margen/Raiz/Cuerpo/Centro/Botones" unique_id=733828542]
+unique_name_in_owner = true
+layout_mode = 2
+text = "NIVELES"
+
+[node name="BotonColeccion" type="Button" parent="Margen/Raiz/Cuerpo/Centro/Botones" unique_id=216277739]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Próximamente"
+disabled = true
+text = "COLECCIÓN (Próximamente)"
+
+[node name="BotonLogros" type="Button" parent="Margen/Raiz/Cuerpo/Centro/Botones" unique_id=783583083]
+unique_name_in_owner = true
+layout_mode = 2
+text = "LOGROS"
+
+[node name="BotonComoJugar" type="Button" parent="Margen/Raiz/Cuerpo/Centro/Botones" unique_id=985997754]
+unique_name_in_owner = true
+layout_mode = 2
+text = "CÓMO JUGAR"
+
+[node name="Mensaje" type="Label" parent="Margen/Raiz/Cuerpo/Centro" unique_id=402651919]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.75, 0.3, 1)
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="PanelSitio" type="PanelContainer" parent="Margen/Raiz/Cuerpo" unique_id=1235500227]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.8
+
+[node name="Margen" type="MarginContainer" parent="Margen/Raiz/Cuerpo/PanelSitio" unique_id=691149636]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Contenido" type="VBoxContainer" parent="Margen/Raiz/Cuerpo/PanelSitio/Margen" unique_id=1413173538]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TituloSitio" type="Label" parent="Margen/Raiz/Cuerpo/PanelSitio/Margen/Contenido" unique_id=1108717339]
+layout_mode = 2
+text = "SITIO WEB BAJO ATAQUE"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="TarjetaSitio" type="PanelContainer" parent="Margen/Raiz/Cuerpo/PanelSitio/Margen/Contenido" unique_id=4829377]
+layout_mode = 2
+
+[node name="Margen" type="MarginContainer" parent="Margen/Raiz/Cuerpo/PanelSitio/Margen/Contenido/TarjetaSitio" unique_id=700330910]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="Contenido" type="VBoxContainer" parent="Margen/Raiz/Cuerpo/PanelSitio/Margen/Contenido/TarjetaSitio/Margen" unique_id=523078108]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="NombreSitio" type="Label" parent="Margen/Raiz/Cuerpo/PanelSitio/Margen/Contenido/TarjetaSitio/Margen/Contenido" unique_id=211649759]
+layout_mode = 2
+text = "MI SITIO WEB"
+horizontal_alignment = 1
+
+[node name="BugsDetectados" type="Label" parent="Margen/Raiz/Cuerpo/PanelSitio/Margen/Contenido/TarjetaSitio/Margen/Contenido" unique_id=1237661278]
+layout_mode = 2
+text = "BUGS DETECTADOS"
+horizontal_alignment = 1
+
+[node name="DescripcionSitio" type="Label" parent="Margen/Raiz/Cuerpo/PanelSitio/Margen/Contenido/TarjetaSitio/Margen/Contenido" unique_id=893223906]
+layout_mode = 2
+text = "Repara colores, cajas y layout."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="ResumenSitio" type="Label" parent="Margen/Raiz/Cuerpo/PanelSitio/Margen/Contenido/TarjetaSitio/Margen/Contenido" unique_id=1478803129]
+layout_mode = 2
+text = "3 NIVELES • 30+ EJERCICIOS"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Espacio" type="Control" parent="Margen/Raiz/Cuerpo/PanelSitio/Margen/Contenido" unique_id=1385369069]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="EtiquetaProgreso" type="Label" parent="Margen/Raiz/Cuerpo/PanelSitio/Margen/Contenido" unique_id=1674649252]
+layout_mode = 2
+text = "PROGRESO"
+
+[node name="BarraProgreso" type="ProgressBar" parent="Margen/Raiz/Cuerpo/PanelSitio/Margen/Contenido" unique_id=1915946217]
+unique_name_in_owner = true
+layout_mode = 2
+show_percentage = false
+
+[node name="TextoProgreso" type="Label" parent="Margen/Raiz/Cuerpo/PanelSitio/Margen/Contenido" unique_id=63725581]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0 de 3 niveles completados"
+autowrap_mode = 3
+
+[node name="Pie" type="PanelContainer" parent="Margen/Raiz" unique_id=1475941061]
+layout_mode = 2
+
+[node name="MargenPie" type="MarginContainer" parent="Margen/Raiz/Pie" unique_id=1751271703]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Fila" type="HBoxContainer" parent="Margen/Raiz/Pie/MargenPie" unique_id=298818769]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BotonCambiarJugador" type="Button" parent="Margen/Raiz/Pie/MargenPie/Fila" unique_id=1088302989]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Cambiar jugador"
+
+[node name="BotonSalir" type="Button" parent="Margen/Raiz/Pie/MargenPie/Fila" unique_id=1462200447]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Salir"
+
+[node name="EspacioIzq" type="Control" parent="Margen/Raiz/Pie/MargenPie/Fila" unique_id=259519685]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Consejo" type="Label" parent="Margen/Raiz/Pie/MargenPie/Fila" unique_id=229182219]
+layout_mode = 2
+text = "Aprende CSS mientras juegas"
+
+[node name="EspacioDer" type="Control" parent="Margen/Raiz/Pie/MargenPie/Fila" unique_id=1345493848]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BotonIdioma" type="Button" parent="Margen/Raiz/Pie/MargenPie/Fila" unique_id=810807186]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Próximamente"
+disabled = true
+text = "Idioma: ES"
+
+[node name="BotonSonido" type="Button" parent="Margen/Raiz/Pie/MargenPie/Fila" unique_id=2057291297]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Próximamente"
+disabled = true
+text = "Sonido"
+
+[node name="BotonMusica" type="Button" parent="Margen/Raiz/Pie/MargenPie/Fila" unique_id=1431074023]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Próximamente"
+disabled = true
+text = "Música"

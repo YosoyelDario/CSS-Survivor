@@ -1,40 +1,71 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://cuw502v6cvq5d"]
 
-[ext_resource type="Script" path="res://scripts/BattleArena.gd" id="1"]
-[ext_resource type="Script" path="res://scripts/Player.gd" id="2"]
+[ext_resource type="Script" uid="uid://rdg6xiwppugj" path="res://scripts/BattleArena.gd" id="1"]
+[ext_resource type="Script" uid="uid://di6jdijee5cp7" path="res://scripts/Player.gd" id="2"]
+[ext_resource type="Script" uid="uid://bwm4jcuiino6w" path="res://scripts/ui/InputPanel.gd" id="3_0bbpv"]
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Node2D" unique_id=1653738178]
 script = ExtResource("1")
 
-[node name="Fondo" type="ColorRect" parent="."]
-offset_left = -20.0
-offset_top = -260.0
-offset_right = 1150.0
-offset_bottom = 400.0
+[node name="Fondo" type="ColorRect" parent="." unique_id=2006069357]
+offset_left = -19.0
+offset_top = 12.0
+offset_right = 1155.0
+offset_bottom = 670.0
 color = Color(0.07, 0.07, 0.1, 1)
 
-[node name="Player" type="Node2D" parent="."]
+[node name="Player" type="Node2D" parent="." unique_id=269588310]
+position = Vector2(576, 350)
 script = ExtResource("2")
-position = Vector2(576, 300)
 
-[node name="Arma" type="Polygon2D" parent="Player"]
-polygon = PackedVector2Array(-4, -30, 4, -30, 4, 10, -4, 10)
+[node name="Arma" type="Polygon2D" parent="Player" unique_id=1978661263]
+position = Vector2(0, 6)
 color = Color(0.75, 0.75, 0.75, 1)
+polygon = PackedVector2Array(-4, -30, 4, -30, 4, -17.08252, 4, 10, -4, 10)
 
-[node name="EnemyRow" type="Node2D" parent="."]
-position = Vector2(576, 300)
+[node name="EnemyRow" type="Node2D" parent="." unique_id=861230876]
+position = Vector2(576, 201)
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="." unique_id=65742091]
 
-[node name="HUD" type="Label" parent="UI"]
-offset_left = 20.0
-offset_top = 10.0
-offset_right = 500.0
-offset_bottom = 40.0
+[node name="HUD" type="Label" parent="UI" unique_id=1226221545]
+anchors_preset = -1
+anchor_right = 0.9973403
+offset_top = 15.0
+offset_right = -19.936035
+offset_bottom = 45.0
 text = "Vidas: 3   Puntaje: 0   Nivel 1"
+metadata/_edit_use_anchors_ = true
 
-[node name="InputPanel" type="VBoxContainer" parent="UI"]
-offset_left = 20.0
-offset_top = 560.0
-offset_right = 900.0
-offset_bottom = 640.0
+[node name="InputPanel" type="VBoxContainer" parent="UI" unique_id=1670985118]
+offset_left = 95.0
+offset_top = 409.0
+offset_right = 975.0
+offset_bottom = 489.0
+script = ExtResource("3_0bbpv")
+
+[node name="ColorRect" type="ColorRect" parent="UI" unique_id=1699032592]
+offset_left = 1662.0
+offset_top = 54.0
+offset_right = 2837.0
+offset_bottom = 735.0
+color = Color(0.41040525, 0.33662692, 0.4681415, 1)
+
+[node name="Panel" type="Panel" parent="UI" unique_id=1735422745]
+visible = false
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.47100002
+offset_left = -6.0
+offset_top = 20.0
+offset_bottom = 19.791992
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI" unique_id=1837789309]
+offset_right = 1151.0
+offset_bottom = 126.0
+
+[node name="ProgressBar" type="ProgressBar" parent="UI" unique_id=1817202179]
+offset_left = 14.0
+offset_top = 609.0
+offset_right = 184.0
+offset_bottom = 636.0

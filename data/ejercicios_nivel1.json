@@ -1,12 +1,639 @@
 [
-	{ "propiedad": "color", "valor": "red", "enunciado": "Enemigo con texto rojo" },
-	{ "propiedad": "background-color", "valor": "blue", "enunciado": "Enemigo con fondo azul" },
-	{ "propiedad": "font-size", "valor": "24px", "enunciado": "Enemigo con etiqueta grande (24px)" },
-	{ "propiedad": "opacity", "valor": "0.5", "enunciado": "Enemigo semi-transparente" },
-	{ "propiedad": "border-color", "valor": "green", "enunciado": "Enemigo con borde verde" },
-	{ "propiedad": "color", "valor": "purple", "enunciado": "Enemigo con texto morado" },
-	{ "propiedad": "background-color", "valor": "orange", "enunciado": "Enemigo con fondo naranja" },
-	{ "propiedad": "opacity", "valor": "0.2", "enunciado": "Enemigo casi invisible" },
-	{ "propiedad": "font-size", "valor": "12px", "enunciado": "Enemigo con etiqueta pequeña" },
-	{ "propiedad": "border-color", "valor": "black", "enunciado": "Enemigo con borde negro" }
+	{
+		"id": 1,
+		"nivel": 1,
+		"tipo": "teorico",
+		"dificultad": "facil",
+		"propiedad_principal": "color",
+		"enunciado": "¿Qué propiedad CSS cambia el color del texto?",
+		"opciones": [
+			"color",
+			"background-color",
+			"font-size",
+			"border-color"
+		],
+		"correcta": "color",
+		"pista": "Esta propiedad define el tono de las letras, no del fondo ni de los bordes.",
+		"explicacion": "'color' se usa para teñir el texto de un elemento.",
+		"efecto_visual": {},
+		"usable_en_test": true
+	},
+	{
+		"id": 2,
+		"nivel": 1,
+		"tipo": "practico",
+		"dificultad": "media",
+		"propiedad_principal": "color",
+		"enunciado": "Este enemigo tiene un defecto visual: el texto debería ser rojo.",
+		"opciones": [
+			"color: red;",
+			"background-color: red;",
+			"color: blue;",
+			"col0r: red;"
+		],
+		"correcta": "color: red;",
+		"pista": "Aplica el color directamente, revisa que la sintaxis esté bien escrita.",
+		"explicacion": "'color: red;' aplica el color rojo correctamente al texto.",
+		"efecto_visual": {
+			"color": "red"
+		},
+		"usable_en_test": false
+	},
+	{
+		"id": 3,
+		"nivel": 1,
+		"tipo": "teorico",
+		"dificultad": "facil",
+		"propiedad_principal": "background-color",
+		"enunciado": "¿Qué propiedad CSS cambia el fondo de un elemento?",
+		"opciones": [
+			"background-color",
+			"color",
+			"border-color",
+			"opacity"
+		],
+		"correcta": "background-color",
+		"pista": "Piensa en la propiedad que pinta la superficie detrás del contenido, no las letras.",
+		"explicacion": "'background-color' pinta el fondo de un elemento.",
+		"efecto_visual": {},
+		"usable_en_test": false
+	},
+	{
+		"id": 4,
+		"nivel": 1,
+		"tipo": "practico",
+		"dificultad": "media",
+		"propiedad_principal": "background-color",
+		"enunciado": "Este enemigo tiene un defecto visual: su fondo debería ser azul.",
+		"opciones": [
+			"background-color: blue;",
+			"color: blue;",
+			"background-color: red;",
+			"backgroud-color: blue;"
+		],
+		"correcta": "background-color: blue;",
+		"pista": "Busca la propiedad que pinta la superficie y revisa que esté bien escrita.",
+		"explicacion": "'background-color: blue;' pinta el fondo del enemigo de azul.",
+		"efecto_visual": {
+			"background-color": "blue"
+		},
+		"usable_en_test": false
+	},
+	{
+		"id": 5,
+		"nivel": 1,
+		"tipo": "teorico",
+		"dificultad": "facil",
+		"propiedad_principal": "font-size",
+		"enunciado": "¿Qué propiedad CSS controla el tamaño del texto?",
+		"opciones": [
+			"font-size",
+			"color",
+			"opacity",
+			"background-color"
+		],
+		"correcta": "font-size",
+		"pista": "Se mide en unidades como px y decide qué tan grandes se ven las letras.",
+		"explicacion": "'font-size' define el tamaño de las letras de un elemento.",
+		"efecto_visual": {},
+		"usable_en_test": false
+	},
+	{
+		"id": 6,
+		"nivel": 1,
+		"tipo": "practico",
+		"dificultad": "media",
+		"propiedad_principal": "font-size",
+		"enunciado": "Este enemigo tiene un defecto visual: su texto debería verse grande (24px).",
+		"opciones": [
+			"font-size: 24px;",
+			"color: 24px;",
+			"font-size: 12px;",
+			"font-sise: 24px;"
+		],
+		"correcta": "font-size: 24px;",
+		"pista": "Necesitas la propiedad de las letras que se mide en píxeles, con el valor pedido.",
+		"explicacion": "'font-size: 24px;' agranda el texto a 24 píxeles.",
+		"efecto_visual": {
+			"font-size": "24px"
+		},
+		"usable_en_test": false
+	},
+	{
+		"id": 7,
+		"nivel": 1,
+		"tipo": "teorico",
+		"dificultad": "facil",
+		"propiedad_principal": "opacity",
+		"enunciado": "¿Qué propiedad CSS controla la transparencia?",
+		"opciones": [
+			"opacity",
+			"color",
+			"background-color",
+			"font-size"
+		],
+		"correcta": "opacity",
+		"pista": "Su valor va de 0 a 1 y afecta cuánto se ve a través del elemento completo.",
+		"explicacion": "'opacity' controla qué tan transparente se ve un elemento.",
+		"efecto_visual": {},
+		"usable_en_test": false
+	},
+	{
+		"id": 8,
+		"nivel": 1,
+		"tipo": "practico",
+		"dificultad": "media",
+		"propiedad_principal": "opacity",
+		"enunciado": "Este enemigo tiene un defecto visual: debería verse semi-transparente (50%).",
+		"opciones": [
+			"opacity: 0.5;",
+			"color: 0.5;",
+			"opacity: 0.9;",
+			"opacty: 0.5;"
+		],
+		"correcta": "opacity: 0.5;",
+		"pista": "Piensa en la escala de 0 a 1: la mitad no es ninguno de los extremos.",
+		"explicacion": "'opacity: 0.5;' deja el elemento a la mitad de transparencia.",
+		"efecto_visual": {
+			"opacity": "0.5"
+		},
+		"usable_en_test": false
+	},
+	{
+		"id": 9,
+		"nivel": 1,
+		"tipo": "teorico",
+		"dificultad": "facil",
+		"propiedad_principal": "border-color",
+		"enunciado": "¿Qué propiedad CSS cambia el color del borde?",
+		"opciones": [
+			"border-color",
+			"color",
+			"background-color",
+			"opacity"
+		],
+		"correcta": "border-color",
+		"pista": "Afecta solo la línea que rodea al elemento, no su interior ni su texto.",
+		"explicacion": "'border-color' pinta la línea que rodea al elemento.",
+		"efecto_visual": {},
+		"usable_en_test": false
+	},
+	{
+		"id": 10,
+		"nivel": 1,
+		"tipo": "practico",
+		"dificultad": "media",
+		"propiedad_principal": "border-color",
+		"enunciado": "Este enemigo tiene un defecto visual: su borde debería ser verde.",
+		"opciones": [
+			"border-color: green;",
+			"background-color: green;",
+			"border-color: red;",
+			"bordercolor: green;"
+		],
+		"correcta": "border-color: green;",
+		"pista": "Solo debe cambiar la línea que rodea al enemigo, y con la sintaxis correcta.",
+		"explicacion": "'border-color: green;' pinta el borde de verde.",
+		"efecto_visual": {
+			"border-color": "green"
+		},
+		"usable_en_test": false
+	},
+	{
+		"id": 11,
+		"nivel": 1,
+		"tipo": "teorico",
+		"dificultad": "facil",
+		"propiedad_principal": "color",
+		"enunciado": "¿Qué hace `color: blue;`?",
+		"opciones": [
+			"Cambia el color del texto a azul",
+			"Cambia el fondo a azul",
+			"Cambia el color del borde a azul",
+			"Hace el texto más grande"
+		],
+		"correcta": "Cambia el color del texto a azul",
+		"pista": "Fíjate en el nombre de la propiedad: ¿habla del texto, del fondo o del borde?",
+		"explicacion": "'color: blue;' pinta el texto de azul.",
+		"efecto_visual": {},
+		"usable_en_test": false
+	},
+	{
+		"id": 12,
+		"nivel": 1,
+		"tipo": "teorico",
+		"dificultad": "facil",
+		"propiedad_principal": "background-color",
+		"enunciado": "¿Qué hace `background-color: yellow;`?",
+		"opciones": [
+			"Cambia el fondo a amarillo",
+			"Cambia el texto a amarillo",
+			"Cambia el borde a amarillo",
+			"Hace el elemento más transparente"
+		],
+		"correcta": "Cambia el fondo a amarillo",
+		"pista": "El nombre de la propiedad indica qué parte del elemento se va a pintar.",
+		"explicacion": "'background-color: yellow;' pinta el fondo de amarillo.",
+		"efecto_visual": {},
+		"usable_en_test": false
+	},
+	{
+		"id": 13,
+		"nivel": 1,
+		"tipo": "teorico",
+		"dificultad": "facil",
+		"propiedad_principal": "font-size",
+		"enunciado": "¿Qué hace `font-size: 30px;`?",
+		"opciones": [
+			"Cambia el tamaño del texto a 30px",
+			"Cambia el ancho del elemento a 30px",
+			"Cambia el grosor del borde a 30px",
+			"Mueve el texto 30px a la derecha"
+		],
+		"correcta": "Cambia el tamaño del texto a 30px",
+		"pista": "Los píxeles aquí miden qué tan grandes se ven las letras.",
+		"explicacion": "'font-size: 30px;' deja el texto con un tamaño de 30 píxeles.",
+		"efecto_visual": {},
+		"usable_en_test": false
+	},
+	{
+		"id": 14,
+		"nivel": 1,
+		"tipo": "teorico",
+		"dificultad": "facil",
+		"propiedad_principal": "opacity",
+		"enunciado": "¿Qué hace `opacity: 0;`?",
+		"opciones": [
+			"Hace el elemento completamente transparente",
+			"Hace el elemento completamente opaco",
+			"Quita el borde del elemento",
+			"Deja el elemento a la mitad de transparencia"
+		],
+		"correcta": "Hace el elemento completamente transparente",
+		"pista": "En esta propiedad, 0 está en un extremo de la escala y 1 en el otro.",
+		"explicacion": "'opacity: 0;' hace que el elemento sea totalmente invisible.",
+		"efecto_visual": {},
+		"usable_en_test": false
+	},
+	{
+		"id": 15,
+		"nivel": 1,
+		"tipo": "teorico",
+		"dificultad": "facil",
+		"propiedad_principal": "opacity",
+		"enunciado": "¿Qué hace `opacity: 1;`?",
+		"opciones": [
+			"Hace el elemento completamente opaco",
+			"Hace el elemento completamente transparente",
+			"Deja el elemento a la mitad de transparencia",
+			"Agranda el elemento al doble"
+		],
+		"correcta": "Hace el elemento completamente opaco",
+		"pista": "Con esta propiedad, el valor 1 es un extremo de la escala, no un tamaño.",
+		"explicacion": "'opacity: 1;' muestra el elemento sin ninguna transparencia.",
+		"efecto_visual": {},
+		"usable_en_test": false
+	},
+	{
+		"id": 16,
+		"nivel": 1,
+		"tipo": "practico",
+		"dificultad": "media",
+		"propiedad_principal": "color",
+		"enunciado": "Este enemigo tiene un defecto visual: el texto debería ser verde.",
+		"opciones": [
+			"color: green;",
+			"border-color: green;",
+			"color: orange;",
+			"colour: green;"
+		],
+		"correcta": "color: green;",
+		"pista": "Busca la propiedad que afecta a las letras y revisa cómo se escribe.",
+		"explicacion": "'color: green;' pinta el texto de verde.",
+		"efecto_visual": {
+			"color": "green"
+		},
+		"usable_en_test": false
+	},
+	{
+		"id": 17,
+		"nivel": 1,
+		"tipo": "practico",
+		"dificultad": "media",
+		"propiedad_principal": "background-color",
+		"enunciado": "Este enemigo tiene un defecto visual: su fondo debería ser rojo.",
+		"opciones": [
+			"background-color: red;",
+			"color: red;",
+			"background-color: blue;",
+			"background-colour: red;"
+		],
+		"correcta": "background-color: red;",
+		"pista": "El cambio va en la superficie del enemigo, no en su texto.",
+		"explicacion": "'background-color: red;' pinta el fondo de rojo.",
+		"efecto_visual": {
+			"background-color": "red"
+		},
+		"usable_en_test": false
+	},
+	{
+		"id": 18,
+		"nivel": 1,
+		"tipo": "practico",
+		"dificultad": "media",
+		"propiedad_principal": "font-size",
+		"enunciado": "Este enemigo tiene un defecto visual: su texto debería ser pequeño (12px).",
+		"opciones": [
+			"font-size: 12px;",
+			"color: 12px;",
+			"font-size: 32px;",
+			"font-sizes: 12px;"
+		],
+		"correcta": "font-size: 12px;",
+		"pista": "Compara el tamaño pedido con el de cada opción, y revisa la propiedad.",
+		"explicacion": "'font-size: 12px;' reduce el texto a 12 píxeles.",
+		"efecto_visual": {
+			"font-size": "12px"
+		},
+		"usable_en_test": false
+	},
+	{
+		"id": 19,
+		"nivel": 1,
+		"tipo": "practico",
+		"dificultad": "media",
+		"propiedad_principal": "opacity",
+		"enunciado": "Este enemigo tiene un defecto visual: debería tener 30% de opacidad.",
+		"opciones": [
+			"opacity: 0.3;",
+			"font-size: 0.3;",
+			"opacity: 0.7;",
+			"opasity: 0.3;"
+		],
+		"correcta": "opacity: 0.3;",
+		"pista": "Un valor bajo en esta propiedad hace que el elemento se vea más tenue.",
+		"explicacion": "'opacity: 0.3;' deja el elemento bastante transparente.",
+		"efecto_visual": {
+			"opacity": "0.3"
+		},
+		"usable_en_test": false
+	},
+	{
+		"id": 20,
+		"nivel": 1,
+		"tipo": "practico",
+		"dificultad": "media",
+		"propiedad_principal": "border-color",
+		"enunciado": "Este enemigo tiene un defecto visual: su borde debería ser azul.",
+		"opciones": [
+			"border-color: blue;",
+			"background-color: blue;",
+			"border-color: red;",
+			"border-colour: blue;"
+		],
+		"correcta": "border-color: blue;",
+		"pista": "Solo debe cambiar el contorno del enemigo, con la propiedad bien escrita.",
+		"explicacion": "'border-color: blue;' pinta el borde de azul.",
+		"efecto_visual": {
+			"border-color": "blue"
+		},
+		"usable_en_test": false
+	},
+	{
+		"id": 21,
+		"nivel": 1,
+		"tipo": "completar",
+		"dificultad": "facil",
+		"propiedad_principal": "color",
+		"enunciado": "Completa el código para cambiar el texto a morado:\n.bug { ____: purple; }",
+		"opciones": [
+			"color",
+			"background-color",
+			"border-color",
+			"opacity"
+		],
+		"correcta": "color",
+		"pista": "Solo necesitas la propiedad que afecta a la tipografía.",
+		"explicacion": "Al usar 'color' dentro de la clase .bug, el texto toma el valor purple.",
+		"efecto_visual": {
+			"color": "purple"
+		},
+		"usable_en_test": true
+	},
+	{
+		"id": 22,
+		"nivel": 1,
+		"tipo": "completar",
+		"dificultad": "facil",
+		"propiedad_principal": "background-color",
+		"enunciado": "Completa el código para cambiar el fondo a naranja:\n.bug { ____: orange; }",
+		"opciones": [
+			"background-color",
+			"color",
+			"border-color",
+			"opacity"
+		],
+		"correcta": "background-color",
+		"pista": "Necesitas la propiedad que pinta la superficie del elemento, no sus letras.",
+		"explicacion": "'background-color' dentro de .bug pinta el fondo de naranja.",
+		"efecto_visual": {
+			"background-color": "orange"
+		},
+		"usable_en_test": false
+	},
+	{
+		"id": 23,
+		"nivel": 1,
+		"tipo": "completar",
+		"dificultad": "facil",
+		"propiedad_principal": "font-size",
+		"enunciado": "Completa el código para cambiar el tamaño del texto:\n.bug { ____: 18px; }",
+		"opciones": [
+			"font-size",
+			"color",
+			"opacity",
+			"background-color"
+		],
+		"correcta": "font-size",
+		"pista": "Fíjate en el valor: es una medida en píxeles que afecta a las letras.",
+		"explicacion": "'font-size: 18px;' deja el texto en 18 píxeles.",
+		"efecto_visual": {
+			"font-size": "18px"
+		},
+		"usable_en_test": false
+	},
+	{
+		"id": 24,
+		"nivel": 1,
+		"tipo": "completar",
+		"dificultad": "facil",
+		"propiedad_principal": "opacity",
+		"enunciado": "Completa el código para cambiar la transparencia:\n.bug { ____: 0.7; }",
+		"opciones": [
+			"opacity",
+			"font-size",
+			"color",
+			"background-color"
+		],
+		"correcta": "opacity",
+		"pista": "El valor es un número entre 0 y 1 que indica cuánto se ve el elemento.",
+		"explicacion": "'opacity: 0.7;' hace el elemento algo transparente.",
+		"efecto_visual": {
+			"opacity": "0.7"
+		},
+		"usable_en_test": false
+	},
+	{
+		"id": 25,
+		"nivel": 1,
+		"tipo": "completar",
+		"dificultad": "facil",
+		"propiedad_principal": "border-color",
+		"enunciado": "Completa el código para cambiar el borde a blanco:\n.bug { ____: white; }",
+		"opciones": [
+			"border-color",
+			"color",
+			"background-color",
+			"opacity"
+		],
+		"correcta": "border-color",
+		"pista": "Solo debe cambiar la línea que rodea al elemento.",
+		"explicacion": "'border-color: white;' pinta el borde de blanco.",
+		"efecto_visual": {
+			"border-color": "white"
+		},
+		"usable_en_test": false
+	},
+	{
+		"id": 26,
+		"nivel": 1,
+		"tipo": "multi",
+		"dificultad": "dificil",
+		"propiedad_principal": "color",
+		"enunciado": "Este enemigo debería tener el texto azul y el fondo negro. ¿Qué combinación lo repara?",
+		"opciones": [
+			"color: blue; background-color: black;",
+			"color: black; background-color: blue;",
+			"color: blue; border-color: black;",
+			"color: blue; background-color: white;"
+		],
+		"correcta": "color: blue; background-color: black;",
+		"pista": "Corrige una parte a la vez: primero el texto, luego el fondo. Revisa que no estén intercambiados.",
+		"explicacion": "'color' pinta el texto y 'background-color' el fondo; cada uno lleva su propio color.",
+		"efecto_visual": {
+			"color": "blue",
+			"background-color": "black"
+		},
+		"usable_en_test": false,
+		"propiedades_involucradas": [
+			"color",
+			"background-color"
+		]
+	},
+	{
+		"id": 27,
+		"nivel": 1,
+		"tipo": "multi",
+		"dificultad": "dificil",
+		"propiedad_principal": "color",
+		"enunciado": "Este enemigo debería tener el texto rojo y de tamaño 24px. ¿Qué combinación lo repara?",
+		"opciones": [
+			"color: red; font-size: 24px;",
+			"color: red; font-size: 12px;",
+			"background-color: red; font-size: 24px;",
+			"color: blue; font-size: 24px;"
+		],
+		"correcta": "color: red; font-size: 24px;",
+		"pista": "Hay una propiedad para el color de las letras y otra para su tamaño. Revisa ambas.",
+		"explicacion": "'color' cambia el tono del texto y 'font-size' su tamaño.",
+		"efecto_visual": {
+			"color": "red",
+			"font-size": "24px"
+		},
+		"usable_en_test": false,
+		"propiedades_involucradas": [
+			"color",
+			"font-size"
+		]
+	},
+	{
+		"id": 28,
+		"nivel": 1,
+		"tipo": "multi",
+		"dificultad": "dificil",
+		"propiedad_principal": "background-color",
+		"enunciado": "Este enemigo debería tener el fondo verde y opacidad 0.5. ¿Qué combinación lo repara?",
+		"opciones": [
+			"background-color: green; opacity: 0.5;",
+			"background-color: green; opacity: 0.9;",
+			"color: green; opacity: 0.5;",
+			"background-color: red; opacity: 0.5;"
+		],
+		"correcta": "background-color: green; opacity: 0.5;",
+		"pista": "Una propiedad pinta la superficie y la otra decide cuánto se ve el elemento.",
+		"explicacion": "'background-color' pinta el fondo y 'opacity' controla su transparencia.",
+		"efecto_visual": {
+			"background-color": "green",
+			"opacity": "0.5"
+		},
+		"usable_en_test": false,
+		"propiedades_involucradas": [
+			"background-color",
+			"opacity"
+		]
+	},
+	{
+		"id": 29,
+		"nivel": 1,
+		"tipo": "multi",
+		"dificultad": "dificil",
+		"propiedad_principal": "color",
+		"enunciado": "Este enemigo debería tener el texto blanco y el borde rojo. ¿Qué combinación lo repara?",
+		"opciones": [
+			"color: white; border-color: red;",
+			"color: red; border-color: white;",
+			"color: white; background-color: red;",
+			"background-color: white; border-color: red;"
+		],
+		"correcta": "color: white; border-color: red;",
+		"pista": "Una propiedad va para las letras y otra para el contorno. No las mezcles con el fondo.",
+		"explicacion": "'color' pinta el texto y 'border-color' el contorno.",
+		"efecto_visual": {
+			"color": "white",
+			"border-color": "red"
+		},
+		"usable_en_test": false,
+		"propiedades_involucradas": [
+			"color",
+			"border-color"
+		]
+	},
+	{
+		"id": 30,
+		"nivel": 1,
+		"tipo": "multi",
+		"dificultad": "dificil",
+		"propiedad_principal": "color",
+		"enunciado": "Este enemigo debería tener el texto amarillo, tamaño 20px y opacidad 0.8. ¿Qué combinación lo repara?",
+		"opciones": [
+			"color: yellow; font-size: 20px; opacity: 0.8;",
+			"color: yellow; font-size: 20px; opacity: 0.2;",
+			"color: yellow; font-size: 8px; opacity: 0.8;",
+			"background-color: yellow; font-size: 20px; opacity: 0.8;"
+		],
+		"correcta": "color: yellow; font-size: 20px; opacity: 0.8;",
+		"pista": "Son tres cambios: el tono del texto, su tamaño y cuánto se ve el elemento. Revisa cada uno.",
+		"explicacion": "'color', 'font-size' y 'opacity' controlan el texto, su tamaño y la transparencia.",
+		"efecto_visual": {
+			"color": "yellow",
+			"font-size": "20px",
+			"opacity": "0.8"
+		},
+		"usable_en_test": false,
+		"propiedades_involucradas": [
+			"color",
+			"font-size",
+			"opacity"
+		]
+	}
 ]
