@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="24" fill="#08111f"/>
+  <path d="M64 13 105 29v31c0 27-17 45-41 56C40 105 23 87 23 60V29z" fill="#10bfe7" opacity=".9"/>
+  <path d="M64 26 92 37v22c0 19-11 32-28 41-17-9-28-22-28-41V37z" fill="#12233d"/>
+  <text x="64" y="61" text-anchor="middle" fill="#ff7a36" font-size="26" font-family="monospace" font-weight="700">CSS</text>
+  <text x="64" y="84" text-anchor="middle" fill="#ffffff" font-size="15" font-family="monospace" font-weight="700">SURVIVOR</text>
+</svg>
