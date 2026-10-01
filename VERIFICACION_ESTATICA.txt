@@ -1,0 +1,18 @@
+CSS Survivor — verificación estática realizada
+
+OK: game_config.json válido.
+OK: zone_rows = [3, 4, 4, 4] = 15 filas/preguntas base.
+OK: secuencias por zona tienen exactamente 3/4/4/4 tipos.
+OK: 90 preguntas totales.
+OK: Nivel 1 = 30 preguntas: 10 teóricas, 10 prácticas, 5 completar, 5 multi.
+OK: cada pregunta del Nivel 1 tiene 4 opciones y exactamente una coincide con answer.
+OK: pool por tipo suficiente para una partida perfecta sin repetición.
+OK: puntaje perfecto esperado = 5250.
+OK: todos los preload() apuntan a archivos existentes.
+OK: assets/ fue comparado contra la base y no fue modificado.
+
+Pendiente de ejecutar localmente porque este entorno no incluye Godot:
+- Importación del proyecto.
+- Compilación GDScript real del motor.
+- Prueba headless tests/model_smoke_test.gd.
+- Revisión visual 1280x720 y capturas.

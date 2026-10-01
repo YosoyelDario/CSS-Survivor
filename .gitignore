@@ -1,2 +1,6 @@
-.godot/ 
-*.import 
+.godot/
+*.import
+.summer/
+project.godot.bak
+*.tmp
+*.log

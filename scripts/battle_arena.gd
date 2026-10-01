@@ -1,52 +1,27 @@
-extends Node2D
+extends Control
 
-<<<<<<< Updated upstream
-const PLAYER_TEXTURE: Texture2D = preload("res://assets/player/hacker.png")
-const BATTLE_WEB_TEXTURE: Texture2D = preload("res://assets/backgrounds/battle_web.png")
-const BUG_TEXTURES: Array[Texture2D] = [
-	preload("res://assets/enemies/virus_1.png"),
-	preload("res://assets/enemies/virus_2.png"),
-	preload("res://assets/enemies/virus_3.png"),
-	preload("res://assets/enemies/virus_4.png")
-]
-=======
 const EnemyView = preload("res://scripts/enemy_view.gd")
 const UIFactory = preload("res://scripts/ui/ui_factory.gd")
 const BATTLE_BG: Texture2D = preload("res://assets/backgrounds/battle_web.png")
 const HACKER: Texture2D = preload("res://assets/player/hacker.png")
 const QUEUE_VIRUS: Texture2D = preload("res://assets/enemies/virus_4.png")
->>>>>>> Stashed changes
 
-var level: int = 1
-var target_hp: int = 3
-var target_max_hp: int = 3
-var target_alive: bool = true
-var target_variant: int = 0
-var hit_flash: float = 0.0
-var miss_flash: float = 0.0
+const LANE_X := [470.0, 640.0, 810.0]
+const DEPTH_Y := [330.0, 245.0, 160.0]
 
-func set_battle_state(level_value: int, hp_value: int, max_hp_value: int, alive_value: bool = true, variant_value: int = 0) -> void:
-	level = level_value
-	target_hp = hp_value
-	target_max_hp = max_hp_value
-	target_alive = alive_value
-	target_variant = clampi(variant_value, 0, BUG_TEXTURES.size() - 1)
-	queue_redraw()
+var background: TextureRect
+var enemy_layer: Control
+var projectile_layer: Control
+var hacker: TextureRect
+var queue_icon: TextureRect
+var queue_label: Label
+var enemies: Dictionary = {}
+var current_grid
 
-func target_screen_position() -> Vector2:
-	return Vector2(640, 320)
+func _ready() -> void:
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_build()
 
-<<<<<<< Updated upstream
-func player_screen_position() -> Vector2:
-	return Vector2(640, 414)
-
-func flash_hit(success: bool) -> void:
-	if success:
-		hit_flash = 1.0
-	else:
-		miss_flash = 1.0
-	queue_redraw()
-=======
 func _build() -> void:
 	# UIFactory.texture_rect asigna expand_mode ANTES de la textura: así el tamaño pedido se respeta
 	# (antes el fondo, el hacker y el ícono de cola salían con el tamaño de su PNG).
@@ -248,66 +223,69 @@ func _shoot_projectile(from: Vector2, to: Vector2) -> void:
 	style.set_corner_radius_all(7)
 	projectile.add_theme_stylebox_override("panel", style)
 	projectile_layer.add_child(projectile)
->>>>>>> Stashed changes
 	var tween := create_tween()
-	if success:
-		tween.tween_method(_set_hit_flash, 1.0, 0.0, 0.28)
-	else:
-		tween.tween_method(_set_miss_flash, 1.0, 0.0, 0.28)
+	tween.tween_property(projectile, "position", to - Vector2(7, 7), 0.22).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	await tween.finished
+	projectile.queue_free()
+	# Ramificaciones desde el objetivo a los vecinos.
+	var branches: Array = []
+	for view in enemies.values():
+		if is_instance_valid(view) and view.mark_mode == "neighbor":
+			branches.append(view)
+	if not branches.is_empty():
+		var branch_tween := create_tween().set_parallel(true)
+		for view in branches:
+			var spark := ColorRect.new()
+			spark.color = Color("7be4ff")
+			spark.position = to - Vector2(4, 4)
+			spark.size = Vector2(8, 8)
+			projectile_layer.add_child(spark)
+			branch_tween.tween_property(spark, "position", view.position + view.size * 0.5 - Vector2(4, 4), 0.14)
+			branch_tween.tween_callback(spark.queue_free).set_delay(0.15)
+		await branch_tween.finished
 
-func _set_hit_flash(value: float) -> void:
-	hit_flash = value
-	queue_redraw()
+func animate_advance(grid) -> void:
+	current_grid = grid
+	var desired: Dictionary = {}
+	for item in grid.visible_state():
+		var depth := int(item.get("depth", 0))
+		var row: Dictionary = item.get("row", {})
+		for data in row.get("enemies", []):
+			if bool(data.get("alive", false)):
+				desired[int(data.get("id", 0))] = {"pos": _enemy_position(int(data.get("lane", 0)), depth), "depth": depth, "data": data}
+	var tween := create_tween().set_parallel(true)
+	var moved := false
+	for id in enemies.keys():
+		if desired.has(int(id)) and is_instance_valid(enemies[id]):
+			moved = true
+			tween.tween_property(enemies[id], "position", desired[int(id)]["pos"], 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+	if moved:
+		await tween.finished
+	_sync_grid(true)
+	mark_selection(grid.target_and_neighbors())
 
-func _set_miss_flash(value: float) -> void:
-	miss_flash = value
-	queue_redraw()
+func _enemy_position(lane_index: int, depth_index: int) -> Vector2:
+	var lane_position: int = clampi(
+		lane_index,
+		0,
+		LANE_X.size() - 1
+	)
 
-func _draw_bug_sprite(pos: Vector2, texture: Texture2D, size: float = 60.0, alpha: float = 1.0) -> void:
-	if texture == null:
-		return
-	var half := size / 2.0
-	draw_texture_rect(texture, Rect2(pos - Vector2(half, half), Vector2(size, size)), false, Color(1, 1, 1, alpha))
+	var depth_position: int = clampi(
+		depth_index,
+		0,
+		DEPTH_Y.size() - 1
+	)
 
-func _draw() -> void:
-	# Fondo general de batalla.
-	draw_rect(Rect2(0, 0, 1280, 720), Color("07101d"), true)
+	var x: float = float(
+		LANE_X[lane_position]
+	)
 
-	# Sitio web de batalla cargado desde PNG externo.
-	var browser := Rect2(82, 92, 1116, 350)
-	if BATTLE_WEB_TEXTURE:
-		draw_texture_rect(BATTLE_WEB_TEXTURE, browser, false)
-	else:
-		draw_rect(browser, Color("edf6fb"), true)
-	draw_rect(browser, Color("22c7f2"), false, 3)
+	var y: float = float(
+		DEPTH_Y[depth_position]
+	)
 
-	# Enemigos de fondo: sprites externos.
-	for x in [470.0, 640.0, 810.0]:
-		_draw_bug_sprite(Vector2(x, 225), BUG_TEXTURES[1], 54, 0.92)
-		_draw_bug_sprite(Vector2(x, 275), BUG_TEXTURES[2], 60, 0.92)
-		if x != 640.0:
-			_draw_bug_sprite(Vector2(x, 330), BUG_TEXTURES[0], 66, 0.70)
-
-	# BUG objetivo de esta zona.
-	if target_alive:
-		var target_texture: Texture2D = BUG_TEXTURES[target_variant]
-		var size := 88.0 + hit_flash * 10.0
-		var modulate_color := Color.WHITE.lerp(Color("8ff8ff"), hit_flash * 0.65)
-		var half := size / 2.0
-		draw_texture_rect(target_texture, Rect2(Vector2(640, 320) - Vector2(half, half), Vector2(size, size)), false, modulate_color)
-		draw_arc(Vector2(640, 320), 48 + hit_flash * 8, 0, TAU, 40, Color(0.2, 0.85, 1.0, 0.7), 3)
-
-	# HP del enemigo seleccionado.
-	draw_rect(Rect2(590, 365, 100, 9), Color("2b1b2e"), true)
-	var ratio := 0.0
-	if target_max_hp > 0:
-		ratio = float(target_hp) / float(target_max_hp)
-	draw_rect(Rect2(590, 365, 100 * ratio, 9), Color("ffd447"), true)
-
-	# Jugador: mismo PNG que se usa en el mapa.
-	if PLAYER_TEXTURE:
-		draw_texture_rect(PLAYER_TEXTURE, Rect2(592, 366, 96, 96), false)
-
-	if miss_flash > 0.0:
-		draw_rect(browser, Color(1.0, 0.08, 0.20, 0.18 * miss_flash), true)
+	return Vector2(
+		x - 46.0,
+		y - 46.0
+	)

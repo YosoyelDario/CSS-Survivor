@@ -1,0 +1,144 @@
+{
+  "version": "0.3.0-pilot",
+  "pretest_active": false,
+  "total_levels": 3,
+  "texts": {
+    "mission": "Recorre una página web infectada, limpia sus cuatro zonas y domina las propiedades CSS para restaurar el sitio.",
+    "consent": "Acepto participar en la prueba piloto de CSS Survivor. Mis respuestas, tiempos y resultados se guardarán localmente con mi correo para fines académicos de la asignatura.",
+    "how_to": [
+      [
+        "Explora",
+        "Muévete con WASD o las flechas para recorrer la página web."
+      ],
+      [
+        "Enfrenta",
+        "Acércate a un bug guardián y pulsa E, Espacio o Enter."
+      ],
+      [
+        "Responde",
+        "En combate elige una de cuatro alternativas con clic o teclas 1 a 4."
+      ],
+      [
+        "Ataca",
+        "Cada acierto elimina la fila FRENTE completa: objetivo y dos vecinos."
+      ],
+      [
+        "Aprende",
+        "Si fallas pierdes una vida y recibes una pista antes de continuar."
+      ],
+      [
+        "Repara",
+        "Limpia las cuatro zonas para completar el Nivel 1."
+      ]
+    ]
+  },
+  "badges": [
+    {
+      "id": "first_bug",
+      "name": "Primer bug eliminado",
+      "description": "Limpia tu primera fila de bugs.",
+      "level": 1
+    },
+    {
+      "id": "streak_5",
+      "name": "Racha imparable",
+      "description": "Consigue 5 respuestas correctas seguidas.",
+      "level": 1
+    },
+    {
+      "id": "perfect",
+      "name": "Impecable",
+      "description": "Completa el Nivel 1 sin perder vidas.",
+      "level": 1
+    },
+    {
+      "id": "color_master",
+      "name": "Maestro del Color",
+      "description": "Completa el Nivel 1.",
+      "level": 1
+    }
+  ],
+  "levels": {
+    "1": {
+      "available": true,
+      "name": "Nivel 1 - Propiedades visuales básicas",
+      "short": "COLORES Y TIPOGRAFÍAS",
+      "lives": 5,
+      "zone_rows": [
+        3,
+        4,
+        4,
+        4
+      ],
+      "lanes": 3,
+      "visible_rows": 3,
+      "attack_mode": "adjacent",
+      "advance_on_error": false,
+      "zone_names": [
+        "PERFIL",
+        "SEGURIDAD",
+        "DATOS",
+        "SOPORTE"
+      ],
+      "zone_difficulty": [
+        "Fácil",
+        "Fácil",
+        "Media",
+        "Difícil"
+      ],
+      "zone_sequences": [
+        [
+          "teorico",
+          "completar",
+          "teorico"
+        ],
+        [
+          "teorico",
+          "practico",
+          "teorico",
+          "practico"
+        ],
+        [
+          "practico",
+          "completar",
+          "practico",
+          "completar"
+        ],
+        [
+          "multi",
+          "practico",
+          "multi",
+          "multi"
+        ]
+      ],
+      "difficulty_by_type": {
+        "teorico": "Fácil",
+        "practico": "Media",
+        "completar": "Media",
+        "multi": "Difícil"
+      },
+      "points_by_type": {
+        "teorico": 100,
+        "completar": 150,
+        "practico": 200,
+        "multi": 300
+      },
+      "streak_bonus": {
+        "every": 3,
+        "points": 100
+      },
+      "clean_zone_bonus": 250,
+      "life_bonus": 200
+    },
+    "2": {
+      "available": false,
+      "name": "Nivel 2 - Modelo de caja",
+      "short": "MODELO DE CAJA"
+    },
+    "3": {
+      "available": false,
+      "name": "Nivel 3 - Posicionamiento y layout",
+      "short": "LAYOUT"
+    }
+  }
+}

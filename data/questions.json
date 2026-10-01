@@ -5,7 +5,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué propiedad CSS cambia el color del texto?",
-    "answer": "color"
+    "answer": "color",
+    "options": [
+      "color",
+      "background-color",
+      "font-size",
+      "opacity"
+    ],
+    "hint": "Piensa en la propiedad que afecta directamente a las letras.",
+    "explanation": "La propiedad color define el color del texto.",
+    "kind": "teorico",
+    "main_property": "color",
+    "effects": []
   },
   {
     "id": 2,
@@ -13,7 +24,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo con texto rojo",
-    "answer": "color: red;"
+    "answer": "color: red;",
+    "options": [
+      "color: red;",
+      "background-color: red;",
+      "border-color: red;",
+      "color: blue;"
+    ],
+    "hint": "El requisito habla del texto, no del fondo.",
+    "explanation": "color: red; pinta de rojo el texto del elemento.",
+    "kind": "practico",
+    "main_property": "color",
+    "effects": [
+      {
+        "property": "color",
+        "value": "red"
+      }
+    ]
   },
   {
     "id": 3,
@@ -21,7 +48,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué propiedad cambia el fondo de un elemento?",
-    "answer": "background-color"
+    "answer": "background-color",
+    "options": [
+      "background-color",
+      "color",
+      "border-color",
+      "opacity"
+    ],
+    "hint": "Busca la propiedad que pinta el área detrás del contenido.",
+    "explanation": "background-color cambia el color de fondo.",
+    "kind": "teorico",
+    "main_property": "background-color",
+    "effects": []
   },
   {
     "id": 4,
@@ -29,7 +67,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo con fondo azul",
-    "answer": "background-color: blue;"
+    "answer": "background-color: blue;",
+    "options": [
+      "background-color: blue;",
+      "color: blue;",
+      "border-color: blue;",
+      "background-color: red;"
+    ],
+    "hint": "El color azul debe ir detrás del contenido.",
+    "explanation": "background-color: blue; establece el fondo azul.",
+    "kind": "practico",
+    "main_property": "background-color",
+    "effects": [
+      {
+        "property": "background-color",
+        "value": "blue"
+      }
+    ]
   },
   {
     "id": 5,
@@ -37,7 +91,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué propiedad controla el tamaño del texto?",
-    "answer": "font-size"
+    "answer": "font-size",
+    "options": [
+      "font-size",
+      "font-weight",
+      "width",
+      "color"
+    ],
+    "hint": "La propiedad empieza por font-.",
+    "explanation": "font-size controla el tamaño de la fuente.",
+    "kind": "teorico",
+    "main_property": "font-size",
+    "effects": []
   },
   {
     "id": 6,
@@ -45,7 +110,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo con texto grande (24px)",
-    "answer": "font-size: 24px;"
+    "answer": "font-size: 24px;",
+    "options": [
+      "font-size: 24px;",
+      "width: 24px;",
+      "font-size: 12px;",
+      "color: 24px;"
+    ],
+    "hint": "El valor 24px debe aplicarse al tamaño de la fuente.",
+    "explanation": "font-size: 24px; fija el texto en 24 píxeles.",
+    "kind": "practico",
+    "main_property": "font-size",
+    "effects": [
+      {
+        "property": "font-size",
+        "value": "24px"
+      }
+    ]
   },
   {
     "id": 7,
@@ -53,7 +134,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué propiedad controla la transparencia?",
-    "answer": "opacity"
+    "answer": "opacity",
+    "options": [
+      "opacity",
+      "visibility",
+      "background-color",
+      "filter"
+    ],
+    "hint": "La transparencia se expresa entre 0 y 1.",
+    "explanation": "opacity controla la transparencia global del elemento.",
+    "kind": "teorico",
+    "main_property": "opacity",
+    "effects": []
   },
   {
     "id": 8,
@@ -61,7 +153,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo semi-transparente (50%)",
-    "answer": "opacity: 0.5;"
+    "answer": "opacity: 0.5;",
+    "options": [
+      "opacity: 0.5;",
+      "opacity: 1;",
+      "opacity: 0;",
+      "background-color: 0.5;"
+    ],
+    "hint": "50% de opacidad equivale a 0.5.",
+    "explanation": "opacity: 0.5; deja el elemento al 50% de opacidad.",
+    "kind": "practico",
+    "main_property": "opacity",
+    "effects": [
+      {
+        "property": "opacity",
+        "value": "0.5"
+      }
+    ]
   },
   {
     "id": 9,
@@ -69,7 +177,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué propiedad cambia el color del borde?",
-    "answer": "border-color"
+    "answer": "border-color",
+    "options": [
+      "border-color",
+      "color",
+      "background-color",
+      "border-radius"
+    ],
+    "hint": "La propiedad combina border con el atributo color.",
+    "explanation": "border-color define el color del borde.",
+    "kind": "teorico",
+    "main_property": "border-color",
+    "effects": []
   },
   {
     "id": 10,
@@ -77,7 +196,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo con borde verde",
-    "answer": "border-color: green;"
+    "answer": "border-color: green;",
+    "options": [
+      "border-color: green;",
+      "color: green;",
+      "background-color: green;",
+      "border-color: blue;"
+    ],
+    "hint": "Solo debe cambiar el color del borde.",
+    "explanation": "border-color: green; pinta el borde de verde.",
+    "kind": "practico",
+    "main_property": "border-color",
+    "effects": [
+      {
+        "property": "border-color",
+        "value": "green"
+      }
+    ]
   },
   {
     "id": 11,
@@ -85,7 +220,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué hace color: blue; ?",
-    "answer": "Cambia el color del texto a azul"
+    "answer": "Cambia el color del texto a azul",
+    "options": [
+      "Cambia el color del texto a azul",
+      "Cambia el fondo a azul",
+      "Hace el texto más grande",
+      "Cambia el borde a azul"
+    ],
+    "hint": "color afecta al texto.",
+    "explanation": "color afecta al contenido textual, no al fondo.",
+    "kind": "teorico",
+    "main_property": "color",
+    "effects": []
   },
   {
     "id": 12,
@@ -93,7 +239,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué hace background-color: yellow; ?",
-    "answer": "Cambia el fondo a amarillo"
+    "answer": "Cambia el fondo a amarillo",
+    "options": [
+      "Cambia el fondo a amarillo",
+      "Cambia el texto a amarillo",
+      "Vuelve transparente el elemento",
+      "Cambia el borde a amarillo"
+    ],
+    "hint": "background-color afecta al fondo.",
+    "explanation": "background-color modifica el fondo del elemento.",
+    "kind": "teorico",
+    "main_property": "background-color",
+    "effects": []
   },
   {
     "id": 13,
@@ -101,7 +258,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué hace font-size: 30px; ?",
-    "answer": "Cambia el tamaño del texto a 30px"
+    "answer": "Cambia el tamaño del texto a 30px",
+    "options": [
+      "Cambia el tamaño del texto a 30px",
+      "Cambia el ancho a 30px",
+      "Agrega 30px de margen",
+      "Cambia el grosor del borde"
+    ],
+    "hint": "font-size controla el tamaño de las letras.",
+    "explanation": "font-size: 30px; fija el tamaño del texto.",
+    "kind": "teorico",
+    "main_property": "font-size",
+    "effects": []
   },
   {
     "id": 14,
@@ -109,7 +277,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué hace opacity: 0; ?",
-    "answer": "Hace el elemento completamente transparente"
+    "answer": "Hace el elemento completamente transparente",
+    "options": [
+      "Hace el elemento completamente transparente",
+      "Hace el elemento completamente opaco",
+      "Oculta solo el texto",
+      "Elimina el elemento del documento"
+    ],
+    "hint": "En opacity, 0 significa totalmente transparente.",
+    "explanation": "opacity: 0; hace invisible el elemento sin quitarlo del flujo.",
+    "kind": "teorico",
+    "main_property": "opacity",
+    "effects": []
   },
   {
     "id": 15,
@@ -117,7 +296,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué hace opacity: 1; ?",
-    "answer": "Hace el elemento completamente opaco"
+    "answer": "Hace el elemento completamente opaco",
+    "options": [
+      "Hace el elemento completamente opaco",
+      "Hace el elemento completamente transparente",
+      "Duplica la opacidad",
+      "Cambia el fondo a blanco"
+    ],
+    "hint": "En opacity, 1 significa totalmente opaco.",
+    "explanation": "opacity: 1; muestra el elemento completamente opaco.",
+    "kind": "teorico",
+    "main_property": "opacity",
+    "effects": []
   },
   {
     "id": 16,
@@ -125,7 +315,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo con texto verde",
-    "answer": "color: green;"
+    "answer": "color: green;",
+    "options": [
+      "color: green;",
+      "background-color: green;",
+      "border-color: green;",
+      "color: red;"
+    ],
+    "hint": "El defecto está en el color del texto.",
+    "explanation": "color: green; corrige un texto que debe ser verde.",
+    "kind": "practico",
+    "main_property": "color",
+    "effects": [
+      {
+        "property": "color",
+        "value": "green"
+      }
+    ]
   },
   {
     "id": 17,
@@ -133,7 +339,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo con fondo rojo",
-    "answer": "background-color: red;"
+    "answer": "background-color: red;",
+    "options": [
+      "background-color: red;",
+      "color: red;",
+      "border-color: red;",
+      "background-color: blue;"
+    ],
+    "hint": "El defecto está en el color de fondo.",
+    "explanation": "background-color: red; corrige un fondo rojo.",
+    "kind": "practico",
+    "main_property": "background-color",
+    "effects": [
+      {
+        "property": "background-color",
+        "value": "red"
+      }
+    ]
   },
   {
     "id": 18,
@@ -141,7 +363,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo con texto pequeño de 12px",
-    "answer": "font-size: 12px;"
+    "answer": "font-size: 12px;",
+    "options": [
+      "font-size: 12px;",
+      "font-size: 24px;",
+      "width: 12px;",
+      "opacity: 0.12;"
+    ],
+    "hint": "El texto debe reducirse a 12px.",
+    "explanation": "font-size: 12px; reduce el tamaño del texto.",
+    "kind": "practico",
+    "main_property": "font-size",
+    "effects": [
+      {
+        "property": "font-size",
+        "value": "12px"
+      }
+    ]
   },
   {
     "id": 19,
@@ -149,7 +387,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo con 30% de opacidad",
-    "answer": "opacity: 0.3;"
+    "answer": "opacity: 0.3;",
+    "options": [
+      "opacity: 0.3;",
+      "opacity: 0.7;",
+      "opacity: 1;",
+      "font-size: 30px;"
+    ],
+    "hint": "30% se escribe como 0.3.",
+    "explanation": "opacity: 0.3; representa un 30% de opacidad.",
+    "kind": "practico",
+    "main_property": "opacity",
+    "effects": [
+      {
+        "property": "opacity",
+        "value": "0.3"
+      }
+    ]
   },
   {
     "id": 20,
@@ -157,7 +411,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo con borde azul",
-    "answer": "border-color: blue;"
+    "answer": "border-color: blue;",
+    "options": [
+      "border-color: blue;",
+      "color: blue;",
+      "background-color: blue;",
+      "border-color: green;"
+    ],
+    "hint": "No cambies el texto: cambia el borde.",
+    "explanation": "border-color: blue; cambia solo el color del borde.",
+    "kind": "practico",
+    "main_property": "border-color",
+    "effects": [
+      {
+        "property": "border-color",
+        "value": "blue"
+      }
+    ]
   },
   {
     "id": 21,
@@ -165,7 +435,24 @@
     "type": "Completar código",
     "difficulty": "Media",
     "question": ".bug { ____: purple; } para cambiar el texto",
-    "answer": "color"
+    "answer": "color",
+    "options": [
+      "color",
+      "background-color",
+      "font-size",
+      "border-color"
+    ],
+    "hint": "La declaración quiere cambiar el texto.",
+    "explanation": "La propiedad faltante es color porque el valor purple se aplica al texto.",
+    "kind": "completar",
+    "main_property": "color",
+    "effects": [
+      {
+        "property": "color",
+        "value": "purple"
+      }
+    ],
+    "code": ".bug { ____: purple; }"
   },
   {
     "id": 22,
@@ -173,7 +460,24 @@
     "type": "Completar código",
     "difficulty": "Media",
     "question": ".bug { ____: orange; } para cambiar el fondo",
-    "answer": "background-color"
+    "answer": "background-color",
+    "options": [
+      "background-color",
+      "color",
+      "opacity",
+      "border-color"
+    ],
+    "hint": "La declaración quiere cambiar el fondo.",
+    "explanation": "La propiedad faltante es background-color porque el valor orange se aplica al fondo.",
+    "kind": "completar",
+    "main_property": "background-color",
+    "effects": [
+      {
+        "property": "background-color",
+        "value": "orange"
+      }
+    ],
+    "code": ".bug { ____: orange; }"
   },
   {
     "id": 23,
@@ -181,7 +485,24 @@
     "type": "Completar código",
     "difficulty": "Media",
     "question": ".bug { ____: 18px; } para cambiar el tamaño del texto",
-    "answer": "font-size"
+    "answer": "font-size",
+    "options": [
+      "font-size",
+      "width",
+      "height",
+      "color"
+    ],
+    "hint": "18px corresponde al tamaño de fuente.",
+    "explanation": "font-size acepta valores como 18px para controlar el texto.",
+    "kind": "completar",
+    "main_property": "font-size",
+    "effects": [
+      {
+        "property": "font-size",
+        "value": "18px"
+      }
+    ],
+    "code": ".bug { ____: 18px; }"
   },
   {
     "id": 24,
@@ -189,7 +510,24 @@
     "type": "Completar código",
     "difficulty": "Media",
     "question": ".bug { ____: 0.7; } para cambiar transparencia",
-    "answer": "opacity"
+    "answer": "opacity",
+    "options": [
+      "opacity",
+      "color",
+      "font-size",
+      "background-color"
+    ],
+    "hint": "0.7 es un valor típico de transparencia.",
+    "explanation": "opacity acepta valores decimales entre 0 y 1.",
+    "kind": "completar",
+    "main_property": "opacity",
+    "effects": [
+      {
+        "property": "opacity",
+        "value": "0.7"
+      }
+    ],
+    "code": ".bug { ____: 0.7; }"
   },
   {
     "id": 25,
@@ -197,7 +535,24 @@
     "type": "Completar código",
     "difficulty": "Media",
     "question": ".bug { ____: white; } para cambiar el borde",
-    "answer": "border-color"
+    "answer": "border-color",
+    "options": [
+      "border-color",
+      "color",
+      "background-color",
+      "opacity"
+    ],
+    "hint": "La pista está en la palabra borde.",
+    "explanation": "border-color controla específicamente el color del borde.",
+    "kind": "completar",
+    "main_property": "border-color",
+    "effects": [
+      {
+        "property": "border-color",
+        "value": "white"
+      }
+    ],
+    "code": ".bug { ____: white; }"
   },
   {
     "id": 26,
@@ -205,7 +560,27 @@
     "type": "Multi-objetivo",
     "difficulty": "Difícil",
     "question": "Enemigo con texto azul y fondo negro",
-    "answer": "color: blue; + background-color: black;"
+    "answer": "color: blue; + background-color: black;",
+    "options": [
+      "color: blue; + background-color: black;",
+      "color: black; + background-color: blue;",
+      "color: blue; + border-color: black;",
+      "background-color: blue; + opacity: 0.5;"
+    ],
+    "hint": "Necesitas una propiedad para el texto y otra para el fondo.",
+    "explanation": "La combinación correcta cambia texto y fondo de forma independiente.",
+    "kind": "multi",
+    "main_property": "color",
+    "effects": [
+      {
+        "property": "color",
+        "value": "blue"
+      },
+      {
+        "property": "background-color",
+        "value": "black"
+      }
+    ]
   },
   {
     "id": 27,
@@ -213,7 +588,27 @@
     "type": "Multi-objetivo",
     "difficulty": "Difícil",
     "question": "Enemigo con texto rojo y tamaño 24px",
-    "answer": "color: red; + font-size: 24px;"
+    "answer": "color: red; + font-size: 24px;",
+    "options": [
+      "color: red; + font-size: 24px;",
+      "background-color: red; + font-size: 24px;",
+      "color: red; + font-size: 12px;",
+      "border-color: red; + opacity: 0.24;"
+    ],
+    "hint": "Combina color con font-size.",
+    "explanation": "Se necesitan color y font-size para resolver ambos defectos.",
+    "kind": "multi",
+    "main_property": "color",
+    "effects": [
+      {
+        "property": "color",
+        "value": "red"
+      },
+      {
+        "property": "font-size",
+        "value": "24px"
+      }
+    ]
   },
   {
     "id": 28,
@@ -221,7 +616,27 @@
     "type": "Multi-objetivo",
     "difficulty": "Difícil",
     "question": "Enemigo con fondo verde y opacidad 0.5",
-    "answer": "background-color: green; + opacity: 0.5;"
+    "answer": "background-color: green; + opacity: 0.5;",
+    "options": [
+      "background-color: green; + opacity: 0.5;",
+      "color: green; + opacity: 0.5;",
+      "background-color: green; + opacity: 1;",
+      "border-color: green; + font-size: 50px;"
+    ],
+    "hint": "Combina background-color con opacity.",
+    "explanation": "background-color corrige el fondo y opacity la transparencia.",
+    "kind": "multi",
+    "main_property": "background-color",
+    "effects": [
+      {
+        "property": "background-color",
+        "value": "green"
+      },
+      {
+        "property": "opacity",
+        "value": "0.5"
+      }
+    ]
   },
   {
     "id": 29,
@@ -229,7 +644,27 @@
     "type": "Multi-objetivo",
     "difficulty": "Difícil",
     "question": "Enemigo con texto blanco y borde rojo",
-    "answer": "color: white; + border-color: red;"
+    "answer": "color: white; + border-color: red;",
+    "options": [
+      "color: white; + border-color: red;",
+      "color: red; + border-color: white;",
+      "background-color: white; + border-color: red;",
+      "color: white; + background-color: red;"
+    ],
+    "hint": "Combina color del texto con color del borde.",
+    "explanation": "color corrige el texto y border-color el borde.",
+    "kind": "multi",
+    "main_property": "color",
+    "effects": [
+      {
+        "property": "color",
+        "value": "white"
+      },
+      {
+        "property": "border-color",
+        "value": "red"
+      }
+    ]
   },
   {
     "id": 30,
@@ -237,7 +672,31 @@
     "type": "Multi-objetivo",
     "difficulty": "Difícil",
     "question": "Enemigo con texto amarillo, tamaño 20px y opacidad 0.8",
-    "answer": "color: yellow; + font-size: 20px; + opacity: 0.8;"
+    "answer": "color: yellow; + font-size: 20px; + opacity: 0.8;",
+    "options": [
+      "color: yellow; + font-size: 20px; + opacity: 0.8;",
+      "background-color: yellow; + font-size: 20px; + opacity: 0.8;",
+      "color: yellow; + font-size: 8px; + opacity: 0.2;",
+      "border-color: yellow; + font-size: 20px; + opacity: 1;"
+    ],
+    "hint": "Son tres efectos: texto, tamaño y transparencia.",
+    "explanation": "La solución combina color, font-size y opacity.",
+    "kind": "multi",
+    "main_property": "color",
+    "effects": [
+      {
+        "property": "color",
+        "value": "yellow"
+      },
+      {
+        "property": "font-size",
+        "value": "20px"
+      },
+      {
+        "property": "opacity",
+        "value": "0.8"
+      }
+    ]
   },
   {
     "id": 31,

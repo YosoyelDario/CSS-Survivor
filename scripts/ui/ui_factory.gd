@@ -1,8 +1,5 @@
 extends RefCounted
 
-<<<<<<< Updated upstream
-static func panel(rect: Rect2, bg: Color, border: Color) -> Panel:
-=======
 # --- Fuentes (D3/D4): Cinzel para títulos, Lato para todo el resto. ---
 # Los archivos deben estar en assets/fonts/ con estos nombres exactos.
 const FONT_BODY_PATH := "res://assets/fonts/Lato-Regular.ttf"
@@ -84,19 +81,25 @@ static func mono_font():
 	return body_font()
 
 static func panel(rect: Rect2, bg: Color = PALETTE.panel, border: Color = Color("294461"), radius: int = 12) -> Panel:
->>>>>>> Stashed changes
 	var node := Panel.new()
 	node.position = rect.position
 	node.size = rect.size
+	node.add_theme_stylebox_override("panel", style_box(bg, border, 2, radius))
+	return node
+
+static func style_box(bg: Color, border: Color, width: int = 2, radius: int = 12) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = bg
 	style.border_color = border
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(12)
-	node.add_theme_stylebox_override("panel", style)
-	return node
+	style.set_border_width_all(width)
+	style.set_corner_radius_all(radius)
+	style.content_margin_left = 10
+	style.content_margin_right = 10
+	style.content_margin_top = 8
+	style.content_margin_bottom = 8
+	return style
 
-static func label(text_value: String, rect: Rect2, font_size: int, color: Color) -> Label:
+static func label(text_value: String, rect: Rect2, font_size: int = 16, color: Color = PALETTE.text) -> Label:
 	var node := Label.new()
 	# ORDEN IMPORTANTE (corrección de desborde de textos):
 	# Godot no deja que un Control sea más chico que su tamaño mínimo. Un Label sin
@@ -107,8 +110,6 @@ static func label(text_value: String, rect: Rect2, font_size: int, color: Color)
 	node.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	node.add_theme_font_size_override("font_size", font_size)
 	node.add_theme_color_override("font_color", color)
-<<<<<<< Updated upstream
-=======
 	node.position = rect.position
 	node.size = rect.size
 	node.text = text_value
@@ -120,31 +121,38 @@ static func question_label(text_value: String, rect: Rect2) -> Label:
 	var font = body_font()
 	if font != null:
 		node.add_theme_font_override("font", font)
->>>>>>> Stashed changes
 	return node
 
-static func button(text_value: String, rect: Rect2, bg: Color) -> Button:
+static func title(text_value: String, rect: Rect2, font_size: int, color: Color) -> Label:
+	var node := label(text_value, rect, font_size, color)
+	var font = title_font()
+	if font != null:
+		node.add_theme_font_override("font", font)
+	return node
+
+static func code_label(text_value: String, rect: Rect2, font_size: int = 15) -> Label:
+	var node := label(text_value, rect, font_size, Color("d8f5e7"))
+	var font = mono_font()
+	if font != null:
+		node.add_theme_font_override("font", font)
+	return node
+
+static func button(text_value: String, rect: Rect2, bg: Color = Color("17304c"), icon_name: String = "") -> Button:
 	var node := Button.new()
 	node.text = text_value
 	node.position = rect.position
 	node.size = rect.size
 	node.add_theme_font_size_override("font_size", 16)
-	node.add_theme_color_override("font_color", Color("f3f8ff"))
-	var normal := StyleBoxFlat.new()
-	normal.bg_color = bg
-	normal.border_color = bg.lightened(0.28)
-	normal.set_border_width_all(2)
-	normal.set_corner_radius_all(9)
-	var hover := normal.duplicate() as StyleBoxFlat
-	hover.bg_color = bg.lightened(0.12)
-	var pressed := normal.duplicate() as StyleBoxFlat
-	pressed.bg_color = bg.darkened(0.12)
-	node.add_theme_stylebox_override("normal", normal)
-	node.add_theme_stylebox_override("hover", hover)
-	node.add_theme_stylebox_override("pressed", pressed)
+	node.add_theme_color_override("font_color", PALETTE.text)
+	node.add_theme_color_override("font_hover_color", Color.WHITE)
+	node.add_theme_stylebox_override("normal", style_box(bg, bg.lightened(0.22), 2, 10))
+	node.add_theme_stylebox_override("hover", style_box(bg.lightened(0.1), PALETTE.cyan, 2, 10))
+	node.add_theme_stylebox_override("pressed", style_box(bg.darkened(0.14), Color.WHITE, 2, 10))
+	node.add_theme_stylebox_override("disabled", style_box(Color("151c2c"), Color("293249"), 2, 10))
+	if not icon_name.is_empty():
+		node.icon = icon_texture(icon_name)
+		node.expand_icon = false
 	return node
-<<<<<<< Updated upstream
-=======
 
 static func chip(text_value: String, color: Color) -> Label:
 	var node := Label.new()
@@ -306,4 +314,3 @@ static func _draw_fallback_icon(image: Image, name: String) -> void:
 		for x in range(4,12):
 			for y in range(4,12):
 				image.set_pixel(x,y,c)
->>>>>>> Stashed changes
