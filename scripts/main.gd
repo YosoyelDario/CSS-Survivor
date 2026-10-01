@@ -80,10 +80,47 @@ func _create_world() -> void:
 	world_controller.setup(BUG_HP)
 	world_controller.zone_cleared.connect(_on_zone_cleared)
 
+<<<<<<< Updated upstream
 func _create_interfaces() -> void:
 	menu_ui = MenuUI.new()
 	add_child(menu_ui)
 	menu_ui.start_requested.connect(_start_game_from_menu)
+=======
+func _create_interfaces()->void:
+	login_ui=LoginUI.new(); add_child(login_ui)
+	login_ui.login_requested.connect(_on_login_requested)
+	login_ui.create_requested.connect(_on_create_profile_requested)
+	menu_ui=MenuUI.new(); add_child(menu_ui)
+	# JUGAR continúa en el primer nivel jugable que aún no está completado (o rejuega el 1).
+	menu_ui.play_requested.connect(func():_start_level(session_manager.next_playable_level()))
+	menu_ui.levels_requested.connect(_show_levels)
+	menu_ui.achievements_requested.connect(_show_achievements)
+	menu_ui.ranking_requested.connect(_show_ranking)
+	menu_ui.howto_requested.connect(_show_howto)
+	menu_ui.change_user_requested.connect(_change_user)
+	menu_ui.exit_requested.connect(func():get_tree().quit())
+	levels_ui=LevelsUI.new(); add_child(levels_ui)
+	levels_ui.play_level.connect(_start_level)
+	levels_ui.back_requested.connect(_show_menu)
+	achievements_ui=AchievementsUI.new(); add_child(achievements_ui); achievements_ui.back_requested.connect(_show_menu)
+	ranking_ui=RankingUI.new(); add_child(ranking_ui); ranking_ui.back_requested.connect(_show_menu)
+	howto_ui=HowToUI.new(); add_child(howto_ui); howto_ui.back_requested.connect(_show_menu)
+	hud_ui=HUDUI.new(); add_child(hud_ui)
+	combat_ui=CombatUI.new(); add_child(combat_ui)
+	combat_ui.answer_selected.connect(_on_answer_selected)
+	combat_ui.continue_requested.connect(_on_continue_after_error)
+	results_ui=ResultsUI.new(); add_child(results_ui)
+	# REINTENTAR repite el nivel que se acaba de jugar, no siempre el 1.
+	results_ui.retry_requested.connect(func():_start_level(level_run.level))
+	results_ui.next_requested.connect(_start_level)
+	results_ui.ranking_requested.connect(_ranking_from_results)
+	results_ui.menu_requested.connect(_show_menu)
+	pause_ui=PauseUI.new(); add_child(pause_ui)
+	pause_ui.continue_requested.connect(_resume_from_pause)
+	pause_ui.menu_requested.connect(_abandon_to_menu)
+	# El pre/post test existente se conserva, pero queda inactivo porque pretest_active=false.
+	evaluation_ui=EvaluationUI.new(); add_child(evaluation_ui); evaluation_ui.hide_evaluation()
+>>>>>>> Stashed changes
 
 	hud_ui = HUDUI.new()
 	add_child(hud_ui)
@@ -250,10 +287,140 @@ func _on_answer_pressed(answer: String) -> void:
 func _exit_combat_to_map() -> void:
 	await combat_ui.close_to_map()
 	combat_open = false
+<<<<<<< Updated upstream
 	if level_complete_pending:
 		world_controller.set_player_movement(false)
 		await get_tree().create_timer(0.35).timeout
 		_show_level_summary()
+=======
+	game_active = false
+
+	world_controller.set_player_movement(false)
+	hud_ui.set_hud_visible(false)
+
+	if not game_over:
+		level_run.finalize_level()
+
+	var before_color: bool = bool(
+		session_manager.has_badge("color_master")
+	)
+
+	var before_perfect: bool = bool(
+		session_manager.has_badge("perfect")
+	)
+
+	var session_result: Dictionary = level_run.session_result(false)
+
+	session_manager.register_attempt(session_result)
+
+	var has_color_master: bool = bool(
+		session_manager.has_badge("color_master")
+	)
+
+	var has_perfect: bool = bool(
+		session_manager.has_badge("perfect")
+	)
+
+	var color_badge_name: String = _badge_name("color_master")
+	var perfect_badge_name: String = _badge_name("perfect")
+
+	if not before_color and has_color_master:
+		if not new_badges.has(color_badge_name):
+			new_badges.append(color_badge_name)
+
+	if not before_perfect and has_perfect:
+		if not new_badges.has(perfect_badge_name):
+			new_badges.append(perfect_badge_name)
+
+	# SIGUIENTE NIVEL solo se habilita si se completó este nivel y el siguiente es jugable.
+	# Se calcula después de register_attempt, que es lo que desbloquea el siguiente.
+	var next_level: int = 0
+
+	if not game_over and bool(session_result.get("completed", false)):
+		var candidate: int = int(level_run.level) + 1
+
+		if candidate <= GameConfig.total_levels() and session_manager.level_playable(candidate):
+			next_level = candidate
+
+	results_ui.show_results(
+		level_run,
+		game_over,
+		new_badges,
+		next_level
+	)
+
+func _write_answer_log(
+	answer: String,
+	correct: bool,
+	response_time: float,
+	row_number: int,
+	affected_count: int
+) -> void:
+
+	var cfg: Dictionary = level_run.config
+
+	var difficulty: Array = cfg.get(
+		"zone_difficulty",
+		[]
+	) as Array
+
+	var difficulty_name: String = ""
+
+	if current_zone >= 0 and current_zone < difficulty.size():
+		difficulty_name = str(difficulty[current_zone])
+
+	var extras: Dictionary = {
+		"event_type": "game_attempt",
+		"idEjercicio": int(current_question.get("id", -1)),
+		"nivel": int(level_run.level),
+		"zona": current_zone + 1,
+		"fila": row_number,
+		"tipo": QuestionManager.kind_of(current_question),
+		"dificultad": difficulty_name,
+		"vidasRestantes": int(level_run.lives),
+		"puntajeActual": int(level_run.score),
+		"numeroIntento": int(level_run.attempt_number),
+		"afectados": affected_count if correct else 0,
+		"codigo": str(current_question.get("code", ""))
+	}
+
+	var player_email: String = str(
+		session_manager.email()
+	)
+
+	var question_text: String = str(
+		current_question.get("question", "")
+	)
+
+	var options_shown: Array = current_options.duplicate()
+
+	var record: Dictionary = log_manager.answer_record(
+		player_email,
+		question_text,
+		options_shown,
+		answer,
+		correct,
+		response_time,
+		extras
+	)
+
+	log_manager.append(record)
+func _toggle_pause()->void:
+	if paused:
+		_resume_from_pause()
+		return
+	paused=true
+	world_controller.set_player_movement(false)
+	if combat_open:
+		combat_ui.set_buttons_enabled(false)
+	pause_ui.show_pause()
+
+func _resume_from_pause()->void:
+	paused=false
+	pause_ui.hide_pause()
+	if combat_open:
+		combat_ui.set_buttons_enabled(not awaiting_continue)
+>>>>>>> Stashed changes
 	else:
 		world_controller.set_player_movement(true)
 

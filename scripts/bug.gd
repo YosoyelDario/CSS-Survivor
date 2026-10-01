@@ -22,6 +22,7 @@ func setup(index: int, zone_name: String) -> void:
 	name = "BugZone%d" % index
 	bug_texture = BUG_TEXTURES[index % BUG_TEXTURES.size()]
 
+<<<<<<< Updated upstream
 	title_label = Label.new()
 	title_label.text = zone_name
 	title_label.position = Vector2(-70, -72)
@@ -31,6 +32,32 @@ func setup(index: int, zone_name: String) -> void:
 	title_label.add_theme_color_override("font_color", Color("ffb3c7"))
 	add_child(title_label)
 	_update_label()
+=======
+func _build_labels() -> void:
+	# Las etiquetas van DEBAJO del guardián: arriba las tapaba la barra del HUD.
+	# Borde oscuro para que se lean sobre el fondo claro o rosado de la página.
+	title_label = _make_label(Vector2(-130, 60), Vector2(260, 26), 17, Color("ffffff"))
+	rows_label = _make_label(Vector2(-130, 86), Vector2(260, 24), 14, Color("ffd447"))
+	_update_labels()
+
+func _make_label(pos: Vector2, label_size: Vector2, font_size: int, color: Color) -> Label:
+	var label := Label.new()
+	label.position = pos
+	label.size = label_size
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_color_override("font_color", color)
+	label.add_theme_color_override("font_outline_color", Color("07101d"))
+	label.add_theme_constant_override("outline_size", 6)
+	add_child(label)
+	return label
+
+func set_rows(remaining: int) -> void:
+	rows_left = maxi(0, remaining)
+	active = rows_left > 0
+	visible = active
+	_update_labels()
+>>>>>>> Stashed changes
 	queue_redraw()
 
 func hit() -> bool:
