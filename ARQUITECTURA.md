@@ -1,59 +1,44 @@
-# CSS Survivor — estructura modular
+# Arquitectura
 
-El proyecto fue reorganizado para que `main.gd` no concentre todo el programa.
-En Godot puedes abrir cada archivo `.gd` como una pestaña independiente en el editor de scripts.
+## Coordinación
 
-## scripts/main.gd
-Solo coordina el flujo general:
-- inicio del juego
-- cambio de nivel
-- combate
-- pre/post test
-- resumen y game over
+- `scripts/main.gd`: flujo login → menú → mapa → combate → resultados; pausa y log.
 
-## scripts/managers/
-- `question_manager.gd`: carga `questions.json`, random sin repetición, distractores y set del pre/post test.
-- `log_manager.gd`: guarda el JSON de interacción.
-- `input_config.gd`: configura WASD, flechas, E, Espacio y Enter.
+## Managers / modelo
 
-## scripts/world_controller.gd
-Se encarga del mapa explorable:
-- crea el mundo y jugador
-- cámara que sigue al jugador
-- genera los 4 BUGS
-- detecta el BUG más cercano
-- informa cuando una zona queda limpia
+- `game_config.gd`: lectura de `data/game_config.json`.
+- `session_manager.gd`: perfiles, progreso, exposición, insignias y ranking.
+- `log_manager.gd`: JSON Lines del piloto.
+- `question_manager.gd`: banco y alternativas.
+- `level_run.gd`: reglas de intento, secuencias, reposición, vidas y puntaje.
+- `zone_grid.gd`: modelo sin nodos de filas/carriles/cola/ataque adyacente.
+- `input_config.gd`: controles.
 
-## scripts/ui/
-- `menu_ui.gd`: menú principal y Cómo jugar.
-- `hud_ui.gd`: vidas, puntos, nivel, zonas y barra de reparación.
-- `combat_ui.gd`: pantalla de batalla, transición, botones y proyectil.
-- `summary_ui.gd`: KCR y resultados finales.
-- `gameover_ui.gd`: reintentar o volver al menú.
-- `evaluation_ui.gd`: pre-test y post-test.
-- `ui_factory.gd`: funciones comunes para crear paneles, labels y botones.
+## Mundo
 
-## scripts existentes
-- `player.gd`: movimiento del personaje.
-- `bug.gd`: HP y dibujo del virus.
-- `web_world.gd`: dibujo del mapa/página infectada.
-- `battle_arena.gd`: dibujo de la escena visual de combate.
+- `player.gd`: movimiento del jugador.
+- `web_world.gd`: fondo infectado/limpio y reparación por zona.
+- `bug.gd`: guardián del mapa; muestra filas restantes.
+- `world_controller.gd`: cámara, jugador, guardianes y sincronización del mapa.
 
-## Dónde modificar cada cosa
-- Preguntas: `data/questions.json`
-- Movimiento: `scripts/player.gd`
-- Diseño del mapa: `scripts/web_world.gd`
-- Posiciones de BUGS/cámara: `scripts/world_controller.gd`
-- Aspecto de combate: `scripts/battle_arena.gd` + `scripts/ui/combat_ui.gd`
-- Menú: `scripts/ui/menu_ui.gd`
-- HUD: `scripts/ui/hud_ui.gd`
-- Lógica principal: `scripts/main.gd`
+## Combate
 
-## Apariencia / assets
-- `assets/player/hacker.png`: sprite del personaje.
-- `assets/enemies/virus_1.png` a `virus_4.png`: sprites de enemigos.
-- `assets/backgrounds/level*_infected.png`: versión dañada de cada página.
-- `assets/backgrounds/level*_clean.png`: versión reparada de cada página.
-- `assets/backgrounds/battle_web.png`: fondo de la pantalla de batalla.
+- `enemy_view.gd`: capas visuales de un enemigo y motor visual CSS provisional.
+- `battle_arena.gd`: cuadrícula, objetivo/alcance, proyectil, animación y avance.
+- `ui/combat_ui.gd`: pregunta, alternativas, pista, HUD de zona y CONTINUAR.
 
-Si se conservan esos nombres, se puede rediseñar todo el arte reemplazando PNG sin editar GDScript.
+## Pantallas
+
+- `login_ui.gd`: correo, alias y consentimiento.
+- `menu_ui.gd`: menú principal.
+- `levels_ui.gd`: selección de niveles.
+- `achievements_ui.gd`: logros.
+- `ranking_ui.gd`: ranking local por alias.
+- `howto_ui.gd`: instrucciones.
+- `hud_ui.gd`: HUD del mapa.
+- `pause_ui.gd`: pausa.
+- `results_ui.gd`: resultados y KCR.
+- `evaluation_ui.gd`: conservado, inactivo.
+- `ui_factory.gd`: tema, componentes e iconos.
+
+`summary_ui.gd` y `gameover_ui.gd` permanecen como archivos heredados, pero ya no forman parte del flujo activo.

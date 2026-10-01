@@ -12,15 +12,18 @@ static func configure() -> void:
 	_bind_key("interact", KEY_E)
 	_bind_key("interact", KEY_SPACE)
 	_bind_key("interact", KEY_ENTER)
+	_bind_key("answer_1", KEY_1)
+	_bind_key("answer_2", KEY_2)
+	_bind_key("answer_3", KEY_3)
+	_bind_key("answer_4", KEY_4)
+	_bind_key("pause_game", KEY_ESCAPE)
 
-static func _bind_key(action: StringName, key) -> void:
+static func _bind_key(action: StringName, key: Key) -> void:
 	if not InputMap.has_action(action):
 		InputMap.add_action(action)
+	for existing in InputMap.action_get_events(action):
+		if existing is InputEventKey and (existing as InputEventKey).physical_keycode == key:
+			return
 	var event := InputEventKey.new()
 	event.physical_keycode = key
-	for existing in InputMap.action_get_events(action):
-		if existing is InputEventKey:
-			var key_event := existing as InputEventKey
-			if key_event.physical_keycode == key:
-				return
 	InputMap.action_add_event(action, event)
