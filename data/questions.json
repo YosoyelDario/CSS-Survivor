@@ -1,0 +1,722 @@
+[
+  {
+    "id": 1,
+    "level": 1,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué propiedad CSS cambia el color del texto?",
+    "answer": "color"
+  },
+  {
+    "id": 2,
+    "level": 1,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo con texto rojo",
+    "answer": "color: red;"
+  },
+  {
+    "id": 3,
+    "level": 1,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué propiedad cambia el fondo de un elemento?",
+    "answer": "background-color"
+  },
+  {
+    "id": 4,
+    "level": 1,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo con fondo azul",
+    "answer": "background-color: blue;"
+  },
+  {
+    "id": 5,
+    "level": 1,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué propiedad controla el tamaño del texto?",
+    "answer": "font-size"
+  },
+  {
+    "id": 6,
+    "level": 1,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo con texto grande (24px)",
+    "answer": "font-size: 24px;"
+  },
+  {
+    "id": 7,
+    "level": 1,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué propiedad controla la transparencia?",
+    "answer": "opacity"
+  },
+  {
+    "id": 8,
+    "level": 1,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo semi-transparente (50%)",
+    "answer": "opacity: 0.5;"
+  },
+  {
+    "id": 9,
+    "level": 1,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué propiedad cambia el color del borde?",
+    "answer": "border-color"
+  },
+  {
+    "id": 10,
+    "level": 1,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo con borde verde",
+    "answer": "border-color: green;"
+  },
+  {
+    "id": 11,
+    "level": 1,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué hace color: blue; ?",
+    "answer": "Cambia el color del texto a azul"
+  },
+  {
+    "id": 12,
+    "level": 1,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué hace background-color: yellow; ?",
+    "answer": "Cambia el fondo a amarillo"
+  },
+  {
+    "id": 13,
+    "level": 1,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué hace font-size: 30px; ?",
+    "answer": "Cambia el tamaño del texto a 30px"
+  },
+  {
+    "id": 14,
+    "level": 1,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué hace opacity: 0; ?",
+    "answer": "Hace el elemento completamente transparente"
+  },
+  {
+    "id": 15,
+    "level": 1,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué hace opacity: 1; ?",
+    "answer": "Hace el elemento completamente opaco"
+  },
+  {
+    "id": 16,
+    "level": 1,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo con texto verde",
+    "answer": "color: green;"
+  },
+  {
+    "id": 17,
+    "level": 1,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo con fondo rojo",
+    "answer": "background-color: red;"
+  },
+  {
+    "id": 18,
+    "level": 1,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo con texto pequeño de 12px",
+    "answer": "font-size: 12px;"
+  },
+  {
+    "id": 19,
+    "level": 1,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo con 30% de opacidad",
+    "answer": "opacity: 0.3;"
+  },
+  {
+    "id": 20,
+    "level": 1,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo con borde azul",
+    "answer": "border-color: blue;"
+  },
+  {
+    "id": 21,
+    "level": 1,
+    "type": "Completar código",
+    "difficulty": "Media",
+    "question": ".bug { ____: purple; } para cambiar el texto",
+    "answer": "color"
+  },
+  {
+    "id": 22,
+    "level": 1,
+    "type": "Completar código",
+    "difficulty": "Media",
+    "question": ".bug { ____: orange; } para cambiar el fondo",
+    "answer": "background-color"
+  },
+  {
+    "id": 23,
+    "level": 1,
+    "type": "Completar código",
+    "difficulty": "Media",
+    "question": ".bug { ____: 18px; } para cambiar el tamaño del texto",
+    "answer": "font-size"
+  },
+  {
+    "id": 24,
+    "level": 1,
+    "type": "Completar código",
+    "difficulty": "Media",
+    "question": ".bug { ____: 0.7; } para cambiar transparencia",
+    "answer": "opacity"
+  },
+  {
+    "id": 25,
+    "level": 1,
+    "type": "Completar código",
+    "difficulty": "Media",
+    "question": ".bug { ____: white; } para cambiar el borde",
+    "answer": "border-color"
+  },
+  {
+    "id": 26,
+    "level": 1,
+    "type": "Multi-objetivo",
+    "difficulty": "Difícil",
+    "question": "Enemigo con texto azul y fondo negro",
+    "answer": "color: blue; + background-color: black;"
+  },
+  {
+    "id": 27,
+    "level": 1,
+    "type": "Multi-objetivo",
+    "difficulty": "Difícil",
+    "question": "Enemigo con texto rojo y tamaño 24px",
+    "answer": "color: red; + font-size: 24px;"
+  },
+  {
+    "id": 28,
+    "level": 1,
+    "type": "Multi-objetivo",
+    "difficulty": "Difícil",
+    "question": "Enemigo con fondo verde y opacidad 0.5",
+    "answer": "background-color: green; + opacity: 0.5;"
+  },
+  {
+    "id": 29,
+    "level": 1,
+    "type": "Multi-objetivo",
+    "difficulty": "Difícil",
+    "question": "Enemigo con texto blanco y borde rojo",
+    "answer": "color: white; + border-color: red;"
+  },
+  {
+    "id": 30,
+    "level": 1,
+    "type": "Multi-objetivo",
+    "difficulty": "Difícil",
+    "question": "Enemigo con texto amarillo, tamaño 20px y opacidad 0.8",
+    "answer": "color: yellow; + font-size: 20px; + opacity: 0.8;"
+  },
+  {
+    "id": 31,
+    "level": 2,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué propiedad define grosor y estilo del borde?",
+    "answer": "border"
+  },
+  {
+    "id": 32,
+    "level": 2,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo con borde grueso sólido",
+    "answer": "border: 4px solid black;"
+  },
+  {
+    "id": 33,
+    "level": 2,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué propiedad redondea las esquinas?",
+    "answer": "border-radius"
+  },
+  {
+    "id": 34,
+    "level": 2,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo circular",
+    "answer": "border-radius: 50%;"
+  },
+  {
+    "id": 35,
+    "level": 2,
+    "type": "Completar código",
+    "difficulty": "Media",
+    "question": ".bug { ____: 10px; } (espacio interno)",
+    "answer": "padding"
+  },
+  {
+    "id": 36,
+    "level": 2,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo \"inflado\" con espacio interno",
+    "answer": "padding: 10px;"
+  },
+  {
+    "id": 37,
+    "level": 2,
+    "type": "Completar código",
+    "difficulty": "Media",
+    "question": ".bug { ____: 20px; } (separación externa)",
+    "answer": "margin"
+  },
+  {
+    "id": 38,
+    "level": 2,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo separado de sus vecinos",
+    "answer": "margin: 20px;"
+  },
+  {
+    "id": 39,
+    "level": 2,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo demasiado angosto",
+    "answer": "width: 80px;"
+  },
+  {
+    "id": 40,
+    "level": 2,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo demasiado bajo",
+    "answer": "height: 80px;"
+  },
+  {
+    "id": 41,
+    "level": 2,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué hace padding: 15px; ?",
+    "answer": "Agrega espacio interno alrededor del contenido"
+  },
+  {
+    "id": 42,
+    "level": 2,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué hace margin: 15px; ?",
+    "answer": "Agrega separación externa alrededor del elemento"
+  },
+  {
+    "id": 43,
+    "level": 2,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué propiedad controla el ancho de un elemento?",
+    "answer": "width"
+  },
+  {
+    "id": 44,
+    "level": 2,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué propiedad controla la altura de un elemento?",
+    "answer": "height"
+  },
+  {
+    "id": 45,
+    "level": 2,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué hace border-radius: 0; ?",
+    "answer": "Deja las esquinas sin redondear"
+  },
+  {
+    "id": 46,
+    "level": 2,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo debe medir 120px de ancho",
+    "answer": "width: 120px;"
+  },
+  {
+    "id": 47,
+    "level": 2,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo debe medir 100px de alto",
+    "answer": "height: 100px;"
+  },
+  {
+    "id": 48,
+    "level": 2,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo necesita 20px de espacio interno",
+    "answer": "padding: 20px;"
+  },
+  {
+    "id": 49,
+    "level": 2,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo necesita 30px de separación externa",
+    "answer": "margin: 30px;"
+  },
+  {
+    "id": 50,
+    "level": 2,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo debe tener esquinas redondeadas de 12px",
+    "answer": "border-radius: 12px;"
+  },
+  {
+    "id": 51,
+    "level": 2,
+    "type": "Completar código",
+    "difficulty": "Media",
+    "question": ".bug { ____: 100px; } para controlar el ancho",
+    "answer": "width"
+  },
+  {
+    "id": 52,
+    "level": 2,
+    "type": "Completar código",
+    "difficulty": "Media",
+    "question": ".bug { ____: 80px; } para controlar la altura",
+    "answer": "height"
+  },
+  {
+    "id": 53,
+    "level": 2,
+    "type": "Completar código",
+    "difficulty": "Media",
+    "question": ".bug { ____: 8px; } para separar contenido del borde",
+    "answer": "padding"
+  },
+  {
+    "id": 54,
+    "level": 2,
+    "type": "Completar código",
+    "difficulty": "Media",
+    "question": ".bug { ____: 15px; } para separar un enemigo de otro",
+    "answer": "margin"
+  },
+  {
+    "id": 55,
+    "level": 2,
+    "type": "Completar código",
+    "difficulty": "Media",
+    "question": ".bug { ____: 20px; } para redondear esquinas",
+    "answer": "border-radius"
+  },
+  {
+    "id": 56,
+    "level": 2,
+    "type": "Multi-objetivo",
+    "difficulty": "Difícil",
+    "question": "Enemigo ancho y alto de 100px",
+    "answer": "width: 100px; + height: 100px;"
+  },
+  {
+    "id": 57,
+    "level": 2,
+    "type": "Multi-objetivo",
+    "difficulty": "Difícil",
+    "question": "Enemigo de 120px de ancho con esquinas redondeadas",
+    "answer": "width: 120px; + border-radius: 20px;"
+  },
+  {
+    "id": 58,
+    "level": 2,
+    "type": "Multi-objetivo",
+    "difficulty": "Difícil",
+    "question": "Enemigo con borde sólido y forma circular",
+    "answer": "border: 4px solid black; + border-radius: 50%;"
+  },
+  {
+    "id": 59,
+    "level": 2,
+    "type": "Multi-objetivo",
+    "difficulty": "Difícil",
+    "question": "Enemigo con 20px de espacio interno y 10px externo",
+    "answer": "padding: 20px; + margin: 10px;"
+  },
+  {
+    "id": 60,
+    "level": 2,
+    "type": "Multi-objetivo",
+    "difficulty": "Difícil",
+    "question": "Enemigo de 150px × 150px con forma circular",
+    "answer": "width: 150px; + height: 150px; + border-radius: 50%;"
+  },
+  {
+    "id": 61,
+    "level": 3,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "Enemigo rotado 45°",
+    "answer": "transform: rotate(45deg);"
+  },
+  {
+    "id": 62,
+    "level": 3,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué propiedad define la dirección del eje principal?",
+    "answer": "flex-direction"
+  },
+  {
+    "id": 63,
+    "level": 3,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Reordenar fila en dirección columna",
+    "answer": "flex-direction: column;"
+  },
+  {
+    "id": 64,
+    "level": 3,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Alinear elementos al centro del eje principal",
+    "answer": "justify-content: center;"
+  },
+  {
+    "id": 65,
+    "level": 3,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Alinear elementos al final del eje principal",
+    "answer": "justify-content: flex-end;"
+  },
+  {
+    "id": 66,
+    "level": 3,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Distribuir líneas cuando sobra espacio",
+    "answer": "align-content: space-between;"
+  },
+  {
+    "id": 67,
+    "level": 3,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Alinear elementos en el eje transversal",
+    "answer": "align-items: center;"
+  },
+  {
+    "id": 68,
+    "level": 3,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Separar elementos sin usar margin",
+    "answer": "gap: 16px;"
+  },
+  {
+    "id": 69,
+    "level": 3,
+    "type": "Multi-objetivo",
+    "difficulty": "Difícil",
+    "question": "3 enemigos en fila frente, cada uno con un defecto distinto",
+    "answer": "font-size + color + opacity (una por enemigo)"
+  },
+  {
+    "id": 70,
+    "level": 3,
+    "type": "Multi-objetivo (boss)",
+    "difficulty": "Difícil",
+    "question": "Enemigo final: forma y ángulo incorrectos a la vez",
+    "answer": "border-radius: 50%; + transform: rotate(45deg);"
+  },
+  {
+    "id": 71,
+    "level": 3,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué hace transform: rotate(90deg); ?",
+    "answer": "Rota el elemento 90°"
+  },
+  {
+    "id": 72,
+    "level": 3,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué hace flex-direction: row; ?",
+    "answer": "Organiza los elementos en una fila"
+  },
+  {
+    "id": 73,
+    "level": 3,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué hace justify-content: center; ?",
+    "answer": "Centra los elementos en el eje principal"
+  },
+  {
+    "id": 74,
+    "level": 3,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué propiedad permite separar elementos sin utilizar margin?",
+    "answer": "gap"
+  },
+  {
+    "id": 75,
+    "level": 3,
+    "type": "Teórico",
+    "difficulty": "Fácil",
+    "question": "¿Qué propiedad alinea los elementos en el eje transversal?",
+    "answer": "align-items"
+  },
+  {
+    "id": 76,
+    "level": 3,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigo debe rotarse 90°",
+    "answer": "transform: rotate(90deg);"
+  },
+  {
+    "id": 77,
+    "level": 3,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigos deben organizarse horizontalmente",
+    "answer": "flex-direction: row;"
+  },
+  {
+    "id": 78,
+    "level": 3,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigos deben organizarse verticalmente",
+    "answer": "flex-direction: column;"
+  },
+  {
+    "id": 79,
+    "level": 3,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Grupo de enemigos debe quedar centrado en el eje principal",
+    "answer": "justify-content: center;"
+  },
+  {
+    "id": 80,
+    "level": 3,
+    "type": "Práctico",
+    "difficulty": "Media",
+    "question": "Enemigos deben quedar separados por 20px",
+    "answer": "gap: 20px;"
+  },
+  {
+    "id": 81,
+    "level": 3,
+    "type": "Completar código",
+    "difficulty": "Media",
+    "question": ".fila { ____: center; } para centrar en el eje principal",
+    "answer": "justify-content"
+  },
+  {
+    "id": 82,
+    "level": 3,
+    "type": "Completar código",
+    "difficulty": "Media",
+    "question": ".fila { ____: column; } para cambiar la dirección",
+    "answer": "flex-direction"
+  },
+  {
+    "id": 83,
+    "level": 3,
+    "type": "Completar código",
+    "difficulty": "Media",
+    "question": ".fila { ____: 24px; } para separar elementos",
+    "answer": "gap"
+  },
+  {
+    "id": 84,
+    "level": 3,
+    "type": "Completar código",
+    "difficulty": "Media",
+    "question": ".fila { ____: center; } para alinear en el eje transversal",
+    "answer": "align-items"
+  },
+  {
+    "id": 85,
+    "level": 3,
+    "type": "Completar código",
+    "difficulty": "Media",
+    "question": ".bug { ____: rotate(30deg); }",
+    "answer": "transform"
+  },
+  {
+    "id": 86,
+    "level": 3,
+    "type": "Multi-objetivo",
+    "difficulty": "Difícil",
+    "question": "Enemigos deben estar en columna y separados por 20px",
+    "answer": "flex-direction: column; + gap: 20px;"
+  },
+  {
+    "id": 87,
+    "level": 3,
+    "type": "Multi-objetivo",
+    "difficulty": "Difícil",
+    "question": "Grupo en fila y centrado en el eje principal",
+    "answer": "flex-direction: row; + justify-content: center;"
+  },
+  {
+    "id": 88,
+    "level": 3,
+    "type": "Multi-objetivo",
+    "difficulty": "Difícil",
+    "question": "Enemigos centrados en eje transversal y separados 16px",
+    "answer": "align-items: center; + gap: 16px;"
+  },
+  {
+    "id": 89,
+    "level": 3,
+    "type": "Multi-objetivo",
+    "difficulty": "Difícil",
+    "question": "Enemigo rotado 45° y grupo centrado",
+    "answer": "transform: rotate(45deg); + justify-content: center;"
+  },
+  {
+    "id": 90,
+    "level": 3,
+    "type": "Multi-objetivo (boss)",
+    "difficulty": "Difícil",
+    "question": "Grupo en columna, centrado y con separación de 20px",
+    "answer": "flex-direction: column; + justify-content: center; + gap: 20px;"
+  }
+]
