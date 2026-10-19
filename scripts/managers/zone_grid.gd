@@ -45,9 +45,12 @@ func queue_count() -> int:
 	return maxi(0, _rows.size() - visible_rows)
 
 func target_and_neighbors() -> Dictionary:
-	if attack_mode != "adjacent":
-		push_error("attack_mode no soportado todavía: %s" % attack_mode)
-		return {"target": {}, "neighbors": [], "affected": []}
+	# "adjacent": el proyectil impacta al objetivo central y se divide hacia sus vecinos (Niveles 1 y 2).
+	# "volley": el disparo se dirige a cada enemigo de la fila por separado (Nivel 3).
+	# En ambos modos una respuesta correcta limpia la fila FRENTE.
+	if attack_mode != "adjacent" and attack_mode != "volley":
+		push_error("attack_mode no soportado: %s" % attack_mode)
+		return {"target": {}, "neighbors": [], "affected": [], "mode": attack_mode}
 	var row := front_row()
 	if row.is_empty():
 		return {"target": {}, "neighbors": [], "affected": []}
@@ -56,7 +59,7 @@ func target_and_neighbors() -> Dictionary:
 		if bool(enemy.get("alive", false)):
 			alive.append(enemy)
 	if alive.is_empty():
-		return {"target": {}, "neighbors": [], "affected": []}
+		return {"target": {}, "neighbors": [], "affected": [], "mode": attack_mode}
 	var center_lane := int(floor(float(lanes - 1) / 2.0))
 	var target: Dictionary = alive[0]
 	var best_distance := 999999
@@ -69,7 +72,7 @@ func target_and_neighbors() -> Dictionary:
 	for enemy in alive:
 		if int(enemy.get("id", -1)) != int(target.get("id", -1)):
 			neighbors.append(enemy)
-	return {"target": target.duplicate(true), "neighbors": neighbors.duplicate(true), "affected": alive.duplicate(true)}
+	return {"target": target.duplicate(true), "neighbors": neighbors.duplicate(true), "affected": alive.duplicate(true), "mode": attack_mode}
 
 func resolve_success() -> Array:
 	var selection := target_and_neighbors()

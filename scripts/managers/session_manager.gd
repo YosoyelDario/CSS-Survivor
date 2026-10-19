@@ -203,13 +203,35 @@ func register_attempt(run: Variant) -> void:
 	profile["levels"] = levels
 	profiles[current_email] = profile
 
-	if completed and level == 1:
-		_award_badge("color_master")
-
-		if errors == 0:
-			_award_badge("perfect")
+	if completed:
+		_award_level_badges(level, errors)
 
 	_save()
+
+# Otorga las insignias de nivel definidas en game_config.json según su "trigger":
+#   level_complete -> completar el nivel indicado
+#   level_perfect  -> completarlo sin errores
+#   all_levels     -> tener completados todos los niveles
+func _award_level_badges(level: int, errors: int) -> void:
+	for badge_data in GameConfig.badges():
+		var badge: Dictionary = badge_data as Dictionary
+		var badge_id: String = str(badge.get("id", ""))
+		var badge_level: int = int(badge.get("level", 0))
+		match str(badge.get("trigger", "")):
+			"level_complete":
+				if badge_level == level:
+					_award_badge(badge_id)
+			"level_perfect":
+				if badge_level == level and errors == 0:
+					_award_badge(badge_id)
+			"all_levels":
+				if completed_levels() >= GameConfig.total_levels():
+					_award_badge(badge_id)
+
+func badge_ids() -> Array:
+	if not has_session():
+		return []
+	return (profiles[current_email].get("badges", {}) as Dictionary).keys()
 
 func has_badge(badge_id: String) -> bool:
 	if not has_session():

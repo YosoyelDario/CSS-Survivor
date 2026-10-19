@@ -1,6 +1,7 @@
 extends Control
 
 const EnemyView = preload("res://scripts/enemy_view.gd")
+const FlexLayout = preload("res://scripts/managers/flex_layout.gd")
 const UIFactory = preload("res://scripts/ui/ui_factory.gd")
 const BATTLE_BG: Texture2D = preload("res://assets/backgrounds/battle_web.png")
 const HACKER: Texture2D = preload("res://assets/player/hacker.png")
@@ -17,6 +18,15 @@ var queue_icon: TextureRect
 var queue_label: Label
 var enemies: Dictionary = {}
 var current_grid
+
+# Configuración del nivel en curso (game_config.json).
+#   layout_mode "lanes": filas fijas en tres carriles (Niveles 1 y 2).
+#   layout_mode "flex" : cada fila es un contenedor flex que el jugador reorganiza (Nivel 3).
+var row_layout: String = "lanes"
+var attack_mode: String = "adjacent"
+var base_style: Dictionary = {}
+# Propiedades flex vigentes de la fila del frente (solo row_layout "flex").
+var row_props: Dictionary = FlexLayout.default_props()
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -74,7 +84,23 @@ func _add_depth_label(text_value: String, x: float, y: float, color: Color) -> v
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(label)
 
+func configure_level(cfg: Dictionary) -> void:
+	row_layout = str(cfg.get("layout_mode", "lanes"))
+	attack_mode = str(cfg.get("attack_mode", "adjacent"))
+	base_style = (cfg.get("enemy_style", {}) as Dictionary).duplicate()
+
+func _clear_views() -> void:
+	for view in enemies.values():
+		if is_instance_valid(view):
+			view.queue_free()
+	enemies.clear()
+
 func show_grid(grid) -> void:
+	# Cada zona tiene sus propios ids de enemigo; al cambiar de zona (o de intento) se descartan
+	# las vistas anteriores para no reutilizar enemigos ya destruidos.
+	if grid != current_grid:
+		_clear_views()
+		row_props = FlexLayout.default_props()
 	current_grid = grid
 	_sync_grid(true)
 	mark_selection(grid.target_and_neighbors())
@@ -136,6 +162,9 @@ func _sync_grid(spawn_new: bool) -> void:
 					depth
 				)
 
+				if not base_style.is_empty():
+					view.set_base_style(base_style)
+
 				enemy_layer.add_child(view)
 
 				enemies[enemy_id] = view
@@ -192,25 +221,155 @@ func mark_selection(selection: Dictionary) -> void:
 		if enemies.has(id):
 			enemies[id].set_mark("neighbor")
 
-func animate_attack(selection: Dictionary, effects: Array) -> void:
+# ----------------------------------------------------------------------------------------------
+# Estado de la fila del frente y ataque
+# ----------------------------------------------------------------------------------------------
+
+# Vistas vivas de la fila del frente, ordenadas por carril.
+func _front_row_views() -> Array:
+	var views: Array = []
+	for view in enemies.values():
+		if is_instance_valid(view) and int(view.depth) == 0:
+			views.append(view)
+	views.sort_custom(func(a, b) -> bool: return int(a.lane) < int(b.lane))
+	return views
+
+func _views_from(affected: Array) -> Array:
+	var views: Array = []
+	for data in affected:
+		var id := int((data as Dictionary).get("id", -1))
+		if enemies.has(id) and is_instance_valid(enemies[id]):
+			views.append(enemies[id])
+	views.sort_custom(func(a, b) -> bool: return int(a.lane) < int(b.lane))
+	return views
+
+# Efectos de un enemigo concreto: si el ejercicio define efectos por carril (por ejemplo, "una
+# propiedad por enemigo") se usan esos; si no, todos reciben los efectos comunes.
+func _lane_effects(common: Array, per_lane: Array, lane_index: int) -> Array:
+	if lane_index >= 0 and lane_index < per_lane.size():
+		return per_lane[lane_index] as Array
+	return common
+
+func _set_back_rows_alpha(alpha: float) -> void:
+	for view in enemies.values():
+		if is_instance_valid(view) and int(view.depth) > 0:
+			view.modulate.a = alpha
+
+# Deja la fila del frente tal como la ve el jugador antes de responder: sin efectos, o con el
+# "bug" del ejercicio (bug_effects / lane_bug_effects) si el enunciado parte de un estado roto.
+func prepare_row(question: Dictionary) -> void:
+	var bug_effects: Array = question.get("bug_effects", []) as Array
+	var lane_bug: Array = question.get("lane_bug_effects", []) as Array
+	row_props = FlexLayout.apply_effects(FlexLayout.default_props(), bug_effects)
+	var views: Array = _front_row_views()
+	for view in views:
+		view.reset_style()
+		view.apply_effects(_lane_effects(bug_effects, lane_bug, int(view.lane)))
+	_place_front_row(views, false)
+
+func _margin_of(effects: Array) -> float:
+	var amount := 0.0
+	for effect in effects:
+		if str((effect as Dictionary).get("property", "")) == "margin":
+			amount = maxf(amount, str(effect.get("value", "0")).trim_suffix("px").to_float())
+	return amount
+
+# Coloca la fila del frente. En "flex" usa el layout vigente; en "lanes" respeta los carriles y,
+# si hay margin, separa a los vecinos. Devuelve el Tween si animate=true (o null).
+func _place_front_row(views: Array, animate: bool, spread: float = 0.0) -> Tween:
+	var targets: Array = []
+	if row_layout == "flex":
+		var layout: Array = FlexLayout.positions(row_props, views.size(), float(DEPTH_Y[0]))
+		for i in range(views.size()):
+			var item: Dictionary = layout[i] as Dictionary
+			targets.append({"pos": (item["center"] as Vector2) - Vector2(46.0, 46.0), "scale": float(item["scale"])})
+	else:
+		for view in views:
+			var position_value: Vector2 = _enemy_position(int(view.lane), 0)
+			position_value.x += float(int(view.lane) - 1) * spread
+			targets.append({"pos": position_value, "scale": 1.0})
+	var compact: bool = row_layout == "flex" and (str(row_props.get("direction", "row")) == "column" or str(row_props.get("align_content", "normal")) != "normal")
+	_set_back_rows_alpha(0.25 if compact else 1.0)
+	var tween: Tween = null
+	if animate:
+		tween = create_tween().set_parallel(true)
+	for i in range(views.size()):
+		var view = views[i]
+		var target_scale := Vector2.ONE * float(targets[i]["scale"])
+		if animate:
+			tween.tween_property(view, "position", targets[i]["pos"], 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+			tween.tween_property(view, "scale", target_scale, 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+		else:
+			view.position = targets[i]["pos"]
+			view.scale = target_scale
+	return tween
+
+func animate_attack(selection: Dictionary, effects: Array, question: Dictionary = {}) -> void:
+	var views: Array = _views_from(selection.get("affected", []) as Array)
+	if views.is_empty():
+		return
+	var per_lane: Array = question.get("lane_effects", []) as Array
+	if str(selection.get("mode", attack_mode)) == "volley":
+		await _attack_volley(views, effects, per_lane)
+	else:
+		await _attack_adjacent(selection, views, effects, per_lane)
+	# Tiempo visible para que el estudiante vea cómo la propiedad CSS altera al bug.
+	await get_tree().create_timer(0.7).timeout
+	for view in views:
+		if is_instance_valid(view):
+			view.animate_die()
+	await get_tree().create_timer(0.3).timeout
+
+# Niveles 1 y 2: el proyectil impacta al objetivo central y se divide hacia sus vecinos.
+func _attack_adjacent(selection: Dictionary, views: Array, effects: Array, per_lane: Array) -> void:
 	var target: Dictionary = selection.get("target", {})
 	var target_id := int(target.get("id", -1))
 	if target_id < 0 or not enemies.has(target_id):
 		return
 	var target_view = enemies[target_id]
 	await _shoot_projectile(hacker.position + hacker.size * 0.5, target_view.position + target_view.size * 0.5)
-	var affected_views: Array = []
-	for data in selection.get("affected", []):
-		var id := int(data.get("id", -1))
-		if enemies.has(id) and is_instance_valid(enemies[id]):
-			var view = enemies[id]
-			view.apply_effects(effects)
-			affected_views.append(view)
-	# Tiempo visible para que el estudiante vea cómo la propiedad CSS altera al bug.
-	await get_tree().create_timer(0.7).timeout
-	for view in affected_views:
-		view.animate_die()
-	await get_tree().create_timer(0.3).timeout
+	for view in views:
+		view.apply_effects(_lane_effects(effects, per_lane, int(view.lane)), true)
+	var spread := _margin_of(effects)
+	if spread > 0.0:
+		_place_front_row(views, true, spread)
+
+# Nivel 3: primero el grupo se reorganiza según las propiedades de layout (el punto de impacto se
+# desplaza con él) y luego sale un disparo dirigido hacia cada enemigo.
+func _attack_volley(views: Array, effects: Array, per_lane: Array) -> void:
+	row_props = FlexLayout.apply_effects(row_props, effects)
+	if FlexLayout.has_layout_effect(effects):
+		var layout_tween: Tween = _place_front_row(views, true)
+		if layout_tween != null:
+			await layout_tween.finished
+	var origin: Vector2 = hacker.position + hacker.size * 0.5
+	var tween := create_tween().set_parallel(true)
+	for i in range(views.size()):
+		var view = views[i]
+		var delay: float = float(i) * 0.12
+		var projectile := _make_projectile(origin)
+		var destination: Vector2 = view.position + view.size * 0.5 - Vector2(7, 7)
+		tween.tween_property(projectile, "position", destination, 0.22).set_delay(delay).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		var lane_fx: Array = _lane_effects(effects, per_lane, int(view.lane))
+		tween.tween_callback(func() -> void:
+			projectile.queue_free()
+			if is_instance_valid(view):
+				view.apply_effects(lane_fx, true)
+		).set_delay(delay + 0.22)
+	await tween.finished
+
+func _make_projectile(from: Vector2) -> Panel:
+	var projectile := Panel.new()
+	projectile.position = from - Vector2(7, 7)
+	projectile.size = Vector2(14, 14)
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color("20c7f3")
+	style.border_color = Color("e8f0ff")
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(7)
+	projectile.add_theme_stylebox_override("panel", style)
+	projectile_layer.add_child(projectile)
+	return projectile
 
 func _shoot_projectile(from: Vector2, to: Vector2) -> void:
 	var projectile := Panel.new()
@@ -246,6 +405,8 @@ func _shoot_projectile(from: Vector2, to: Vector2) -> void:
 
 func animate_advance(grid) -> void:
 	current_grid = grid
+	row_props = FlexLayout.default_props()
+	_set_back_rows_alpha(1.0)
 	var desired: Dictionary = {}
 	for item in grid.visible_state():
 		var depth := int(item.get("depth", 0))
@@ -265,27 +426,15 @@ func animate_advance(grid) -> void:
 	mark_selection(grid.target_and_neighbors())
 
 func _enemy_position(lane_index: int, depth_index: int) -> Vector2:
-	var lane_position: int = clampi(
-		lane_index,
-		0,
-		LANE_X.size() - 1
-	)
+	var depth_position: int = clampi(depth_index, 0, DEPTH_Y.size() - 1)
 
-	var depth_position: int = clampi(
-		depth_index,
-		0,
-		DEPTH_Y.size() - 1
-	)
+	if row_layout == "flex":
+		# En el Nivel 3 cada fila parte con el estado por defecto de CSS (fila, flex-start, gap 0).
+		var layout: Array = FlexLayout.positions(FlexLayout.default_props(), 3, float(DEPTH_Y[depth_position]))
+		var item: Dictionary = layout[clampi(lane_index, 0, layout.size() - 1)] as Dictionary
+		return (item["center"] as Vector2) - Vector2(46.0, 46.0)
 
-	var x: float = float(
-		LANE_X[lane_position]
-	)
-
-	var y: float = float(
-		DEPTH_Y[depth_position]
-	)
-
-	return Vector2(
-		x - 46.0,
-		y - 46.0
-	)
+	var lane_position: int = clampi(lane_index, 0, LANE_X.size() - 1)
+	var x: float = float(LANE_X[lane_position])
+	var y: float = float(DEPTH_Y[depth_position])
+	return Vector2(x - 46.0, y - 46.0)

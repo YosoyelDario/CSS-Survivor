@@ -27,3 +27,8 @@ En este entorno no está instalado el ejecutable de Godot, por lo que no fue pos
 ## Assets opcionales ausentes en la base recibida
 
 El prompt menciona `assets/ui/` y `assets/fonts/`, pero la versión base disponible no los contenía. Para respetar la regla de no modificar `assets/`, la UI usa fallback: iconos pixel-art generados en memoria y la fuente predeterminada de Godot. Si posteriormente agregan los archivos esperados, `ui_factory.gd` los detecta automáticamente.
+
+
+## Niveles 2 y 3
+
+Los Niveles 2 y 3 se implementaron sobre el mismo motor del Nivel 1. Las decisiones de diseño, los campos nuevos de los ejercicios y la forma de agregar contenido están en `NIVELES_2_Y_3.md`.

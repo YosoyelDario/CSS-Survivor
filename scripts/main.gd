@@ -227,6 +227,7 @@ func _start_combat(zone_index:int)->void:
 	var cfg: Dictionary = level_run.config
 	var names: Array = cfg.get("zone_names", []) as Array
 	var difficulty: Array = cfg.get("zone_difficulty", []) as Array
+	combat_ui.configure_level(cfg)
 	combat_ui.show_combat(zone_grids[zone_index],zone_index,str(names[zone_index]),str(difficulty[zone_index]))
 	await combat_ui.animate_open()
 	_prepare_question()
@@ -243,6 +244,7 @@ func _prepare_question(replacement:Dictionary={})->void:
 	var row_number: int = int(level_run.rows_cleared(current_zone)) + 1
 	combat_ui.update_header(level_run.lives,int(level_run.config.get("lives",5)),level_run.score,row_number,level_run.rows_total(current_zone),level_run.zone_repair_percent(current_zone))
 	combat_ui.show_question(current_question,current_options)
+	combat_ui.prepare_row(current_question)
 	combat_ui.mark_selection(zone_grids[current_zone].target_and_neighbors())
 
 func _on_answer_selected(answer: String) -> void:
@@ -323,7 +325,8 @@ func _on_answer_selected(answer: String) -> void:
 
 		await combat_ui.animate_attack(
 			selection,
-			effects
+			effects,
+			current_question
 		)
 
 		grid.resolve_success()
@@ -449,36 +452,20 @@ func _end_attempt(game_over: bool) -> void:
 	if not game_over:
 		level_run.finalize_level()
 
-	var before_color: bool = bool(
-		session_manager.has_badge("color_master")
-	)
-
-	var before_perfect: bool = bool(
-		session_manager.has_badge("perfect")
-	)
+	# Las insignias de nivel (completar, impecable, tres niveles) las otorga register_attempt según
+	# game_config.json; aquí solo se comparan las que tenía antes con las que tiene ahora.
+	var badges_before: Array = session_manager.badge_ids()
 
 	var session_result: Dictionary = level_run.session_result(false)
 
 	session_manager.register_attempt(session_result)
 
-	var has_color_master: bool = bool(
-		session_manager.has_badge("color_master")
-	)
+	for badge_id in session_manager.badge_ids():
+		if not badges_before.has(badge_id):
+			var earned_name: String = _badge_name(str(badge_id))
 
-	var has_perfect: bool = bool(
-		session_manager.has_badge("perfect")
-	)
-
-	var color_badge_name: String = _badge_name("color_master")
-	var perfect_badge_name: String = _badge_name("perfect")
-
-	if not before_color and has_color_master:
-		if not new_badges.has(color_badge_name):
-			new_badges.append(color_badge_name)
-
-	if not before_perfect and has_perfect:
-		if not new_badges.has(perfect_badge_name):
-			new_badges.append(perfect_badge_name)
+			if not new_badges.has(earned_name):
+				new_badges.append(earned_name)
 
 	# SIGUIENTE NIVEL solo se habilita si se completó este nivel y el siguiente es jugable.
 	# Se calcula después de register_attempt, que es lo que desbloquea el siguiente.

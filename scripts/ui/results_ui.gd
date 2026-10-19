@@ -7,7 +7,7 @@ signal next_requested(level:int)
 
 const UIFactory=preload("res://scripts/ui/ui_factory.gd")
 const GameConfig=preload("res://scripts/managers/game_config.gd")
-const KIND_NAMES:={"teorico":"TEÓRICA","practico":"PRÁCTICA","completar":"COMPLETAR CÓDIGO","multi":"MULTI-OBJETIVO"}
+const KIND_NAMES:={"teorico":"TEÓRICA","practico":"PRÁCTICA","completar":"COMPLETAR CÓDIGO","multi":"MULTI-OBJETIVO","boss":"ENEMIGO FINAL"}
 var root:Control
 var title_label:Label
 var metrics_label:Label
@@ -29,7 +29,13 @@ func show_results(run,game_over:bool,new_badges:Array,next_level_value:int=0)->v
 	next_level=next_level_value
 	history=run.history.duplicate(true)
 	visible_count=5
-	title_label.text="GAME OVER" if game_over else "NIVEL %d COMPLETADO"%run.level
+	var final_level:bool=run.level>=GameConfig.total_levels()
+	if game_over:
+		title_label.text="GAME OVER"
+	elif final_level:
+		title_label.text="NIVEL %d COMPLETADO • SITIO RESTAURADO"%run.level
+	else:
+		title_label.text="NIVEL %d COMPLETADO"%run.level
 	_update_next_button(run,game_over)
 	title_label.add_theme_color_override("font_color",UIFactory.PALETTE.red if game_over else UIFactory.PALETTE.green)
 	metrics_label.text="Puntaje: %d    Aciertos: %d    Errores: %d    Vidas: %d    Tiempo: %.1f s    Mejor racha: %d"%[run.score,run.correct_count,run.error_count,run.lives,run.elapsed_seconds(),run.best_streak]

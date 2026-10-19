@@ -35,6 +35,14 @@ func _ready()->void:
 	_build()
 	set_process(true)
 
+# Configura la arena según el nivel (modo de ataque, layout del grupo y estilo base del enemigo).
+func configure_level(cfg:Dictionary)->void:
+	arena.configure_level(cfg)
+
+# Muestra la fila del frente tal como parte el ejercicio (con su "bug" si lo tiene).
+func prepare_row(question:Dictionary)->void:
+	arena.prepare_row(question)
+
 func show_combat(grid,zone_index:int,zone_name:String,difficulty:String)->void:
 	root.visible=true
 	zone_label.text="ZONA %d • %s"%[zone_index+1,zone_name]
@@ -76,8 +84,8 @@ func update_header(lives:int,max_lives:int,points:int,row_number:int,row_total:i
 func show_question(question:Dictionary,options:Array[String])->void:
 	current_options=options.duplicate()
 	var kind:=str(question.get("kind","teorico"))
-	var display_names={"teorico":"TEÓRICA","practico":"PRÁCTICA","completar":"COMPLETAR CÓDIGO","multi":"MULTI-OBJETIVO"}
-	var colors={"teorico":UIFactory.PALETTE.cyan,"practico":UIFactory.PALETTE.orange,"completar":UIFactory.PALETTE.green,"multi":UIFactory.PALETTE.purple}
+	var display_names={"teorico":"TEÓRICA","practico":"PRÁCTICA","completar":"COMPLETAR CÓDIGO","multi":"MULTI-OBJETIVO","boss":"ENEMIGO FINAL"}
+	var colors={"teorico":UIFactory.PALETTE.cyan,"practico":UIFactory.PALETTE.orange,"completar":UIFactory.PALETTE.green,"multi":UIFactory.PALETTE.purple,"boss":UIFactory.PALETTE.red}
 	type_chip.text=str(display_names.get(kind,kind.to_upper()))
 	type_chip.add_theme_stylebox_override("normal",UIFactory.style_box(Color(colors.get(kind,UIFactory.PALETTE.cyan),0.18),colors.get(kind,UIFactory.PALETTE.cyan),1,10))
 	question_label.text=str(question.get("question",""))
@@ -135,8 +143,8 @@ func set_buttons_enabled(enabled:bool)->void:
 func get_option_texts()->Array:
 	return current_options.duplicate()
 
-func animate_attack(selection:Dictionary,effects:Array)->void:
-	await arena.animate_attack(selection,effects)
+func animate_attack(selection:Dictionary,effects:Array,question:Dictionary={})->void:
+	await arena.animate_attack(selection,effects,question)
 
 func animate_advance(grid)->void:
 	await arena.animate_advance(grid)
