@@ -28,6 +28,9 @@ var feedback_label:Label
 var hint_label:Label
 var continue_button:Button
 var current_options:Array[String]=[]
+var _last_lives:int=-1
+var _button_disabled_style:StyleBox
+const OPTION_TEXT_WIDTH:=258.0   # ancho útil del texto dentro de una alternativa (288 px menos márgenes)
 var input_enabled:bool=false
 
 func _ready()->void:
@@ -44,6 +47,7 @@ func prepare_row(question:Dictionary)->void:
 	arena.prepare_row(question)
 
 func show_combat(grid,zone_index:int,zone_name:String,difficulty:String)->void:
+	_last_lives=-1
 	root.visible=true
 	zone_label.text="ZONA %d • %s"%[zone_index+1,zone_name]
 	difficulty_label.text=difficulty.to_upper()
@@ -74,9 +78,13 @@ func animate_close() -> void:
 
 func update_header(lives:int,max_lives:int,points:int,row_number:int,row_total:int,repair:float)->void:
 	for child in hearts_box.get_children():
+		hearts_box.remove_child(child)
 		child.queue_free()
 	for i in range(max_lives):
 		hearts_box.add_child(UIFactory.icon_rect("heart" if i<lives else "heart_empty",Rect2(0,0,22,22)))
+	if _last_lives>=0 and lives!=_last_lives:
+		_animate_heart(clampi(lives-1 if lives>_last_lives else lives,0,maxi(0,max_lives-1)),lives>_last_lives)
+	_last_lives=lives
 	points_label.text="%d PTS"%points
 	row_label.text="Fila %d de %d"%[clampi(row_number,1,maxi(1,row_total)),row_total]
 	repair_bar.value=clampf(repair*100.0,0.0,100.0)
@@ -100,12 +108,31 @@ func show_question(question:Dictionary,options:Array[String])->void:
 	for i in range(buttons.size()):
 		buttons[i].visible=i<current_options.size()
 		buttons[i].disabled=false
+		buttons[i].add_theme_stylebox_override("disabled",_button_disabled_style)
+		var option_label:Label=buttons[i].get_node("OptionText") as Label
+		option_label.modulate.a=1.0
 		if i<current_options.size():
-			buttons[i].text="%d   %s"%[i+1,current_options[i]]
 			var mono=UIFactory.mono_font()
 			if kind!="teorico" and mono!=null:
-				buttons[i].add_theme_font_override("font",mono)
+				option_label.add_theme_font_override("font",mono)
+			else:
+				option_label.remove_theme_font_override("font")
+			_fit_option_text(option_label,"%d   %s"%[i+1,current_options[i]])
 	input_enabled=true
+
+# Las alternativas largas (por ejemplo, tres propiedades combinadas) no caben en una línea:
+# se ajustan a dos líneas y, si hace falta, con una letra algo menor. Así nunca se salen de la tarjeta.
+func _fit_option_text(label:Label,text_value:String)->void:
+	label.text=text_value
+	var font:Font=label.get_theme_font("font")
+	var chosen:=11
+	if font!=null:
+		for candidate in [13,12,11]:
+			var needed:Vector2=font.get_multiline_string_size(text_value,HORIZONTAL_ALIGNMENT_CENTER,OPTION_TEXT_WIDTH,candidate)
+			if needed.y<=3.0*font.get_height(candidate)+2.0:
+				chosen=candidate
+				break
+	label.add_theme_font_size_override("font_size",chosen)
 
 # El enunciado usa UIFactory.QUESTION_SIZE (24 px). Si el texto no cabe en la caja,
 # baja a 22 y luego a 20 px; nunca baja de 20 para que siga siendo claramente más
@@ -124,16 +151,39 @@ func _fit_question_text() -> void:
 	# El Label crece solo si el texto es más alto que la caja; se devuelve al tamaño fijo.
 	question_label.size = QUESTION_BOX.size
 
-func show_feedback(correct:bool,summary:String,hint:String="")->void:
+# summary: resultado en una línea. detail: explicación (por qué falló o refuerzo tras acertar).
+# chosen_text: alternativa elegida; se marca en rojo (error) o verde (acierto). Al fallar NO se
+# señala la correcta, para no regalar la respuesta.
+func show_feedback(correct:bool,summary:String,detail:String="",chosen_text:String="")->void:
 	input_enabled=false
-	for b in buttons:
-		b.disabled=true
+	for i in range(buttons.size()):
+		buttons[i].disabled=true
+		var is_chosen:bool=i<current_options.size() and current_options[i]==chosen_text and not chosen_text.is_empty()
+		(buttons[i].get_node("OptionText") as Label).modulate.a=1.0 if is_chosen else 0.55
+		if is_chosen:
+			var color:Color=UIFactory.PALETTE.green if correct else UIFactory.PALETTE.red
+			buttons[i].add_theme_stylebox_override("disabled",UIFactory.style_box(Color(color,0.20),color,3,10))
 	feedback_icon.texture=UIFactory.icon_texture("check" if correct else "cross")
 	feedback_icon.visible=true
 	feedback_label.text=summary
 	feedback_label.add_theme_color_override("font_color",UIFactory.PALETTE.green if correct else UIFactory.PALETTE.red)
-	hint_label.text=("PISTA: "+hint) if not correct and not hint.is_empty() else ""
+	hint_label.text=detail
+	hint_label.add_theme_color_override("font_color",Color("9be8c6") if correct else UIFactory.PALETTE.yellow)
 	continue_button.visible=not correct
+
+# Corazón que se gana: crece y se tiñe de verde. Corazón que se pierde: se agranda y se pone rojo.
+func _animate_heart(index:int,gained:bool)->void:
+	if index<0 or index>=hearts_box.get_child_count():
+		return
+	var heart:Control=hearts_box.get_child(index) as Control
+	heart.pivot_offset=heart.size*0.5
+	var tint:Color=Color("7dffb8") if gained else Color("ff5777")
+	heart.modulate=tint
+	var tween:=create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(heart,"scale",Vector2(1.7,1.7),0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.chain().tween_property(heart,"scale",Vector2.ONE,0.22)
+	tween.tween_property(heart,"modulate",Color.WHITE,0.45)
 
 func set_buttons_enabled(enabled:bool)->void:
 	input_enabled=enabled
@@ -189,11 +239,19 @@ func _build()->void:
 	question_label=UIFactory.question_label("",QUESTION_BOX); question_label.vertical_alignment=VERTICAL_ALIGNMENT_CENTER; card.add_child(question_label)
 	code_panel=UIFactory.panel(Rect2(24,126,515,54),Color("07101d"),Color("315b82"),8); card.add_child(code_panel)
 	code_label=UIFactory.code_label("",Rect2(14,10,487,34),15); code_label.vertical_alignment=VERTICAL_ALIGNMENT_CENTER; code_panel.add_child(code_label); code_panel.visible=false
-	feedback_icon=UIFactory.icon_rect("check",Rect2(24,193,24,24)); feedback_icon.visible=false; card.add_child(feedback_icon)
-	feedback_label=UIFactory.label("",Rect2(56,188,480,30),14,UIFactory.PALETTE.text); card.add_child(feedback_label)
-	hint_label=UIFactory.label("",Rect2(24,217,515,24),12,UIFactory.PALETTE.yellow); card.add_child(hint_label)
+	feedback_icon=UIFactory.icon_rect("check",Rect2(24,186,24,24)); feedback_icon.visible=false; card.add_child(feedback_icon)
+	feedback_label=UIFactory.label("",Rect2(56,182,480,30),14,UIFactory.PALETTE.text); card.add_child(feedback_label)
+	hint_label=UIFactory.label("",Rect2(24,207,520,34),12,UIFactory.PALETTE.yellow); hint_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; card.add_child(hint_label)
 
 	var grid:=GridContainer.new(); grid.columns=2; grid.position=Vector2(570,25); grid.size=Vector2(590,150); grid.add_theme_constant_override("h_separation",12); grid.add_theme_constant_override("v_separation",12); card.add_child(grid)
 	for i in range(4):
 		var b:=UIFactory.button("",Rect2(0,0,288,68),Color("17304c")); b.custom_minimum_size=Vector2(288,68); b.add_theme_font_size_override("font_size",13); b.pressed.connect(_on_answer.bind(i)); grid.add_child(b); buttons.append(b)
+		# El texto va en una etiqueta con ajuste de línea (el Button de Godot 4.2 no lo tiene).
+		var option_label:=Label.new(); option_label.name="OptionText"; option_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		option_label.offset_left=10; option_label.offset_right=-10; option_label.offset_top=4; option_label.offset_bottom=-4
+		option_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; option_label.vertical_alignment=VERTICAL_ALIGNMENT_CENTER
+		option_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; option_label.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		option_label.add_theme_color_override("font_color",UIFactory.PALETTE.text); option_label.add_theme_font_size_override("font_size",13)
+		b.add_child(option_label)
+	_button_disabled_style=buttons[0].get_theme_stylebox("disabled")
 	continue_button=UIFactory.button("CONTINUAR",Rect2(760,190,240,42),UIFactory.PALETTE.orange,"play"); continue_button.visible=false; continue_button.pressed.connect(func():continue_requested.emit()); card.add_child(continue_button)

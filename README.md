@@ -19,6 +19,7 @@ Proyecto Godot 4.x organizado por módulos. Implementa los tres niveles con mapa
 7. Si quedan filas, avanzan y entra una fila desde la cola.
 8. Al fallar: -1 vida, pista y botón CONTINUAR; la reposición mantiene el tipo de pregunta.
 9. Al limpiar las 4 zonas: resultados KCR y nivel completado (el siguiente nivel se desbloquea).
+10. Un error resta una vida y explica por qué falló la alternativa elegida; cada 5 aciertos seguidos se recupera una vida (hasta el máximo del nivel).
 
 ## Controles
 

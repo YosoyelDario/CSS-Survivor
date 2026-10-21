@@ -24,7 +24,7 @@
       ],
       [
         "Aprende",
-        "Si fallas pierdes una vida y recibes una pista antes de continuar."
+        "Si fallas pierdes una vida y ves por qué. Cada 5 aciertos seguidos recuperas una."
       ],
       [
         "Repara",
@@ -166,6 +166,10 @@
         "every": 3,
         "points": 100
       },
+      "life_recovery": {
+        "streak": 5,
+        "amount": 1
+      },
       "clean_zone_bonus": 250,
       "life_bonus": 200
     },
@@ -237,6 +241,10 @@
       "streak_bonus": {
         "every": 3,
         "points": 100
+      },
+      "life_recovery": {
+        "streak": 5,
+        "amount": 1
       },
       "clean_zone_bonus": 250,
       "life_bonus": 200,
@@ -315,6 +323,10 @@
       "streak_bonus": {
         "every": 3,
         "points": 100
+      },
+      "life_recovery": {
+        "streak": 5,
+        "amount": 1
       },
       "clean_zone_bonus": 250,
       "life_bonus": 200

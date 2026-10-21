@@ -6,6 +6,7 @@ const LevelRun = preload("res://scripts/managers/level_run.gd")
 const ZoneGrid = preload("res://scripts/managers/zone_grid.gd")
 const FlexLayout = preload("res://scripts/managers/flex_layout.gd")
 const EnemyView = preload("res://scripts/enemy_view.gd")
+const FeedbackBuilder = preload("res://scripts/managers/feedback_builder.gd")
 
 # Puntaje de una partida perfecta (15 ejercicios sin errores y con las 5 vidas).
 const PERFECT_SCORE := {1: 5250, 2: 5250, 3: 5700}
@@ -28,6 +29,8 @@ func _initialize() -> void:
 		_test_level_run(level, failures)
 	_test_flex_layout(failures)
 	_test_badges_config(failures)
+	_test_life_recovery(failures)
+	_test_feedback(failures)
 	if failures.is_empty():
 		print("CSS Survivor model smoke test: OK")
 		quit(0)
@@ -219,3 +222,119 @@ func _test_badges_config(failures: Array[String]) -> void:
 				has_perfect = true
 		if not has_complete or not has_perfect:
 			failures.append("Insignias: el Nivel %d debía tener insignia de completar y de impecable" % level)
+
+# Siguiente ejercicio disponible en cualquier zona aún no limpia; responde bien o mal.
+func _answer_next(run, correct: bool) -> Dictionary:
+	for zone in range(4):
+		if run.zone_clean(zone):
+			continue
+		var q: Dictionary = run.next_question(zone)
+		var selected: String = str(q.get("answer", ""))
+		if not correct:
+			for option in q.get("options", []):
+				if option != q.get("answer", ""):
+					selected = option
+					break
+		return run.answer(zone, q, selected, 3, 1.0, q.get("options", []))
+	return {}
+
+func _test_life_recovery(failures: Array[String]) -> void:
+	var qm = QuestionManager.new()
+	qm.load_questions()
+	var cfg: Dictionary = GameConfig.level(1)
+	var run = LevelRun.new()
+	run.setup(1, cfg, qm, FakeSession.new())
+	var max_lives: int = int(cfg.get("lives", 5))
+	# Con las vidas al máximo, una racha de 5 no suma vidas.
+	for i in range(5):
+		var result: Dictionary = _answer_next(run, true)
+		if bool(result.get("life_gained", false)):
+			failures.append("Vidas: con las vidas completas no debía recuperar más")
+	if run.lives != max_lives or run.lives_regained != 0:
+		failures.append("Vidas: no debía pasar del máximo")
+	# Un error resta una vida y reinicia la racha.
+	_answer_next(run, false)
+	if run.lives != max_lives - 1 or run.streak != 0:
+		failures.append("Vidas: el error debía restar una vida y reiniciar la racha")
+	# Cuatro aciertos seguidos todavía no recuperan; el quinto sí.
+	for i in range(4):
+		var partial: Dictionary = _answer_next(run, true)
+		if bool(partial.get("life_gained", false)):
+			failures.append("Vidas: se recuperó antes del quinto acierto seguido")
+	if run.lives != max_lives - 1:
+		failures.append("Vidas: no debía haber recuperado todavía")
+	var fifth: Dictionary = _answer_next(run, true)
+	if not bool(fifth.get("life_gained", false)) or run.lives != max_lives or run.lives_regained != 1:
+		failures.append("Vidas: el quinto acierto seguido debía recuperar una vida")
+	# Un error en mitad de la racha cancela la recuperación.
+	_answer_next(run, false)
+	for i in range(3):
+		_answer_next(run, true)
+	_answer_next(run, false)
+	for i in range(4):
+		_answer_next(run, true)
+	if run.lives_regained != 1:
+		failures.append("Vidas: una racha interrumpida no debía recuperar vida")
+	var review: Array = run.review_properties()
+	if review.is_empty() or int(review[0].get("count", 0)) < 1:
+		failures.append("Repaso: debía listar las propiedades falladas")
+	if int(run.session_result().get("lives_regained", -1)) != run.lives_regained:
+		failures.append("Vidas: session_result debía informar las vidas recuperadas")
+
+func _question_by_id(qm, id: int) -> Dictionary:
+	for level in range(1, 4):
+		for question in qm.pool_for(level):
+			if int(question.get("id", -1)) == id:
+				return question
+	return {}
+
+func _test_feedback(failures: Array[String]) -> void:
+	var qm = QuestionManager.new()
+	qm.load_questions()
+	# Casos concretos.
+	var q2: Dictionary = _question_by_id(qm, 2)            # Enemigo con texto rojo -> color: red;
+	var wrong_property: String = FeedbackBuilder.diagnose(q2, "background-color: red;")
+	if not wrong_property.contains("background-color") or not wrong_property.contains("color del texto"):
+		failures.append("Feedback: debía explicar que background-color no controla el texto (%s)" % wrong_property)
+	var wrong_value: String = FeedbackBuilder.diagnose(q2, "color: blue;")
+	if not wrong_value.contains("valor"):
+		failures.append("Feedback: debía indicar que el valor no coincide (%s)" % wrong_value)
+	var q50: Dictionary = _question_by_id(qm, 50)          # border-radius: 12px;
+	if not FeedbackBuilder.diagnose(q50, "border-radius: 12%;").ends_with("revisa la unidad."):
+		failures.append("Feedback: border-radius: 12%; debía señalar solo la unidad (%s)" % FeedbackBuilder.diagnose(q50, "border-radius: 12%;"))
+	var q58: Dictionary = _question_by_id(qm, 58)          # border: 4px solid black; + border-radius: 50%;
+	if not FeedbackBuilder.diagnose(q58, "border: 4px dotted black; + border-radius: 0;").contains("estilo o el color del borde"):
+		failures.append("Feedback: dotted en vez de solid debía señalar el estilo del borde")
+	var q70: Dictionary = _question_by_id(qm, 70)          # border-radius: 50%; + transform: rotate(45deg);
+	if not FeedbackBuilder.diagnose(q70, "border-radius: 50%; + transform: skew(45deg);").contains("la función"):
+		failures.append("Feedback: skew en vez de rotate debía señalar la función")
+	if not FeedbackBuilder.diagnose(_question_by_id(qm, 60), "width: 50px; + height: 50px; + border-radius: 150px;").contains("revisa el número"):
+		failures.append("Feedback: un ancho distinto debía señalar el número")
+	var q56: Dictionary = _question_by_id(qm, 56)          # width + height
+	if not FeedbackBuilder.diagnose(q56, "width: 100px; + padding: 100px;").contains("padding"):
+		failures.append("Feedback: debía señalar la propiedad que sobra en la combinación")
+	if FeedbackBuilder.diagnose(_question_by_id(qm, 1), "Cambia el color del fondo").length() != 0:
+		failures.append("Feedback: una alternativa teórica no debía tener diagnóstico específico")
+	# Todas las alternativas incorrectas de los 90 ejercicios.
+	var with_diagnosis := 0
+	for level in range(1, 4):
+		for question in qm.pool_for(level):
+			var id := int(question.get("id", -1))
+			var answer: String = str(question.get("answer", ""))
+			for option in question.get("options", []):
+				if option == answer:
+					continue
+				var detail: String = FeedbackBuilder.error_detail(question, option)
+				if detail.is_empty():
+					failures.append("Feedback #%d: la alternativa '%s' quedó sin pista ni diagnóstico" % [id, option])
+				var diagnosis: String = FeedbackBuilder.diagnose(question, option)
+				if not diagnosis.is_empty():
+					with_diagnosis += 1
+					# Se compara con la declaración completa ("color: red;"): para respuestas de una sola
+					# propiedad ("color") la categoría ("el color del texto") es justo el andamiaje buscado.
+					if answer.contains(":") and diagnosis.contains(answer):
+						failures.append("Feedback #%d: el diagnóstico no debe revelar la respuesta ('%s')" % [id, diagnosis])
+					if diagnosis.length() > 190:
+						failures.append("Feedback #%d: diagnóstico demasiado largo para la tarjeta (%d)" % [id, diagnosis.length()])
+	if with_diagnosis < 150:
+		failures.append("Feedback: se esperaba diagnóstico específico en la mayoría de las alternativas (%d)" % with_diagnosis)

@@ -72,6 +72,27 @@ En el Nivel 3 cada fila es un contenedor `display: flex`. Su estado por defecto 
 | `bug_effects`, `lane_bug_effects` | estado inicial con el bug (opcional) |
 | `lane_effects` | efectos distintos por carril (opcional) |
 
+## Vidas y retroalimentación
+
+**Vida por racha.** Cada 5 aciertos seguidos se recupera 1 vida, sin pasar del máximo del nivel. Se configura por nivel en `game_config.json` (`life_recovery`: `streak` y `amount`). Un error reinicia la racha. Las vidas recuperadas suman al bono final de vidas, pero nunca superan el puntaje máximo del nivel. El log registra `rachaActual` y `vidaRecuperada` en cada respuesta.
+
+**Diagnóstico del error** (`feedback_builder.gd`). Al fallar, el juego explica *por qué* falló la alternativa elegida, sin revelar la respuesta:
+
+- Propiedad equivocada: "Elegiste border, que controla el grosor y el estilo del contorno. Aquí se necesita controlar la curvatura de las esquinas."
+- Propiedad correcta con valor distinto: señala si hay que revisar el número, la unidad, la función (`rotate` frente a `skew`) o el estilo del borde.
+- Falta o sobra una propiedad en las combinaciones.
+- En las preguntas teóricas, cuyas alternativas son frases, se muestra la pista del ejercicio.
+
+El diagnóstico se guarda en el historial y reaparece en el resumen final (KCR) junto con la explicación.
+
+**Otros cambios de retroalimentación:**
+
+- La alternativa elegida se marca en rojo (error) o verde (acierto) y las demás se atenúan. Al fallar no se señala la correcta.
+- Tras un acierto se muestra la explicación como refuerzo, además de puntos, racha y vida recuperada.
+- Los corazones se animan al ganar o perder una vida.
+- El resumen muestra las vidas recuperadas y "A repasar", con las propiedades más falladas.
+- Las alternativas largas se ajustan a la tarjeta (antes se cortaban al borde de la ventana).
+
 ## Insignias
 
 Se definen en `game_config.json` con un `trigger`: `answer`, `streak`, `level_complete`, `level_perfect` o `all_levels`. Nuevas: Maestro de la Caja, Impecable II, Maestro del Layout, Impecable III y CSS Survivor (los tres niveles).
@@ -92,4 +113,5 @@ Conviene actualizar esas tres filas en el Anexo A.
 
 - Mini-jefe de la Guía Visual (enemigo cuyo requisito cambia con su posición). El enemigo final del Nivel 3 (#70 y #90) usa las mismas capas y solo combina dos o tres propiedades.
 - Disparo a filas traseras en el Nivel 3 (`z-index`): el Anexo A no tiene ejercicios de esa propiedad.
-- El arma no cambia de forma según la alternativa elegida y un error no lanza un proyectil fallido (KR de errores sigue siendo texto más pista).
+- El arma no cambia de forma según la alternativa elegida y un error no lanza un proyectil fallido (el error se informa con texto, diagnóstico y la alternativa marcada).
+- Diagnóstico específico en las preguntas teóricas: sus alternativas son frases y hoy muestran la pista del ejercicio.

@@ -5,6 +5,7 @@ const GameConfig=preload("res://scripts/managers/game_config.gd")
 const SessionManager=preload("res://scripts/managers/session_manager.gd")
 const LogManager=preload("res://scripts/managers/log_manager.gd")
 const QuestionManager=preload("res://scripts/managers/question_manager.gd")
+const FeedbackBuilder = preload("res://scripts/managers/feedback_builder.gd")
 const LevelRun=preload("res://scripts/managers/level_run.gd")
 const ZoneGrid=preload("res://scripts/managers/zone_grid.gd")
 const WorldController=preload("res://scripts/world_controller.gd")
@@ -313,10 +314,35 @@ func _on_answer_selected(answer: String) -> void:
 
 		var gained: int = base_points + bonus_points
 
+		# Resumen en una línea: puntos, racha y vida recuperada; debajo, la explicación como refuerzo.
+		var summary_text: String = "CORRECTO   +%d PTS" % gained
+		var streak_now: int = int(result.get("streak", 0))
+
+		if streak_now >= 3:
+			summary_text += "   RACHA x%d" % streak_now
+
+		var life_gained: bool = bool(result.get("life_gained", false))
+
+		if life_gained:
+			summary_text += "   +1 VIDA"
+
 		combat_ui.show_feedback(
 			true,
-			"CORRECTO   +%d PTS" % gained
+			summary_text,
+			str(current_question.get("explanation", "")),
+			answer
 		)
+
+		if life_gained:
+			# El corazón recuperado se anima de inmediato, sin esperar al final del ataque.
+			combat_ui.update_header(
+				level_run.lives,
+				int(level_run.config.get("lives", 5)),
+				level_run.score,
+				row_number,
+				int(level_run.rows_total(current_zone)),
+				float(level_run.zone_repair_percent(current_zone))
+			)
 
 		var effects: Array = current_question.get(
 			"effects",
@@ -379,14 +405,23 @@ func _on_answer_selected(answer: String) -> void:
 	else:
 		awaiting_continue = true
 
-		var hint: String = str(
-			current_question.get("hint", "")
+		# Explica por qué falló la alternativa elegida (sin revelar la correcta); si no hay
+		# diagnóstico específico, muestra la pista del ejercicio.
+		var detail_text: String = FeedbackBuilder.error_detail(
+			current_question,
+			answer
 		)
+
+		var error_summary: String = "INCORRECTO   -1 VIDA"
+
+		if level_run.lives <= 0:
+			error_summary = "INCORRECTO   SIN VIDAS"
 
 		combat_ui.show_feedback(
 			false,
-			"INCORRECTO   -1 VIDA",
-			hint
+			error_summary,
+			detail_text,
+			answer
 		)
 
 		var max_lives: int = int(
@@ -514,6 +549,8 @@ func _write_answer_log(
 		"dificultad": difficulty_name,
 		"vidasRestantes": int(level_run.lives),
 		"puntajeActual": int(level_run.score),
+		"rachaActual": int(level_run.streak),
+		"vidaRecuperada": bool(level_run.history.back().get("life_gained", false)) if not level_run.history.is_empty() else false,
 		"numeroIntento": int(level_run.attempt_number),
 		"afectados": affected_count if correct else 0,
 		"codigo": str(current_question.get("code", ""))

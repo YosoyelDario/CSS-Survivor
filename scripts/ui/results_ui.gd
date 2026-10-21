@@ -13,6 +13,7 @@ var title_label:Label
 var metrics_label:Label
 var repair_bar:ProgressBar
 var badges_label:Label
+var review_label:Label
 var kcr_box:VBoxContainer
 var show_more_button:Button
 var next_button:Button
@@ -38,7 +39,10 @@ func show_results(run,game_over:bool,new_badges:Array,next_level_value:int=0)->v
 		title_label.text="NIVEL %d COMPLETADO"%run.level
 	_update_next_button(run,game_over)
 	title_label.add_theme_color_override("font_color",UIFactory.PALETTE.red if game_over else UIFactory.PALETTE.green)
-	metrics_label.text="Puntaje: %d    Aciertos: %d    Errores: %d    Vidas: %d    Tiempo: %.1f s    Mejor racha: %d"%[run.score,run.correct_count,run.error_count,run.lives,run.elapsed_seconds(),run.best_streak]
+	var lives_text:String="Vidas: %d"%int(run.lives)
+	if int(run.lives_regained)>0:
+		lives_text+=" (+%d recuperadas)"%int(run.lives_regained)
+	metrics_label.text="Puntaje: %d    Aciertos: %d    Errores: %d    %s    Tiempo: %.1f s    Mejor racha: %d"%[run.score,run.correct_count,run.error_count,lives_text,run.elapsed_seconds(),run.best_streak]
 	repair_bar.value=run.repair_percent()*100.0
 	var badge_text := "ninguna nueva"
 	if not new_badges.is_empty():
@@ -47,7 +51,18 @@ func show_results(run,game_over:bool,new_badges:Array,next_level_value:int=0)->v
 			names.append(str(value))
 		badge_text = ", ".join(names)
 	badges_label.text = "Nuevas insignias: " + badge_text
+	review_label.text = _review_text(run)
 	_refresh_kcr()
+
+# "A repasar: padding (2), border-radius (1)": las propiedades más falladas del intento.
+func _review_text(run)->String:
+	var items:Array=run.review_properties()
+	if items.is_empty():
+		return "¡Sin errores que repasar!" if run.error_count==0 else ""
+	var parts:PackedStringArray=[]
+	for i in range(mini(3,items.size())):
+		parts.append("%s (%d)"%[str(items[i]["prop"]),int(items[i]["count"])])
+	return "A repasar: "+", ".join(parts)
 
 func hide_results()->void:
 	root.visible=false
@@ -72,7 +87,9 @@ func _refresh_kcr()->void:
 		var correct := bool(item.get("correct", false))
 		var code := str(item.get("code", ""))
 		var has_code := not code.is_empty()
-		var card_height := 118 if correct and has_code else (154 if not correct and has_code else (96 if correct else 132))
+		var diagnosis:String=str(item.get("diagnosis",""))
+		var extra_line:int=22 if (not correct and not diagnosis.is_empty()) else 0
+		var card_height := (118 if correct and has_code else (154 if not correct and has_code else (96 if correct else 132)))+extra_line
 		var card := UIFactory.panel(Rect2(0, 0, 880, card_height), Color("101c35"), UIFactory.PALETTE.green if correct else UIFactory.PALETTE.red, 8)
 		card.custom_minimum_size = Vector2(880, card_height)
 		card.add_child(UIFactory.icon_rect("check" if correct else "cross", Rect2(14, 16, 24, 24)))
@@ -90,7 +107,12 @@ func _refresh_kcr()->void:
 		if not correct:
 			var correct_answer := UIFactory.label("Correcta: %s" % str(item.get("answer", "")), Rect2(48, answer_y + 25, 805, 20), 12, UIFactory.PALETTE.green)
 			card.add_child(correct_answer)
-			var exp := UIFactory.label(str(item.get("explanation", "")), Rect2(48, answer_y + 45, 805, 18), 11, UIFactory.PALETTE.muted)
+			var next_y:=answer_y+45
+			if not diagnosis.is_empty():
+				var why := UIFactory.label("Por qué falló: %s"%diagnosis, Rect2(48, next_y, 805, 20), 11, UIFactory.PALETTE.yellow)
+				card.add_child(why)
+				next_y+=22
+			var exp := UIFactory.label(str(item.get("explanation", "")), Rect2(48, next_y, 805, 18), 11, UIFactory.PALETTE.muted)
 			card.add_child(exp)
 		kcr_box.add_child(card)
 	show_more_button.visible=visible_count<history.size()
@@ -103,7 +125,8 @@ func _build()->void:
 	metrics_label=UIFactory.label("",Rect2(100,82,1080,30),14,UIFactory.PALETTE.text); metrics_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; stage.add_child(metrics_label)
 	repair_bar=UIFactory.progress(Rect2(290,122,700,16),UIFactory.PALETTE.green); stage.add_child(repair_bar)
 	badges_label=UIFactory.label("",Rect2(210,148,860,28),13,UIFactory.PALETTE.yellow); badges_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; stage.add_child(badges_label)
-	var scroll:=ScrollContainer.new(); scroll.position=Vector2(190,190); scroll.size=Vector2(900,355); stage.add_child(scroll)
+	review_label=UIFactory.label("",Rect2(210,168,860,22),12,UIFactory.PALETTE.cyan); review_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; stage.add_child(review_label)
+	var scroll:=ScrollContainer.new(); scroll.position=Vector2(190,196); scroll.size=Vector2(900,349); stage.add_child(scroll)
 	kcr_box=VBoxContainer.new(); kcr_box.custom_minimum_size=Vector2(880,0); kcr_box.add_theme_constant_override("separation",8); scroll.add_child(kcr_box)
 	show_more_button=UIFactory.button("MOSTRAR MÁS",Rect2(550,555,180,38),Color("253959")); show_more_button.pressed.connect(func():visible_count+=5;_refresh_kcr()); stage.add_child(show_more_button)
 	var retry:=UIFactory.button("REINTENTAR NIVEL",Rect2(125,625,220,44),UIFactory.PALETTE.orange); retry.pressed.connect(func():retry_requested.emit()); stage.add_child(retry)

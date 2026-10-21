@@ -14,3 +14,5 @@ Valida:
 - Reposición tras un error (misma categoría de pregunta).
 - Layout flex del Nivel 3: posiciones por `justify-content`, `align-items`, `flex-direction`, `align-content` y `gap`, siempre dentro de la arena.
 - Configuración de insignias (triggers válidos y una de completar/impecable por nivel).
+- Vida por racha: no pasa del máximo, se recupera al quinto acierto seguido y una racha interrumpida no recupera.
+- Retroalimentación: el diagnóstico de cada alternativa incorrecta de los 90 ejercicios existe, no revela la respuesta y cabe en la tarjeta.
