@@ -11,7 +11,8 @@
 - `log_manager.gd`: JSON Lines del piloto.
 - `question_manager.gd`: banco y alternativas.
 - `level_run.gd`: reglas de intento, secuencias, reposición, vidas y puntaje.
-- `zone_grid.gd`: modelo sin nodos de filas/carriles/cola/ataque adyacente.
+- `zone_grid.gd`: modelo sin nodos de filas/carriles/cola y ataque (`adjacent` en Niveles 1–2, `volley` en Nivel 3).
+- `flex_layout.gd`: layout flex del grupo de enemigos (Nivel 3); lógica pura, con prueba automática.
 - `input_config.gd`: controles.
 
 ## Mundo
@@ -23,8 +24,8 @@
 
 ## Combate
 
-- `enemy_view.gd`: capas visuales de un enemigo y motor visual CSS provisional.
-- `battle_arena.gd`: cuadrícula, objetivo/alcance, proyectil, animación y avance.
+- `enemy_view.gd`: capas visuales de un enemigo (una capa por propiedad CSS, según la Guía Visual) y motor visual de efectos.
+- `battle_arena.gd`: cuadrícula, objetivo/alcance, estado "con el bug" de cada ejercicio, ataque en área o dirigido, layout del grupo, animación y avance.
 - `ui/combat_ui.gd`: pregunta, alternativas, pista, HUD de zona y CONTINUAR.
 
 ## Pantallas

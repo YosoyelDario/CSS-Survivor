@@ -1,0 +1,16 @@
+VERIFICACIÓN ESTÁTICA — AUDIO Y TEMPORIZADOR
+
+- Banco de preguntas: sin modificaciones (90 preguntas).
+- Configuración de niveles: sin modificaciones salvo temporizador:
+  Nivel 1 = 40 s; urgente desde 10 s.
+  Nivel 2 = 30 s; urgente desde 8 s.
+  Nivel 3 = 20 s; urgente desde 6 s.
+- Reloj: una cuenta regresiva por pregunta; se pausa con ESC.
+- Timeout: registra SIN RESPUESTA, pierde vida y usa el flujo de error existente.
+- Música: menú y juego; pitch urgente durante el tramo final del reloj.
+- Audio: volumen general, música, efectos y mute persistentes en user://audio_settings.json.
+- SFX: disparo, acierto, golpe, tiempo agotado y ticks finales.
+- Daño: shake del hacker + tinte rojo + flash rojo.
+- Niveles/preguntas/ataques/layout: no modificados.
+
+NOTA: este entorno no dispone del ejecutable de Godot, por lo que la ejecución final debe comprobarse abriendo project.godot en Godot 4.2.

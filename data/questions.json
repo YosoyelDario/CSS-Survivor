@@ -704,7 +704,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué propiedad define grosor y estilo del borde?",
-    "answer": "border"
+    "answer": "border",
+    "options": [
+      "border",
+      "border-radius",
+      "border-color",
+      "padding"
+    ],
+    "hint": "Es la propiedad abreviada que describe el contorno completo.",
+    "explanation": "border agrupa grosor, estilo y color del borde, por ejemplo 2px solid black.",
+    "kind": "teorico",
+    "main_property": "border",
+    "effects": []
   },
   {
     "id": 32,
@@ -712,7 +723,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo con borde grueso sólido",
-    "answer": "border: 4px solid black;"
+    "answer": "border: 4px solid black;",
+    "options": [
+      "border: 4px solid black;",
+      "border-color: black;",
+      "border-radius: 4px;",
+      "border: 4px dotted black;"
+    ],
+    "hint": "Necesitas grosor, estilo y color en una sola declaración.",
+    "explanation": "border: 4px solid black; define grosor 4px, línea continua y color negro.",
+    "kind": "practico",
+    "main_property": "border",
+    "effects": [
+      {
+        "property": "border",
+        "value": "4px solid black"
+      }
+    ]
   },
   {
     "id": 33,
@@ -720,7 +747,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué propiedad redondea las esquinas?",
-    "answer": "border-radius"
+    "answer": "border-radius",
+    "options": [
+      "border-radius",
+      "border-color",
+      "padding",
+      "margin"
+    ],
+    "hint": "Controla la curvatura de las esquinas del contorno.",
+    "explanation": "border-radius redondea las esquinas de un elemento.",
+    "kind": "teorico",
+    "main_property": "border-radius",
+    "effects": []
   },
   {
     "id": 34,
@@ -728,7 +766,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo circular",
-    "answer": "border-radius: 50%;"
+    "answer": "border-radius: 50%;",
+    "options": [
+      "border-radius: 50%;",
+      "border-radius: 0;",
+      "border: 50%;",
+      "padding: 50%;"
+    ],
+    "hint": "Un círculo se logra redondeando las esquinas hasta la mitad del lado.",
+    "explanation": "border-radius: 50%; convierte un cuadrado en un círculo.",
+    "kind": "practico",
+    "main_property": "border-radius",
+    "effects": [
+      {
+        "property": "border-radius",
+        "value": "50%"
+      }
+    ]
   },
   {
     "id": 35,
@@ -736,7 +790,24 @@
     "type": "Completar código",
     "difficulty": "Media",
     "question": ".bug { ____: 10px; } (espacio interno)",
-    "answer": "padding"
+    "answer": "padding",
+    "options": [
+      "padding",
+      "margin",
+      "border",
+      "width"
+    ],
+    "hint": "El espacio queda entre el contenido y el borde.",
+    "explanation": "padding es el espacio interno entre el contenido y el borde.",
+    "kind": "completar",
+    "main_property": "padding",
+    "effects": [
+      {
+        "property": "padding",
+        "value": "10px"
+      }
+    ],
+    "code": ".bug { ____: 10px; }"
   },
   {
     "id": 36,
@@ -744,7 +815,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo \"inflado\" con espacio interno",
-    "answer": "padding: 10px;"
+    "answer": "padding: 10px;",
+    "options": [
+      "padding: 10px;",
+      "margin: 10px;",
+      "border: 10px;",
+      "width: 10px;"
+    ],
+    "hint": "El enemigo se ve inflado porque hay espacio entre su núcleo y su cáscara.",
+    "explanation": "padding: 10px; agrega espacio interno alrededor del contenido.",
+    "kind": "practico",
+    "main_property": "padding",
+    "effects": [
+      {
+        "property": "padding",
+        "value": "10px"
+      }
+    ]
   },
   {
     "id": 37,
@@ -752,7 +839,24 @@
     "type": "Completar código",
     "difficulty": "Media",
     "question": ".bug { ____: 20px; } (separación externa)",
-    "answer": "margin"
+    "answer": "margin",
+    "options": [
+      "margin",
+      "padding",
+      "border-radius",
+      "height"
+    ],
+    "hint": "El espacio que se pide queda fuera del borde.",
+    "explanation": "margin es el espacio externo que separa un elemento de sus vecinos.",
+    "kind": "completar",
+    "main_property": "margin",
+    "effects": [
+      {
+        "property": "margin",
+        "value": "20px"
+      }
+    ],
+    "code": ".bug { ____: 20px; }"
   },
   {
     "id": 38,
@@ -760,7 +864,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo separado de sus vecinos",
-    "answer": "margin: 20px;"
+    "answer": "margin: 20px;",
+    "options": [
+      "margin: 20px;",
+      "padding: 20px;",
+      "border-radius: 20px;",
+      "width: 20px;"
+    ],
+    "hint": "La separación con los vecinos se mide fuera del borde.",
+    "explanation": "margin: 20px; deja 20px de separación externa alrededor del elemento.",
+    "kind": "practico",
+    "main_property": "margin",
+    "effects": [
+      {
+        "property": "margin",
+        "value": "20px"
+      }
+    ]
   },
   {
     "id": 39,
@@ -768,7 +888,29 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo demasiado angosto",
-    "answer": "width: 80px;"
+    "answer": "width: 80px;",
+    "options": [
+      "width: 80px;",
+      "height: 80px;",
+      "padding: 80px;",
+      "margin: 80px;"
+    ],
+    "hint": "El defecto está en las medidas horizontales del enemigo.",
+    "explanation": "width: 80px; fija el ancho del elemento en 80px.",
+    "kind": "practico",
+    "main_property": "width",
+    "effects": [
+      {
+        "property": "width",
+        "value": "80px"
+      }
+    ],
+    "bug_effects": [
+      {
+        "property": "width",
+        "value": "40px"
+      }
+    ]
   },
   {
     "id": 40,
@@ -776,7 +918,29 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo demasiado bajo",
-    "answer": "height: 80px;"
+    "answer": "height: 80px;",
+    "options": [
+      "height: 80px;",
+      "width: 80px;",
+      "padding: 80px;",
+      "font-size: 80px;"
+    ],
+    "hint": "El defecto está en las medidas verticales del enemigo.",
+    "explanation": "height: 80px; fija la altura del elemento en 80px.",
+    "kind": "practico",
+    "main_property": "height",
+    "effects": [
+      {
+        "property": "height",
+        "value": "80px"
+      }
+    ],
+    "bug_effects": [
+      {
+        "property": "height",
+        "value": "40px"
+      }
+    ]
   },
   {
     "id": 41,
@@ -784,7 +948,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué hace padding: 15px; ?",
-    "answer": "Agrega espacio interno alrededor del contenido"
+    "answer": "Agrega espacio interno alrededor del contenido",
+    "options": [
+      "Agrega espacio interno alrededor del contenido",
+      "Agrega separación externa alrededor del elemento",
+      "Redondea las esquinas 15px",
+      "Cambia el grosor del borde a 15px"
+    ],
+    "hint": "padding actúa entre el contenido y el borde.",
+    "explanation": "padding: 15px; agrega 15px de espacio interno.",
+    "kind": "teorico",
+    "main_property": "padding",
+    "effects": []
   },
   {
     "id": 42,
@@ -792,7 +967,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué hace margin: 15px; ?",
-    "answer": "Agrega separación externa alrededor del elemento"
+    "answer": "Agrega separación externa alrededor del elemento",
+    "options": [
+      "Agrega separación externa alrededor del elemento",
+      "Agrega espacio interno alrededor del contenido",
+      "Cambia el ancho a 15px",
+      "Redondea las esquinas 15px"
+    ],
+    "hint": "margin actúa por fuera del borde.",
+    "explanation": "margin: 15px; agrega 15px de separación externa.",
+    "kind": "teorico",
+    "main_property": "margin",
+    "effects": []
   },
   {
     "id": 43,
@@ -800,7 +986,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué propiedad controla el ancho de un elemento?",
-    "answer": "width"
+    "answer": "width",
+    "options": [
+      "width",
+      "height",
+      "padding",
+      "margin"
+    ],
+    "hint": "Piensa en la medida horizontal del elemento.",
+    "explanation": "width controla el ancho de un elemento.",
+    "kind": "teorico",
+    "main_property": "width",
+    "effects": []
   },
   {
     "id": 44,
@@ -808,7 +1005,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué propiedad controla la altura de un elemento?",
-    "answer": "height"
+    "answer": "height",
+    "options": [
+      "height",
+      "width",
+      "margin",
+      "border"
+    ],
+    "hint": "Piensa en la medida vertical del elemento.",
+    "explanation": "height controla la altura de un elemento.",
+    "kind": "teorico",
+    "main_property": "height",
+    "effects": []
   },
   {
     "id": 45,
@@ -816,7 +1024,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué hace border-radius: 0; ?",
-    "answer": "Deja las esquinas sin redondear"
+    "answer": "Deja las esquinas sin redondear",
+    "options": [
+      "Deja las esquinas sin redondear",
+      "Hace el elemento circular",
+      "Quita el borde por completo",
+      "Hace el elemento transparente"
+    ],
+    "hint": "El valor 0 significa que no hay curvatura.",
+    "explanation": "border-radius: 0; deja las esquinas rectas.",
+    "kind": "teorico",
+    "main_property": "border-radius",
+    "effects": []
   },
   {
     "id": 46,
@@ -824,7 +1043,29 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo debe medir 120px de ancho",
-    "answer": "width: 120px;"
+    "answer": "width: 120px;",
+    "options": [
+      "width: 120px;",
+      "height: 120px;",
+      "padding: 120px;",
+      "font-size: 120px;"
+    ],
+    "hint": "La medida pedida es horizontal.",
+    "explanation": "width: 120px; fija el ancho en 120px.",
+    "kind": "practico",
+    "main_property": "width",
+    "effects": [
+      {
+        "property": "width",
+        "value": "120px"
+      }
+    ],
+    "bug_effects": [
+      {
+        "property": "width",
+        "value": "60px"
+      }
+    ]
   },
   {
     "id": 47,
@@ -832,7 +1073,29 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo debe medir 100px de alto",
-    "answer": "height: 100px;"
+    "answer": "height: 100px;",
+    "options": [
+      "height: 100px;",
+      "width: 100px;",
+      "margin: 100px;",
+      "border: 100px;"
+    ],
+    "hint": "La medida pedida es vertical.",
+    "explanation": "height: 100px; fija la altura en 100px.",
+    "kind": "practico",
+    "main_property": "height",
+    "effects": [
+      {
+        "property": "height",
+        "value": "100px"
+      }
+    ],
+    "bug_effects": [
+      {
+        "property": "height",
+        "value": "50px"
+      }
+    ]
   },
   {
     "id": 48,
@@ -840,7 +1103,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo necesita 20px de espacio interno",
-    "answer": "padding: 20px;"
+    "answer": "padding: 20px;",
+    "options": [
+      "padding: 20px;",
+      "margin: 20px;",
+      "border: 20px;",
+      "width: 20px;"
+    ],
+    "hint": "El espacio pedido es interno.",
+    "explanation": "padding: 20px; agrega 20px de espacio interno.",
+    "kind": "practico",
+    "main_property": "padding",
+    "effects": [
+      {
+        "property": "padding",
+        "value": "20px"
+      }
+    ]
   },
   {
     "id": 49,
@@ -848,7 +1127,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo necesita 30px de separación externa",
-    "answer": "margin: 30px;"
+    "answer": "margin: 30px;",
+    "options": [
+      "margin: 30px;",
+      "padding: 30px;",
+      "border-radius: 30px;",
+      "height: 30px;"
+    ],
+    "hint": "El espacio pedido es externo.",
+    "explanation": "margin: 30px; separa al enemigo 30px de lo que lo rodea.",
+    "kind": "practico",
+    "main_property": "margin",
+    "effects": [
+      {
+        "property": "margin",
+        "value": "30px"
+      }
+    ]
   },
   {
     "id": 50,
@@ -856,7 +1151,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo debe tener esquinas redondeadas de 12px",
-    "answer": "border-radius: 12px;"
+    "answer": "border-radius: 12px;",
+    "options": [
+      "border-radius: 12px;",
+      "border: 12px;",
+      "padding: 12px;",
+      "border-radius: 12%;"
+    ],
+    "hint": "Presta atención a la unidad del valor.",
+    "explanation": "border-radius: 12px; redondea las esquinas con un radio de 12px.",
+    "kind": "practico",
+    "main_property": "border-radius",
+    "effects": [
+      {
+        "property": "border-radius",
+        "value": "12px"
+      }
+    ]
   },
   {
     "id": 51,
@@ -864,7 +1175,30 @@
     "type": "Completar código",
     "difficulty": "Media",
     "question": ".bug { ____: 100px; } para controlar el ancho",
-    "answer": "width"
+    "answer": "width",
+    "options": [
+      "width",
+      "height",
+      "padding",
+      "margin"
+    ],
+    "hint": "El valor controla una medida horizontal.",
+    "explanation": "width define el ancho; 100px lo fija en 100 píxeles.",
+    "kind": "completar",
+    "main_property": "width",
+    "effects": [
+      {
+        "property": "width",
+        "value": "100px"
+      }
+    ],
+    "code": ".bug { ____: 100px; }",
+    "bug_effects": [
+      {
+        "property": "width",
+        "value": "50px"
+      }
+    ]
   },
   {
     "id": 52,
@@ -872,7 +1206,30 @@
     "type": "Completar código",
     "difficulty": "Media",
     "question": ".bug { ____: 80px; } para controlar la altura",
-    "answer": "height"
+    "answer": "height",
+    "options": [
+      "height",
+      "width",
+      "border",
+      "padding"
+    ],
+    "hint": "El valor controla una medida vertical.",
+    "explanation": "height define la altura; 80px la fija en 80 píxeles.",
+    "kind": "completar",
+    "main_property": "height",
+    "effects": [
+      {
+        "property": "height",
+        "value": "80px"
+      }
+    ],
+    "code": ".bug { ____: 80px; }",
+    "bug_effects": [
+      {
+        "property": "height",
+        "value": "40px"
+      }
+    ]
   },
   {
     "id": 53,
@@ -880,7 +1237,24 @@
     "type": "Completar código",
     "difficulty": "Media",
     "question": ".bug { ____: 8px; } para separar contenido del borde",
-    "answer": "padding"
+    "answer": "padding",
+    "options": [
+      "padding",
+      "margin",
+      "border",
+      "height"
+    ],
+    "hint": "Se separa el contenido del borde: es un espacio interno.",
+    "explanation": "padding separa el contenido del borde.",
+    "kind": "completar",
+    "main_property": "padding",
+    "effects": [
+      {
+        "property": "padding",
+        "value": "8px"
+      }
+    ],
+    "code": ".bug { ____: 8px; }"
   },
   {
     "id": 54,
@@ -888,7 +1262,24 @@
     "type": "Completar código",
     "difficulty": "Media",
     "question": ".bug { ____: 15px; } para separar un enemigo de otro",
-    "answer": "margin"
+    "answer": "margin",
+    "options": [
+      "margin",
+      "padding",
+      "width",
+      "border-radius"
+    ],
+    "hint": "Se separa un enemigo de otro: es un espacio externo.",
+    "explanation": "margin separa un elemento de sus vecinos.",
+    "kind": "completar",
+    "main_property": "margin",
+    "effects": [
+      {
+        "property": "margin",
+        "value": "15px"
+      }
+    ],
+    "code": ".bug { ____: 15px; }"
   },
   {
     "id": 55,
@@ -896,7 +1287,24 @@
     "type": "Completar código",
     "difficulty": "Media",
     "question": ".bug { ____: 20px; } para redondear esquinas",
-    "answer": "border-radius"
+    "answer": "border-radius",
+    "options": [
+      "border-radius",
+      "border",
+      "padding",
+      "margin"
+    ],
+    "hint": "El valor 20px se aplica a las esquinas.",
+    "explanation": "border-radius: 20px; redondea las esquinas con radio 20px.",
+    "kind": "completar",
+    "main_property": "border-radius",
+    "effects": [
+      {
+        "property": "border-radius",
+        "value": "20px"
+      }
+    ],
+    "code": ".bug { ____: 20px; }"
   },
   {
     "id": 56,
@@ -904,7 +1312,37 @@
     "type": "Multi-objetivo",
     "difficulty": "Difícil",
     "question": "Enemigo ancho y alto de 100px",
-    "answer": "width: 100px; + height: 100px;"
+    "answer": "width: 100px; + height: 100px;",
+    "options": [
+      "width: 100px; + height: 100px;",
+      "width: 100px; + padding: 100px;",
+      "height: 100px; + margin: 100px;",
+      "width: 100px; + height: 10px;"
+    ],
+    "hint": "Necesitas una propiedad para cada medida.",
+    "explanation": "width fija el ancho y height la altura; ambas valen 100px.",
+    "kind": "multi",
+    "main_property": "width",
+    "effects": [
+      {
+        "property": "width",
+        "value": "100px"
+      },
+      {
+        "property": "height",
+        "value": "100px"
+      }
+    ],
+    "bug_effects": [
+      {
+        "property": "width",
+        "value": "50px"
+      },
+      {
+        "property": "height",
+        "value": "50px"
+      }
+    ]
   },
   {
     "id": 57,
@@ -912,7 +1350,33 @@
     "type": "Multi-objetivo",
     "difficulty": "Difícil",
     "question": "Enemigo de 120px de ancho con esquinas redondeadas",
-    "answer": "width: 120px; + border-radius: 20px;"
+    "answer": "width: 120px; + border-radius: 20px;",
+    "options": [
+      "width: 120px; + border-radius: 20px;",
+      "height: 120px; + border-radius: 20px;",
+      "width: 120px; + padding: 20px;",
+      "width: 20px; + border-radius: 120px;"
+    ],
+    "hint": "Un valor es una medida de ancho y el otro un radio de esquina.",
+    "explanation": "width: 120px; fija el ancho y border-radius: 20px; redondea las esquinas.",
+    "kind": "multi",
+    "main_property": "width",
+    "effects": [
+      {
+        "property": "width",
+        "value": "120px"
+      },
+      {
+        "property": "border-radius",
+        "value": "20px"
+      }
+    ],
+    "bug_effects": [
+      {
+        "property": "width",
+        "value": "60px"
+      }
+    ]
   },
   {
     "id": 58,
@@ -920,7 +1384,27 @@
     "type": "Multi-objetivo",
     "difficulty": "Difícil",
     "question": "Enemigo con borde sólido y forma circular",
-    "answer": "border: 4px solid black; + border-radius: 50%;"
+    "answer": "border: 4px solid black; + border-radius: 50%;",
+    "options": [
+      "border: 4px solid black; + border-radius: 50%;",
+      "border: 4px solid black; + padding: 50%;",
+      "border-color: black; + border-radius: 50%;",
+      "border: 4px dotted black; + border-radius: 0;"
+    ],
+    "hint": "Un borde con grosor y estilo, y una forma redondeada.",
+    "explanation": "border define el contorno sólido y border-radius: 50%; lo vuelve circular.",
+    "kind": "multi",
+    "main_property": "border",
+    "effects": [
+      {
+        "property": "border",
+        "value": "4px solid black"
+      },
+      {
+        "property": "border-radius",
+        "value": "50%"
+      }
+    ]
   },
   {
     "id": 59,
@@ -928,7 +1412,27 @@
     "type": "Multi-objetivo",
     "difficulty": "Difícil",
     "question": "Enemigo con 20px de espacio interno y 10px externo",
-    "answer": "padding: 20px; + margin: 10px;"
+    "answer": "padding: 20px; + margin: 10px;",
+    "options": [
+      "padding: 20px; + margin: 10px;",
+      "padding: 10px; + margin: 20px;",
+      "margin: 20px; + border: 10px;",
+      "width: 20px; + height: 10px;"
+    ],
+    "hint": "Interno y externo son propiedades distintas; fíjate en cuál lleva cada valor.",
+    "explanation": "padding: 20px; es el espacio interno y margin: 10px; la separación externa.",
+    "kind": "multi",
+    "main_property": "padding",
+    "effects": [
+      {
+        "property": "padding",
+        "value": "20px"
+      },
+      {
+        "property": "margin",
+        "value": "10px"
+      }
+    ]
   },
   {
     "id": 60,
@@ -936,15 +1440,60 @@
     "type": "Multi-objetivo",
     "difficulty": "Difícil",
     "question": "Enemigo de 150px × 150px con forma circular",
-    "answer": "width: 150px; + height: 150px; + border-radius: 50%;"
+    "answer": "width: 150px; + height: 150px; + border-radius: 50%;",
+    "options": [
+      "width: 150px; + height: 150px; + border-radius: 50%;",
+      "width: 150px; + height: 150px; + border-radius: 0;",
+      "width: 150px; + padding: 150px; + border-radius: 50%;",
+      "width: 50px; + height: 50px; + border-radius: 150px;"
+    ],
+    "hint": "Un círculo necesita lados iguales y las esquinas redondeadas al máximo.",
+    "explanation": "width y height de 150px forman un cuadrado y border-radius: 50%; lo vuelve circular.",
+    "kind": "multi",
+    "main_property": "width",
+    "effects": [
+      {
+        "property": "width",
+        "value": "150px"
+      },
+      {
+        "property": "height",
+        "value": "150px"
+      },
+      {
+        "property": "border-radius",
+        "value": "50%"
+      }
+    ],
+    "bug_effects": [
+      {
+        "property": "width",
+        "value": "70px"
+      },
+      {
+        "property": "height",
+        "value": "70px"
+      }
+    ]
   },
   {
     "id": 61,
     "level": 3,
     "type": "Teórico",
     "difficulty": "Fácil",
-    "question": "Enemigo rotado 45°",
-    "answer": "transform: rotate(45deg);"
+    "question": "¿Qué declaración rota un elemento 45°?",
+    "answer": "transform: rotate(45deg);",
+    "options": [
+      "transform: rotate(45deg);",
+      "transform: skew(45deg);",
+      "transform: rotate(45);",
+      "transform: translate(45deg);"
+    ],
+    "hint": "El giro usa la propiedad transform y el ángulo lleva unidad.",
+    "explanation": "transform: rotate(45deg); gira el elemento 45 grados.",
+    "kind": "teorico",
+    "main_property": "transform",
+    "effects": []
   },
   {
     "id": 62,
@@ -952,7 +1501,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué propiedad define la dirección del eje principal?",
-    "answer": "flex-direction"
+    "answer": "flex-direction",
+    "options": [
+      "flex-direction",
+      "justify-content",
+      "align-items",
+      "flex-wrap"
+    ],
+    "hint": "Define si el eje principal es horizontal o vertical.",
+    "explanation": "flex-direction fija la dirección del eje principal de un contenedor flex.",
+    "kind": "teorico",
+    "main_property": "flex-direction",
+    "effects": []
   },
   {
     "id": 63,
@@ -960,7 +1520,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Reordenar fila en dirección columna",
-    "answer": "flex-direction: column;"
+    "answer": "flex-direction: column;",
+    "options": [
+      "flex-direction: column;",
+      "flex-direction: row;",
+      "justify-content: column;",
+      "align-items: column;"
+    ],
+    "hint": "La dirección del eje principal se cambia con una sola propiedad.",
+    "explanation": "flex-direction: column; apila los elementos en vertical.",
+    "kind": "practico",
+    "main_property": "flex-direction",
+    "effects": [
+      {
+        "property": "flex-direction",
+        "value": "column"
+      }
+    ]
   },
   {
     "id": 64,
@@ -968,7 +1544,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Alinear elementos al centro del eje principal",
-    "answer": "justify-content: center;"
+    "answer": "justify-content: center;",
+    "options": [
+      "justify-content: center;",
+      "align-items: center;",
+      "align-content: center;",
+      "flex-direction: center;"
+    ],
+    "hint": "El eje principal se alinea con justify-.",
+    "explanation": "justify-content: center; centra los elementos en el eje principal.",
+    "kind": "practico",
+    "main_property": "justify-content",
+    "effects": [
+      {
+        "property": "justify-content",
+        "value": "center"
+      }
+    ]
   },
   {
     "id": 65,
@@ -976,7 +1568,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Alinear elementos al final del eje principal",
-    "answer": "justify-content: flex-end;"
+    "answer": "justify-content: flex-end;",
+    "options": [
+      "justify-content: flex-end;",
+      "align-items: flex-end;",
+      "justify-content: flex-start;",
+      "flex-direction: flex-end;"
+    ],
+    "hint": "El eje principal y el final del contenedor.",
+    "explanation": "justify-content: flex-end; empuja los elementos al final del eje principal.",
+    "kind": "practico",
+    "main_property": "justify-content",
+    "effects": [
+      {
+        "property": "justify-content",
+        "value": "flex-end"
+      }
+    ]
   },
   {
     "id": 66,
@@ -984,7 +1592,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Distribuir líneas cuando sobra espacio",
-    "answer": "align-content: space-between;"
+    "answer": "align-content: space-between;",
+    "options": [
+      "align-content: space-between;",
+      "justify-content: space-between;",
+      "align-items: space-between;",
+      "gap: space-between;"
+    ],
+    "hint": "Se reparten las líneas, no los elementos de una misma línea.",
+    "explanation": "align-content: space-between; distribuye las líneas del contenedor en el eje transversal.",
+    "kind": "practico",
+    "main_property": "align-content",
+    "effects": [
+      {
+        "property": "align-content",
+        "value": "space-between"
+      }
+    ]
   },
   {
     "id": 67,
@@ -992,7 +1616,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Alinear elementos en el eje transversal",
-    "answer": "align-items: center;"
+    "answer": "align-items: center;",
+    "options": [
+      "align-items: center;",
+      "justify-content: center;",
+      "align-content: center;",
+      "flex-direction: center;"
+    ],
+    "hint": "El eje transversal es perpendicular al principal.",
+    "explanation": "align-items: center; centra los elementos en el eje transversal.",
+    "kind": "practico",
+    "main_property": "align-items",
+    "effects": [
+      {
+        "property": "align-items",
+        "value": "center"
+      }
+    ]
   },
   {
     "id": 68,
@@ -1000,15 +1640,90 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Separar elementos sin usar margin",
-    "answer": "gap: 16px;"
+    "answer": "gap: 16px;",
+    "options": [
+      "gap: 16px;",
+      "margin: 16px;",
+      "padding: 16px;",
+      "flex-gap: 16px;"
+    ],
+    "hint": "Existe una propiedad de contenedor para el espacio entre elementos.",
+    "explanation": "gap: 16px; separa los elementos del contenedor sin usar margin.",
+    "kind": "practico",
+    "main_property": "gap",
+    "effects": [
+      {
+        "property": "gap",
+        "value": "16px"
+      }
+    ]
   },
   {
     "id": 69,
     "level": 3,
     "type": "Multi-objetivo",
     "difficulty": "Difícil",
-    "question": "3 enemigos en fila frente, cada uno con un defecto distinto",
-    "answer": "font-size + color + opacity (una por enemigo)"
+    "question": "3 enemigos en fila frente, cada uno con un defecto distinto: texto pequeño, texto sin color y casi invisible",
+    "answer": "font-size + color + opacity (una por enemigo)",
+    "options": [
+      "font-size + color + opacity (una por enemigo)",
+      "font-size + font-size + font-size (la misma en los tres)",
+      "color + color + opacity (dos al mismo enemigo)",
+      "width + height + padding (una por enemigo)"
+    ],
+    "hint": "Cada defecto se corrige con una propiedad distinta: tamaño del texto, color y transparencia.",
+    "explanation": "Cada enemigo necesita su propia propiedad: font-size, color y opacity.",
+    "kind": "multi",
+    "main_property": "font-size",
+    "effects": [
+      {
+        "property": "font-size",
+        "value": "24px"
+      },
+      {
+        "property": "color",
+        "value": "red"
+      },
+      {
+        "property": "opacity",
+        "value": "1"
+      }
+    ],
+    "lane_effects": [
+      [
+        {
+          "property": "font-size",
+          "value": "24px"
+        }
+      ],
+      [
+        {
+          "property": "color",
+          "value": "red"
+        }
+      ],
+      [
+        {
+          "property": "opacity",
+          "value": "1"
+        }
+      ]
+    ],
+    "lane_bug_effects": [
+      [
+        {
+          "property": "font-size",
+          "value": "9px"
+        }
+      ],
+      [],
+      [
+        {
+          "property": "opacity",
+          "value": "0.3"
+        }
+      ]
+    ]
   },
   {
     "id": 70,
@@ -1016,7 +1731,27 @@
     "type": "Multi-objetivo (boss)",
     "difficulty": "Difícil",
     "question": "Enemigo final: forma y ángulo incorrectos a la vez",
-    "answer": "border-radius: 50%; + transform: rotate(45deg);"
+    "answer": "border-radius: 50%; + transform: rotate(45deg);",
+    "options": [
+      "border-radius: 50%; + transform: rotate(45deg);",
+      "border-radius: 45deg; + transform: rotate(50%);",
+      "border: 50%; + transform: rotate(45deg);",
+      "border-radius: 50%; + transform: skew(45deg);"
+    ],
+    "hint": "Una propiedad corrige la forma y la otra el ángulo.",
+    "explanation": "border-radius: 50%; vuelve circular al enemigo y transform: rotate(45deg); lo gira 45°.",
+    "kind": "boss",
+    "main_property": "border-radius",
+    "effects": [
+      {
+        "property": "border-radius",
+        "value": "50%"
+      },
+      {
+        "property": "transform",
+        "value": "rotate(45deg)"
+      }
+    ]
   },
   {
     "id": 71,
@@ -1024,7 +1759,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué hace transform: rotate(90deg); ?",
-    "answer": "Rota el elemento 90°"
+    "answer": "Rota el elemento 90°",
+    "options": [
+      "Rota el elemento 90°",
+      "Lo inclina 90° sin girarlo",
+      "Lo mueve 90px a la derecha",
+      "Lo escala al 90%"
+    ],
+    "hint": "rotate() gira el elemento sobre su centro.",
+    "explanation": "transform: rotate(90deg); gira el elemento un cuarto de vuelta.",
+    "kind": "teorico",
+    "main_property": "transform",
+    "effects": []
   },
   {
     "id": 72,
@@ -1032,7 +1778,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué hace flex-direction: row; ?",
-    "answer": "Organiza los elementos en una fila"
+    "answer": "Organiza los elementos en una fila",
+    "options": [
+      "Organiza los elementos en una fila",
+      "Organiza los elementos en una columna",
+      "Centra los elementos en el eje principal",
+      "Separa los elementos entre sí"
+    ],
+    "hint": "row es el valor por defecto del eje principal horizontal.",
+    "explanation": "flex-direction: row; coloca los elementos uno al lado del otro.",
+    "kind": "teorico",
+    "main_property": "flex-direction",
+    "effects": []
   },
   {
     "id": 73,
@@ -1040,7 +1797,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué hace justify-content: center; ?",
-    "answer": "Centra los elementos en el eje principal"
+    "answer": "Centra los elementos en el eje principal",
+    "options": [
+      "Centra los elementos en el eje principal",
+      "Centra los elementos en el eje transversal",
+      "Coloca los elementos en columna",
+      "Agrega espacio interno a los elementos"
+    ],
+    "hint": "justify- trabaja sobre el eje principal.",
+    "explanation": "justify-content: center; centra los elementos a lo largo del eje principal.",
+    "kind": "teorico",
+    "main_property": "justify-content",
+    "effects": []
   },
   {
     "id": 74,
@@ -1048,7 +1816,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué propiedad permite separar elementos sin utilizar margin?",
-    "answer": "gap"
+    "answer": "gap",
+    "options": [
+      "gap",
+      "padding",
+      "justify-content",
+      "flex-direction"
+    ],
+    "hint": "Es una propiedad del contenedor, no de cada elemento.",
+    "explanation": "gap define el espacio entre los elementos de un contenedor flex.",
+    "kind": "teorico",
+    "main_property": "gap",
+    "effects": []
   },
   {
     "id": 75,
@@ -1056,7 +1835,18 @@
     "type": "Teórico",
     "difficulty": "Fácil",
     "question": "¿Qué propiedad alinea los elementos en el eje transversal?",
-    "answer": "align-items"
+    "answer": "align-items",
+    "options": [
+      "align-items",
+      "justify-content",
+      "flex-direction",
+      "gap"
+    ],
+    "hint": "Trabaja en el eje perpendicular al principal.",
+    "explanation": "align-items alinea los elementos en el eje transversal.",
+    "kind": "teorico",
+    "main_property": "align-items",
+    "effects": []
   },
   {
     "id": 76,
@@ -1064,7 +1854,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigo debe rotarse 90°",
-    "answer": "transform: rotate(90deg);"
+    "answer": "transform: rotate(90deg);",
+    "options": [
+      "transform: rotate(90deg);",
+      "transform: rotate(90);",
+      "transform: skew(90deg);",
+      "flex-direction: rotate(90deg);"
+    ],
+    "hint": "El giro usa transform y un ángulo con unidad.",
+    "explanation": "transform: rotate(90deg); gira el elemento 90 grados.",
+    "kind": "practico",
+    "main_property": "transform",
+    "effects": [
+      {
+        "property": "transform",
+        "value": "rotate(90deg)"
+      }
+    ]
   },
   {
     "id": 77,
@@ -1072,7 +1878,29 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigos deben organizarse horizontalmente",
-    "answer": "flex-direction: row;"
+    "answer": "flex-direction: row;",
+    "options": [
+      "flex-direction: row;",
+      "flex-direction: column;",
+      "justify-content: row;",
+      "align-items: row;"
+    ],
+    "hint": "Horizontal significa que los elementos van uno al lado del otro.",
+    "explanation": "flex-direction: row; ordena los elementos en horizontal.",
+    "kind": "practico",
+    "main_property": "flex-direction",
+    "effects": [
+      {
+        "property": "flex-direction",
+        "value": "row"
+      }
+    ],
+    "bug_effects": [
+      {
+        "property": "flex-direction",
+        "value": "column"
+      }
+    ]
   },
   {
     "id": 78,
@@ -1080,7 +1908,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigos deben organizarse verticalmente",
-    "answer": "flex-direction: column;"
+    "answer": "flex-direction: column;",
+    "options": [
+      "flex-direction: column;",
+      "flex-direction: row;",
+      "justify-content: column;",
+      "align-items: column;"
+    ],
+    "hint": "Vertical significa que los elementos se apilan.",
+    "explanation": "flex-direction: column; ordena los elementos en vertical.",
+    "kind": "practico",
+    "main_property": "flex-direction",
+    "effects": [
+      {
+        "property": "flex-direction",
+        "value": "column"
+      }
+    ]
   },
   {
     "id": 79,
@@ -1088,7 +1932,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Grupo de enemigos debe quedar centrado en el eje principal",
-    "answer": "justify-content: center;"
+    "answer": "justify-content: center;",
+    "options": [
+      "justify-content: center;",
+      "align-items: center;",
+      "align-content: center;",
+      "flex-direction: center;"
+    ],
+    "hint": "El eje principal se alinea con justify-.",
+    "explanation": "justify-content: center; centra el grupo en el eje principal.",
+    "kind": "practico",
+    "main_property": "justify-content",
+    "effects": [
+      {
+        "property": "justify-content",
+        "value": "center"
+      }
+    ]
   },
   {
     "id": 80,
@@ -1096,7 +1956,23 @@
     "type": "Práctico",
     "difficulty": "Media",
     "question": "Enemigos deben quedar separados por 20px",
-    "answer": "gap: 20px;"
+    "answer": "gap: 20px;",
+    "options": [
+      "gap: 20px;",
+      "gap: 20%;",
+      "padding: 20px;",
+      "flex-gap: 20px;"
+    ],
+    "hint": "Presta atención al nombre exacto de la propiedad y a la unidad.",
+    "explanation": "gap: 20px; deja 20px entre los elementos del contenedor.",
+    "kind": "practico",
+    "main_property": "gap",
+    "effects": [
+      {
+        "property": "gap",
+        "value": "20px"
+      }
+    ]
   },
   {
     "id": 81,
@@ -1104,7 +1980,24 @@
     "type": "Completar código",
     "difficulty": "Media",
     "question": ".fila { ____: center; } para centrar en el eje principal",
-    "answer": "justify-content"
+    "answer": "justify-content",
+    "options": [
+      "justify-content",
+      "align-items",
+      "align-content",
+      "flex-direction"
+    ],
+    "hint": "Centrar en el eje principal se hace con justify-.",
+    "explanation": "justify-content: center; centra en el eje principal.",
+    "kind": "completar",
+    "main_property": "justify-content",
+    "effects": [
+      {
+        "property": "justify-content",
+        "value": "center"
+      }
+    ],
+    "code": ".fila { ____: center; }"
   },
   {
     "id": 82,
@@ -1112,7 +2005,24 @@
     "type": "Completar código",
     "difficulty": "Media",
     "question": ".fila { ____: column; } para cambiar la dirección",
-    "answer": "flex-direction"
+    "answer": "flex-direction",
+    "options": [
+      "flex-direction",
+      "justify-content",
+      "align-items",
+      "gap"
+    ],
+    "hint": "El valor column indica la dirección del eje.",
+    "explanation": "flex-direction: column; cambia la dirección del eje principal.",
+    "kind": "completar",
+    "main_property": "flex-direction",
+    "effects": [
+      {
+        "property": "flex-direction",
+        "value": "column"
+      }
+    ],
+    "code": ".fila { ____: column; }"
   },
   {
     "id": 83,
@@ -1120,7 +2030,24 @@
     "type": "Completar código",
     "difficulty": "Media",
     "question": ".fila { ____: 24px; } para separar elementos",
-    "answer": "gap"
+    "answer": "gap",
+    "options": [
+      "gap",
+      "padding",
+      "align-items",
+      "flex-direction"
+    ],
+    "hint": "Se trata de separar los elementos del contenedor.",
+    "explanation": "gap: 24px; separa los elementos del contenedor.",
+    "kind": "completar",
+    "main_property": "gap",
+    "effects": [
+      {
+        "property": "gap",
+        "value": "24px"
+      }
+    ],
+    "code": ".fila { ____: 24px; }"
   },
   {
     "id": 84,
@@ -1128,7 +2055,24 @@
     "type": "Completar código",
     "difficulty": "Media",
     "question": ".fila { ____: center; } para alinear en el eje transversal",
-    "answer": "align-items"
+    "answer": "align-items",
+    "options": [
+      "align-items",
+      "justify-content",
+      "flex-direction",
+      "gap"
+    ],
+    "hint": "El eje transversal se alinea con align-.",
+    "explanation": "align-items: center; centra en el eje transversal.",
+    "kind": "completar",
+    "main_property": "align-items",
+    "effects": [
+      {
+        "property": "align-items",
+        "value": "center"
+      }
+    ],
+    "code": ".fila { ____: center; }"
   },
   {
     "id": 85,
@@ -1136,7 +2080,24 @@
     "type": "Completar código",
     "difficulty": "Media",
     "question": ".bug { ____: rotate(30deg); }",
-    "answer": "transform"
+    "answer": "transform",
+    "options": [
+      "transform",
+      "transition",
+      "flex-direction",
+      "align-items"
+    ],
+    "hint": "rotate() es una función de esta propiedad.",
+    "explanation": "transform acepta funciones como rotate(30deg).",
+    "kind": "completar",
+    "main_property": "transform",
+    "effects": [
+      {
+        "property": "transform",
+        "value": "rotate(30deg)"
+      }
+    ],
+    "code": ".bug { ____: rotate(30deg); }"
   },
   {
     "id": 86,
@@ -1144,7 +2105,27 @@
     "type": "Multi-objetivo",
     "difficulty": "Difícil",
     "question": "Enemigos deben estar en columna y separados por 20px",
-    "answer": "flex-direction: column; + gap: 20px;"
+    "answer": "flex-direction: column; + gap: 20px;",
+    "options": [
+      "flex-direction: column; + gap: 20px;",
+      "flex-direction: row; + gap: 20px;",
+      "flex-direction: column; + padding: 20px;",
+      "justify-content: column; + gap: 20px;"
+    ],
+    "hint": "Una propiedad define la dirección y otra el espacio entre elementos.",
+    "explanation": "flex-direction: column; apila los elementos y gap: 20px; los separa.",
+    "kind": "multi",
+    "main_property": "flex-direction",
+    "effects": [
+      {
+        "property": "flex-direction",
+        "value": "column"
+      },
+      {
+        "property": "gap",
+        "value": "20px"
+      }
+    ]
   },
   {
     "id": 87,
@@ -1152,7 +2133,33 @@
     "type": "Multi-objetivo",
     "difficulty": "Difícil",
     "question": "Grupo en fila y centrado en el eje principal",
-    "answer": "flex-direction: row; + justify-content: center;"
+    "answer": "flex-direction: row; + justify-content: center;",
+    "options": [
+      "flex-direction: row; + justify-content: center;",
+      "flex-direction: column; + justify-content: center;",
+      "flex-direction: row; + align-items: center;",
+      "flex-direction: row; + align-content: center;"
+    ],
+    "hint": "Dirección horizontal y centrado sobre el eje principal.",
+    "explanation": "flex-direction: row; los pone en fila y justify-content: center; los centra en ese eje.",
+    "kind": "multi",
+    "main_property": "flex-direction",
+    "effects": [
+      {
+        "property": "flex-direction",
+        "value": "row"
+      },
+      {
+        "property": "justify-content",
+        "value": "center"
+      }
+    ],
+    "bug_effects": [
+      {
+        "property": "flex-direction",
+        "value": "column"
+      }
+    ]
   },
   {
     "id": 88,
@@ -1160,7 +2167,27 @@
     "type": "Multi-objetivo",
     "difficulty": "Difícil",
     "question": "Enemigos centrados en eje transversal y separados 16px",
-    "answer": "align-items: center; + gap: 16px;"
+    "answer": "align-items: center; + gap: 16px;",
+    "options": [
+      "align-items: center; + gap: 16px;",
+      "justify-content: center; + gap: 16px;",
+      "align-items: center; + margin: 16px;",
+      "align-content: center; + gap: 16px;"
+    ],
+    "hint": "El eje transversal se alinea con align-items y el espacio entre elementos con gap.",
+    "explanation": "align-items: center; centra en el eje transversal y gap: 16px; separa los elementos.",
+    "kind": "multi",
+    "main_property": "align-items",
+    "effects": [
+      {
+        "property": "align-items",
+        "value": "center"
+      },
+      {
+        "property": "gap",
+        "value": "16px"
+      }
+    ]
   },
   {
     "id": 89,
@@ -1168,14 +2195,58 @@
     "type": "Multi-objetivo",
     "difficulty": "Difícil",
     "question": "Enemigo rotado 45° y grupo centrado",
-    "answer": "transform: rotate(45deg); + justify-content: center;"
+    "answer": "transform: rotate(45deg); + justify-content: center;",
+    "options": [
+      "transform: rotate(45deg); + justify-content: center;",
+      "transform: rotate(45deg); + align-items: center;",
+      "transform: skew(45deg); + justify-content: center;",
+      "transform: rotate(45); + justify-content: center;"
+    ],
+    "hint": "Una propiedad gira a cada enemigo y la otra centra el grupo en el eje principal.",
+    "explanation": "transform: rotate(45deg); gira y justify-content: center; centra el grupo.",
+    "kind": "multi",
+    "main_property": "transform",
+    "effects": [
+      {
+        "property": "transform",
+        "value": "rotate(45deg)"
+      },
+      {
+        "property": "justify-content",
+        "value": "center"
+      }
+    ]
   },
   {
     "id": 90,
     "level": 3,
     "type": "Multi-objetivo (boss)",
     "difficulty": "Difícil",
-    "question": "Grupo en columna, centrado y con separación de 20px",
-    "answer": "flex-direction: column; + justify-content: center; + gap: 20px;"
+    "question": "Grupo en columna, centrado en el eje principal y con separación de 20px",
+    "answer": "flex-direction: column; + justify-content: center; + gap: 20px;",
+    "options": [
+      "flex-direction: column; + justify-content: center; + gap: 20px;",
+      "flex-direction: row; + justify-content: center; + gap: 20px;",
+      "flex-direction: column; + align-items: center; + gap: 20px;",
+      "flex-direction: column; + justify-content: center; + padding: 20px;"
+    ],
+    "hint": "Son tres propiedades: dirección, alineación en el eje principal y espacio entre elementos.",
+    "explanation": "flex-direction: column; apila, justify-content: center; centra en el eje principal y gap: 20px; separa.",
+    "kind": "boss",
+    "main_property": "flex-direction",
+    "effects": [
+      {
+        "property": "flex-direction",
+        "value": "column"
+      },
+      {
+        "property": "justify-content",
+        "value": "center"
+      },
+      {
+        "property": "gap",
+        "value": "20px"
+      }
+    ]
   }
 ]

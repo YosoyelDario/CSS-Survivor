@@ -20,15 +20,15 @@
       ],
       [
         "Ataca",
-        "Cada acierto elimina la fila FRENTE completa: objetivo y dos vecinos."
+        "Cada acierto elimina la fila FRENTE. En el Nivel 3 el disparo se dirige a cada enemigo."
       ],
       [
         "Aprende",
-        "Si fallas pierdes una vida y recibes una pista antes de continuar."
+        "Si fallas pierdes una vida y ves por qué. Cada 5 aciertos seguidos recuperas una."
       ],
       [
         "Repara",
-        "Limpia las cuatro zonas para completar el Nivel 1."
+        "Limpia las cuatro zonas para completar el nivel."
       ]
     ]
   },
@@ -37,25 +37,64 @@
       "id": "first_bug",
       "name": "Primer bug eliminado",
       "description": "Limpia tu primera fila de bugs.",
-      "level": 1
+      "level": 1,
+      "trigger": "answer"
     },
     {
       "id": "streak_5",
       "name": "Racha imparable",
       "description": "Consigue 5 respuestas correctas seguidas.",
-      "level": 1
+      "level": 1,
+      "trigger": "streak"
     },
     {
       "id": "perfect",
       "name": "Impecable",
       "description": "Completa el Nivel 1 sin perder vidas.",
-      "level": 1
+      "level": 1,
+      "trigger": "level_perfect"
     },
     {
       "id": "color_master",
       "name": "Maestro del Color",
       "description": "Completa el Nivel 1.",
-      "level": 1
+      "level": 1,
+      "trigger": "level_complete"
+    },
+    {
+      "id": "box_master",
+      "name": "Maestro de la Caja",
+      "description": "Completa el Nivel 2.",
+      "level": 2,
+      "trigger": "level_complete"
+    },
+    {
+      "id": "perfect_2",
+      "name": "Impecable II",
+      "description": "Completa el Nivel 2 sin perder vidas.",
+      "level": 2,
+      "trigger": "level_perfect"
+    },
+    {
+      "id": "layout_master",
+      "name": "Maestro del Layout",
+      "description": "Completa el Nivel 3.",
+      "level": 3,
+      "trigger": "level_complete"
+    },
+    {
+      "id": "perfect_3",
+      "name": "Impecable III",
+      "description": "Completa el Nivel 3 sin perder vidas.",
+      "level": 3,
+      "trigger": "level_perfect"
+    },
+    {
+      "id": "css_survivor",
+      "name": "CSS Survivor",
+      "description": "Completa los tres niveles y restaura el sitio.",
+      "level": 3,
+      "trigger": "all_levels"
     }
   ],
   "levels": {
@@ -127,18 +166,176 @@
         "every": 3,
         "points": 100
       },
+      "life_recovery": {
+        "streak": 5,
+        "amount": 1
+      },
       "clean_zone_bonus": 250,
-      "life_bonus": 200
+      "life_bonus": 200,
+      "question_time_seconds": 40,
+      "urgent_time_seconds": 10
     },
     "2": {
-      "available": false,
-      "name": "Nivel 2 - Modelo de caja",
-      "short": "MODELO DE CAJA"
+      "available": true,
+      "name": "Nivel 2 - Modelo de caja y formas",
+      "short": "MODELO DE CAJA",
+      "lives": 5,
+      "zone_rows": [
+        3,
+        4,
+        4,
+        4
+      ],
+      "lanes": 3,
+      "visible_rows": 3,
+      "attack_mode": "adjacent",
+      "layout_mode": "lanes",
+      "advance_on_error": false,
+      "zone_names": [
+        "TARJETAS",
+        "BOTONES",
+        "FORMULARIO",
+        "MENÚ"
+      ],
+      "zone_difficulty": [
+        "Fácil",
+        "Fácil",
+        "Media",
+        "Difícil"
+      ],
+      "zone_sequences": [
+        [
+          "teorico",
+          "completar",
+          "teorico"
+        ],
+        [
+          "teorico",
+          "practico",
+          "teorico",
+          "practico"
+        ],
+        [
+          "practico",
+          "completar",
+          "practico",
+          "completar"
+        ],
+        [
+          "multi",
+          "practico",
+          "multi",
+          "multi"
+        ]
+      ],
+      "difficulty_by_type": {
+        "teorico": "Fácil",
+        "practico": "Media",
+        "completar": "Media",
+        "multi": "Difícil"
+      },
+      "points_by_type": {
+        "teorico": 100,
+        "completar": 150,
+        "practico": 200,
+        "multi": 300
+      },
+      "streak_bonus": {
+        "every": 3,
+        "points": 100
+      },
+      "life_recovery": {
+        "streak": 5,
+        "amount": 1
+      },
+      "clean_zone_bonus": 250,
+      "life_bonus": 200,
+      "enemy_style": {
+        "radius": 0,
+        "border_width": 1
+      },
+      "question_time_seconds": 30,
+      "urgent_time_seconds": 8
     },
     "3": {
-      "available": false,
+      "available": true,
       "name": "Nivel 3 - Posicionamiento y layout",
-      "short": "LAYOUT"
+      "short": "LAYOUT",
+      "lives": 5,
+      "zone_rows": [
+        3,
+        4,
+        4,
+        4
+      ],
+      "lanes": 3,
+      "visible_rows": 3,
+      "attack_mode": "volley",
+      "layout_mode": "flex",
+      "advance_on_error": false,
+      "zone_names": [
+        "CABECERA",
+        "GALERÍA",
+        "COLUMNAS",
+        "PIE DE PÁGINA"
+      ],
+      "zone_difficulty": [
+        "Fácil",
+        "Fácil",
+        "Media",
+        "Difícil"
+      ],
+      "zone_sequences": [
+        [
+          "teorico",
+          "practico",
+          "teorico"
+        ],
+        [
+          "teorico",
+          "practico",
+          "completar",
+          "practico"
+        ],
+        [
+          "practico",
+          "completar",
+          "multi",
+          "practico"
+        ],
+        [
+          "multi",
+          "practico",
+          "multi",
+          "boss"
+        ]
+      ],
+      "difficulty_by_type": {
+        "teorico": "Fácil",
+        "practico": "Media",
+        "completar": "Media",
+        "multi": "Difícil",
+        "boss": "Difícil"
+      },
+      "points_by_type": {
+        "teorico": 100,
+        "completar": 150,
+        "practico": 200,
+        "multi": 300,
+        "boss": 500
+      },
+      "streak_bonus": {
+        "every": 3,
+        "points": 100
+      },
+      "life_recovery": {
+        "streak": 5,
+        "amount": 1
+      },
+      "clean_zone_bonus": 250,
+      "life_bonus": 200,
+      "question_time_seconds": 20,
+      "urgent_time_seconds": 6
     }
   }
 }

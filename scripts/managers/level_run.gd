@@ -1,6 +1,7 @@
 extends RefCounted
 
 const QuestionManager = preload("res://scripts/managers/question_manager.gd")
+const FeedbackBuilder = preload("res://scripts/managers/feedback_builder.gd")
 
 var level: int = 1
 var config: Dictionary = {}
@@ -10,6 +11,7 @@ var lives: int = 5
 var score: int = 0
 var streak: int = 0
 var best_streak: int = 0
+var lives_regained: int = 0
 var correct_count: int = 0
 var error_count: int = 0
 var attempt_number: int = 1
@@ -32,6 +34,7 @@ func setup(level_number: int, level_config: Dictionary, q_manager, s_manager) ->
 	score = 0
 	streak = 0
 	best_streak = 0
+	lives_regained = 0
 	correct_count = 0
 	error_count = 0
 	history.clear()
@@ -200,10 +203,12 @@ func answer(zone_index: int, question: Dictionary, selected: String, affected: i
 	var gained := 0
 	var bonus := 0
 	var zone_finished := false
+	var life_gained := false
 	if correct:
 		correct_count += 1
 		streak += 1
 		best_streak = maxi(best_streak, streak)
+		life_gained = _recover_life_by_streak()
 		var points_by_type: Dictionary = config.get("points_by_type", {})
 		gained = int(points_by_type.get(kind, 100))
 		score += gained
@@ -239,10 +244,44 @@ func answer(zone_index: int, question: Dictionary, selected: String, affected: i
 		"explanation": str(question.get("explanation", "")),
 		"response_time": response_time,
 		"score_gained": gained + bonus,
-		"affected": affected if correct else 0
+		"affected": affected if correct else 0,
+		"main_property": str(question.get("main_property", "")),
+		"diagnosis": "" if correct else FeedbackBuilder.diagnose(question, selected),
+		"life_gained": life_gained
 	}
 	history.append(entry)
-	return {"correct":correct, "base_points":gained, "bonus":bonus, "zone_finished":zone_finished, "lives":lives, "score":score}
+	return {"correct":correct, "base_points":gained, "bonus":bonus, "zone_finished":zone_finished, "lives":lives, "score":score, "life_gained":life_gained, "streak":streak}
+
+# Cada `life_recovery.streak` aciertos seguidos se recupera `life_recovery.amount` vida(s), sin pasar
+# del máximo del nivel. Se configura por nivel en game_config.json ("life_recovery").
+func _recover_life_by_streak() -> bool:
+	var recovery: Dictionary = config.get("life_recovery", {}) as Dictionary
+	var every: int = int(recovery.get("streak", 0))
+	if every <= 0 or streak % every != 0:
+		return false
+	var max_lives: int = int(config.get("lives", 5))
+	if lives >= max_lives:
+		return false
+	var amount: int = maxi(1, int(recovery.get("amount", 1)))
+	lives = mini(max_lives, lives + amount)
+	lives_regained += 1
+	return true
+
+# Propiedades que más se fallaron, de más a menos: [{"prop": "padding", "count": 2}, ...]
+func review_properties() -> Array:
+	var counts: Dictionary = {}
+	for entry in history:
+		if bool((entry as Dictionary).get("correct", true)):
+			continue
+		var property_name: String = str(entry.get("main_property", ""))
+		if property_name.is_empty():
+			continue
+		counts[property_name] = int(counts.get(property_name, 0)) + 1
+	var result: Array = []
+	for property_name in counts.keys():
+		result.append({"prop": property_name, "count": counts[property_name]})
+	result.sort_custom(func(a, b) -> bool: return int(a["count"]) > int(b["count"]))
+	return result
 
 func repair_percent() -> float:
 	var total := 0
@@ -285,5 +324,6 @@ func session_result(force_abandoned: bool = false) -> Dictionary:
 		"completed": all_zones_clean() and not force_abandoned,
 		"abandoned": force_abandoned,
 		"best_streak": best_streak,
-		"lives": lives
+		"lives": lives,
+		"lives_regained": lives_regained
 	}

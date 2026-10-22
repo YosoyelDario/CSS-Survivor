@@ -2,6 +2,7 @@ extends RefCounted
 
 const PROFILE_DIR := "user://profiles"
 const PROFILE_PATH := "user://profiles/profiles.json"
+const GameConfig = preload("res://scripts/managers/game_config.gd")
 
 var profiles: Dictionary = {}
 var current_email: String = ""
@@ -100,16 +101,23 @@ func level_unlocked(level: int) -> bool:
 		return true
 	return level_completed(level - 1)
 
+# Un nivel se puede jugar si el contenido existe (game_config.json: "available")
+# y el jugador ya completó el nivel anterior.
+func level_playable(level: int) -> bool:
+	return GameConfig.level_available(level) and level_unlocked(level)
+
 func completed_levels() -> int:
 	var total := 0
-	for level in range(1, 4):
+	for level in range(1, GameConfig.total_levels() + 1):
 		if level_completed(level):
 			total += 1
 	return total
 
+# Primer nivel jugable que el jugador aún no completó. Si ya completó todos los
+# disponibles, devuelve 1 para que pueda rejugar.
 func next_playable_level() -> int:
-	for level in range(1, 4):
-		if not level_completed(level):
+	for level in range(1, GameConfig.total_levels() + 1):
+		if level_playable(level) and not level_completed(level):
 			return level
 	return 1
 
@@ -167,10 +175,10 @@ func register_attempt(run: Variant) -> void:
 	var profile: Dictionary = profiles.get(current_email, {})
 	var levels: Dictionary = profile.get("levels", {})
 	var level_key: String = _level_key(level)
-	var stats: Dictionary = levels.get(level_key, {})
+	var stats: Dictionary = levels.get(level_key, _empty_stats())
 
-	var attempts: int = int(stats.get("attempts", 0))
-	stats["attempts"] = attempts + 1
+	# OJO: "attempts" NO se suma aquí. start_attempt() ya lo sumó cuando empezó el
+	# intento (LevelRun.setup). Sumarlo en los dos lugares contaba cada partida x2.
 
 	if completed:
 		stats["completed"] = true
@@ -195,13 +203,35 @@ func register_attempt(run: Variant) -> void:
 	profile["levels"] = levels
 	profiles[current_email] = profile
 
-	if completed and level == 1:
-		_award_badge("color_master")
-
-		if errors == 0:
-			_award_badge("perfect")
+	if completed:
+		_award_level_badges(level, errors)
 
 	_save()
+
+# Otorga las insignias de nivel definidas en game_config.json según su "trigger":
+#   level_complete -> completar el nivel indicado
+#   level_perfect  -> completarlo sin errores
+#   all_levels     -> tener completados todos los niveles
+func _award_level_badges(level: int, errors: int) -> void:
+	for badge_data in GameConfig.badges():
+		var badge: Dictionary = badge_data as Dictionary
+		var badge_id: String = str(badge.get("id", ""))
+		var badge_level: int = int(badge.get("level", 0))
+		match str(badge.get("trigger", "")):
+			"level_complete":
+				if badge_level == level:
+					_award_badge(badge_id)
+			"level_perfect":
+				if badge_level == level and errors == 0:
+					_award_badge(badge_id)
+			"all_levels":
+				if completed_levels() >= GameConfig.total_levels():
+					_award_badge(badge_id)
+
+func badge_ids() -> Array:
+	if not has_session():
+		return []
+	return (profiles[current_email].get("badges", {}) as Dictionary).keys()
 
 func has_badge(badge_id: String) -> bool:
 	if not has_session():

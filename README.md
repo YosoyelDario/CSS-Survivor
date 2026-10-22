@@ -1,18 +1,25 @@
-# CSS Survivor — Nivel 1 híbrido
+# CSS Survivor — Niveles 1, 2 y 3
 
-Proyecto Godot 4.x organizado por módulos. Esta versión implementa el flujo jugable del Nivel 1 con mapa explorable y combate en cuadrícula.
+Proyecto Godot 4.x organizado por módulos. Implementa los tres niveles con mapa explorable y combate en cuadrícula. Detalle de los Niveles 2 y 3 en `NIVELES_2_Y_3.md`.
+
+| Nivel | Contenido | Propiedades | Ataque |
+|---|---|---|---|
+| 1 | Propiedades visuales básicas | color, background-color, border-color, opacity, font-size | área (objetivo + vecinos) |
+| 2 | Modelo de caja y formas | border, border-radius, padding, margin, width, height | área (objetivo + vecinos) |
+| 3 | Posicionamiento y layout | transform, flex-direction, justify-content, align-items, align-content, gap | dirigido: un disparo por enemigo |
 
 ## Flujo
 
 1. Registro por correo / perfil local.
 2. Menú principal.
-3. Mapa explorable con 4 zonas: PERFIL, SEGURIDAD, DATOS y SOPORTE.
+3. Mapa explorable con 4 zonas por nivel (Nivel 1: PERFIL, SEGURIDAD, DATOS y SOPORTE; ver `game_config.json` para los otros niveles).
 4. Al acercarse a un bug guardián: `E`, Espacio o Enter.
 5. Combate con 3 filas visibles: LEJOS, MEDIO y FRENTE; 3 carriles.
-6. Solo se ataca FRENTE. Un acierto afecta objetivo central + dos vecinos y limpia una fila.
+6. Solo se ataca FRENTE. Un acierto limpia una fila: en los Niveles 1 y 2 el proyectil se divide hacia los vecinos; en el Nivel 3 sale un disparo hacia cada enemigo y el grupo se reorganiza según el layout CSS.
 7. Si quedan filas, avanzan y entra una fila desde la cola.
 8. Al fallar: -1 vida, pista y botón CONTINUAR; la reposición mantiene el tipo de pregunta.
-9. Al limpiar las 4 zonas: resultados KCR y Nivel 1 completado.
+9. Al limpiar las 4 zonas: resultados KCR y nivel completado (el siguiente nivel se desbloquea).
+10. Un error resta una vida y explica por qué falló la alternativa elegida; cada 5 aciertos seguidos se recupera una vida (hasta el máximo del nivel).
 
 ## Controles
 
@@ -23,7 +30,7 @@ Proyecto Godot 4.x organizado por módulos. Esta versión implementa el flujo ju
 
 ## Datos
 
-- `data/questions.json`: 90 preguntas; el Nivel 1 (1–30) incluye opciones, pista, explicación, efectos y propiedad principal.
+- `data/questions.json`: 90 preguntas (30 por nivel) con opciones, pista, explicación, efectos visuales y propiedad principal.
 - `data/game_config.json`: filas por zona, secuencias, puntajes, vidas, insignias y textos.
 - Perfiles: `user://profiles/profiles.json`.
 - Log: `user://css_survivor_log.jsonl` (una línea JSON por respuesta).
@@ -36,7 +43,7 @@ Con Godot instalado:
 godot --headless --path . -s res://tests/model_smoke_test.gd
 ```
 
-Prueba una zona de cuadrícula, el ataque adyacente, avance de filas, 15 preguntas sin repetir y el puntaje perfecto esperado (5250 pts).
+Valida los modos de ataque, el banco de 90 ejercicios, una partida perfecta de cada nivel (5250 / 5250 / 5700 pts), el layout flex y la configuración de insignias.
 
 ## Nota sobre assets
 

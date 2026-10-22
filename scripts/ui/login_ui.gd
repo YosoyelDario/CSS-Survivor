@@ -42,9 +42,10 @@ func _build() -> void:
 	var bg := ColorRect.new()
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	bg.color = UIFactory.PALETTE.bg
-	root.add_child(bg)
+	root.add_child(bg);
+	var stage:=UIFactory.stage(root)
 	var card := UIFactory.panel(Rect2(340, 80, 600, 560), Color("0d172b"), UIFactory.PALETTE.cyan)
-	root.add_child(card)
+	stage.add_child(card)
 	var logo := UIFactory.title("CSS\nSURVIVOR", Rect2(60, 35, 480, 110), 36, UIFactory.PALETTE.text)
 	logo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	card.add_child(logo)

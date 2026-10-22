@@ -100,8 +100,9 @@ func hide_achievements() -> void:
 
 func _build() -> void:
 	root = Control.new(); root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT); root.theme = UIFactory.make_theme(); root.visible=false; add_child(root)
-	var bg:=ColorRect.new(); bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT); bg.color=UIFactory.PALETTE.bg; root.add_child(bg)
-	var title:=UIFactory.title("LOGROS",Rect2(100,45,1080,50),30,UIFactory.PALETTE.purple); title.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; root.add_child(title)
-	var scroll:=ScrollContainer.new(); scroll.position=Vector2(230,130); scroll.size=Vector2(840,440); root.add_child(scroll)
+	var bg:=ColorRect.new(); bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT); bg.color=UIFactory.PALETTE.bg; root.add_child(bg);
+	var stage:=UIFactory.stage(root)
+	var title:=UIFactory.title("LOGROS",Rect2(100,45,1080,50),30,UIFactory.PALETTE.purple); title.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; stage.add_child(title)
+	var scroll:=ScrollContainer.new(); scroll.position=Vector2(230,130); scroll.size=Vector2(840,440); stage.add_child(scroll)
 	list_container=VBoxContainer.new(); list_container.custom_minimum_size=Vector2(820,0); list_container.add_theme_constant_override("separation",12); scroll.add_child(list_container)
-	var back:=UIFactory.button("VOLVER",Rect2(70,635,180,44),Color("253959")); back.pressed.connect(func(): back_requested.emit()); root.add_child(back)
+	var back:=UIFactory.button("VOLVER",Rect2(70,635,180,44),Color("253959")); back.pressed.connect(func(): back_requested.emit()); stage.add_child(back)

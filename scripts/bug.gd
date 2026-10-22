@@ -30,21 +30,23 @@ func setup(index: int, name_value: String, difficulty_value: String, total: int,
 	queue_redraw()
 
 func _build_labels() -> void:
-	title_label = Label.new()
-	title_label.position = Vector2(-105, -88)
-	title_label.size = Vector2(210, 28)
-	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_label.add_theme_font_size_override("font_size", 14)
-	title_label.add_theme_color_override("font_color", Color("e8f0ff"))
-	add_child(title_label)
-	rows_label = Label.new()
-	rows_label.position = Vector2(-105, 54)
-	rows_label.size = Vector2(210, 42)
-	rows_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	rows_label.add_theme_font_size_override("font_size", 12)
-	rows_label.add_theme_color_override("font_color", Color("ffd447"))
-	add_child(rows_label)
+	# Las etiquetas van DEBAJO del guardián: arriba las tapaba la barra del HUD.
+	# Borde oscuro para que se lean sobre el fondo claro o rosado de la página.
+	title_label = _make_label(Vector2(-130, 60), Vector2(260, 26), 17, Color("ffffff"))
+	rows_label = _make_label(Vector2(-130, 86), Vector2(260, 24), 14, Color("ffd447"))
 	_update_labels()
+
+func _make_label(pos: Vector2, label_size: Vector2, font_size: int, color: Color) -> Label:
+	var label := Label.new()
+	label.position = pos
+	label.size = label_size
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_color_override("font_color", color)
+	label.add_theme_color_override("font_outline_color", Color("07101d"))
+	label.add_theme_constant_override("outline_size", 6)
+	add_child(label)
+	return label
 
 func set_rows(remaining: int) -> void:
 	rows_left = maxi(0, remaining)

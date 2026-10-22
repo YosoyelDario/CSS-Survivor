@@ -48,6 +48,8 @@ static func kind_of(q: Dictionary) -> String:
 	if q.has("kind"):
 		return str(q["kind"])
 	var type_name := str(q.get("type", "")).to_lower()
+	if type_name.contains("boss"):
+		return "boss"
 	if type_name.begins_with("teó") or type_name.begins_with("teo"):
 		return "teorico"
 	if type_name.begins_with("prá") or type_name.begins_with("pra"):
