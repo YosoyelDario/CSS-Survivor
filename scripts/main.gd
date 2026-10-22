@@ -13,6 +13,7 @@ const AudioManager=preload("res://scripts/managers/audio_manager.gd")
 const QuestionTimer=preload("res://scripts/managers/question_timer.gd")
 const DataManager=preload("res://scripts/managers/data_manager.gd")
 const OnlineManager=preload("res://scripts/managers/online_manager.gd")
+const DisplayManager=preload("res://scripts/managers/display_manager.gd")
 
 const LoginUI=preload("res://scripts/ui/login_ui.gd")
 const MenuUI=preload("res://scripts/ui/menu_ui.gd")
@@ -36,6 +37,7 @@ var audio_manager
 var question_timer
 var data_manager
 var online_manager
+var display_manager
 var world_controller
 var level_run
 var zone_grids:Array=[]
@@ -100,12 +102,18 @@ func _create_managers()->void:
 	question_timer.tick.connect(_on_question_timer_tick)
 	question_timer.expired.connect(_on_question_timeout)
 	data_manager=DataManager.new()
+	display_manager=DisplayManager.new()
+	display_manager.name="DisplayManager"
+	add_child(display_manager)
 	online_manager=OnlineManager.new()
 	online_manager.name="OnlineManager"
 	add_child(online_manager)
 	online_manager.global_ranking_received.connect(_on_global_ranking_received)
 	online_manager.global_ranking_failed.connect(_on_global_ranking_failed)
 	online_manager.upload_status.connect(_on_upload_status)
+	online_manager.admin_login_result.connect(_on_admin_login_result)
+	online_manager.admin_players_received.connect(_on_admin_players_received)
+	online_manager.admin_action_result.connect(_on_admin_action_result)
 
 func _create_world()->void:
 	world_controller=WorldController.new()
@@ -125,7 +133,7 @@ func _create_interfaces()->void:
 	menu_ui.achievements_requested.connect(_show_achievements)
 	menu_ui.ranking_requested.connect(_show_ranking)
 	menu_ui.howto_requested.connect(_show_howto)
-	menu_ui.audio_requested.connect(_show_audio_settings)
+	menu_ui.settings_requested.connect(_show_settings)
 	menu_ui.change_user_requested.connect(_change_user)
 	menu_ui.exit_requested.connect(func():get_tree().quit())
 	levels_ui=LevelsUI.new(); add_child(levels_ui)
@@ -134,6 +142,12 @@ func _create_interfaces()->void:
 	achievements_ui=AchievementsUI.new(); add_child(achievements_ui); achievements_ui.back_requested.connect(_show_menu)
 	ranking_ui=RankingUI.new(); add_child(ranking_ui); ranking_ui.back_requested.connect(_show_menu)
 	ranking_ui.global_connect_requested.connect(_on_global_ranking_requested)
+	ranking_ui.admin_login_requested.connect(_on_admin_login_requested)
+	ranking_ui.admin_refresh_requested.connect(_on_admin_refresh_requested)
+	ranking_ui.admin_set_test_requested.connect(_on_admin_set_test_requested)
+	ranking_ui.admin_set_hidden_requested.connect(_on_admin_set_hidden_requested)
+	ranking_ui.admin_delete_requested.connect(_on_admin_delete_requested)
+	ranking_ui.admin_logout_requested.connect(_on_admin_logout_requested)
 	howto_ui=HowToUI.new(); add_child(howto_ui); howto_ui.back_requested.connect(_show_menu)
 	hud_ui=HUDUI.new(); add_child(hud_ui)
 	combat_ui=CombatUI.new(); add_child(combat_ui)
@@ -148,11 +162,12 @@ func _create_interfaces()->void:
 	pause_ui=PauseUI.new(); add_child(pause_ui)
 	pause_ui.continue_requested.connect(_resume_from_pause)
 	pause_ui.menu_requested.connect(_abandon_to_menu)
-	pause_ui.audio_requested.connect(_show_audio_settings)
+	pause_ui.settings_requested.connect(_show_settings)
 	# El pre/post test existente se conserva, pero queda inactivo porque pretest_active=false.
 	evaluation_ui=EvaluationUI.new(); add_child(evaluation_ui); evaluation_ui.hide_evaluation()
 	audio_settings_ui=AudioSettingsUI.new(); add_child(audio_settings_ui)
 	audio_settings_ui.settings_changed.connect(_on_audio_settings_changed)
+	audio_settings_ui.display_settings_changed.connect(_on_display_settings_changed)
 
 func _show_login()->void:
 	_hide_non_login()
@@ -191,6 +206,7 @@ func _change_user()->void:
 	_show_login()
 
 func _show_menu()->void:
+	online_manager.admin_logout()
 	question_timer.stop()
 	audio_manager.set_urgent(false)
 	audio_manager.play_menu_music()
@@ -640,11 +656,58 @@ func _on_upload_status(message:String,success:bool)->void:
 	if not success:
 		push_warning("[SYNC] " + message)
 
-func _show_audio_settings()->void:
-	audio_settings_ui.show_settings(audio_manager.settings())
+func _on_admin_login_requested(password:String)->void:
+	online_manager.admin_login(password)
+
+func _on_admin_login_result(success:bool,message:String)->void:
+	if success:
+		ranking_ui.show_admin_loading("Acceso concedido. Cargando usuarios...")
+		online_manager.admin_list_players()
+	else:
+		ranking_ui.show_admin_login(message)
+
+func _on_admin_refresh_requested()->void:
+	online_manager.admin_list_players()
+
+func _on_admin_set_test_requested(player_id:String,value:bool)->void:
+	ranking_ui.show_admin_loading("Actualizando tipo de cuenta...")
+	online_manager.admin_set_test(player_id,value)
+
+func _on_admin_set_hidden_requested(player_id:String,value:bool)->void:
+	ranking_ui.show_admin_loading("Actualizando visibilidad del ranking...")
+	online_manager.admin_set_hidden(player_id,value)
+
+func _on_admin_delete_requested(player_id:String)->void:
+	online_manager.admin_delete_player(player_id)
+
+func _on_admin_logout_requested()->void:
+	online_manager.admin_logout()
+
+func _on_admin_players_received(rows:Array)->void:
+	ranking_ui.show_admin_players(rows)
+
+func _on_admin_action_result(success:bool,message:String)->void:
+	if success:
+		ranking_ui.show_admin_loading(message + " Actualizando lista...")
+		online_manager.admin_list_players()
+	else:
+		if message.to_lower().contains("sesión") or message.to_lower().contains("token"):
+			ranking_ui.show_admin_login(message)
+		else:
+			ranking_ui.show_admin_error(message)
+
+func _show_settings()->void:
+	audio_settings_ui.show_settings(
+		audio_manager.settings(),
+		display_manager.settings(),
+		display_manager.available_resolutions()
+	)
 
 func _on_audio_settings_changed(master:float,music:float,sfx:float,muted:bool)->void:
 	audio_manager.set_settings(master,music,sfx,muted)
+
+func _on_display_settings_changed(mode:String,auto_resolution:bool,width:int,height:int,vsync_enabled:bool)->void:
+	display_manager.set_settings(mode,auto_resolution,Vector2i(width,height),vsync_enabled)
 
 func _badge_name(badge_id: String) -> String:
 	for badge in GameConfig.badges():

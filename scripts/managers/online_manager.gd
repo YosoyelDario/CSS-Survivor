@@ -3,6 +3,9 @@ extends Node
 signal global_ranking_received(rows: Array)
 signal global_ranking_failed(message: String)
 signal upload_status(message: String, success: bool)
+signal admin_login_result(success: bool, message: String)
+signal admin_players_received(rows: Array)
+signal admin_action_result(success: bool, message: String)
 
 const API_URL := "https://script.google.com/macros/s/AKfycbzL5GKEfsljb1Nc6wbu5YytI-pOjWQrEm8fo17zG2Tyw35f1zoSKLYMZLLtI963cgBs/exec"
 const PENDING_PATH := "user://pending_uploads.json"
@@ -12,11 +15,16 @@ const REQUEST_TIMEOUT := 20.0
 var upload_http: HTTPRequest
 var upload_response_http: HTTPRequest
 var ranking_http: HTTPRequest
+var admin_http: HTTPRequest
+var admin_response_http: HTTPRequest
 var pending_uploads: Array = []
 var failed_uploads: Array = []
 var upload_busy: bool = false
 var ranking_busy: bool = false
 var ranking_waiting_for_sync: bool = false
+var admin_busy: bool = false
+var admin_context: String = ""
+var admin_token: String = ""
 
 func _ready() -> void:
 	upload_http = HTTPRequest.new()
@@ -28,8 +36,7 @@ func _ready() -> void:
 	upload_http.request_completed.connect(_on_upload_completed)
 
 	# Apps Script ContentService responde a los POST con una redirección a
-	# script.googleusercontent.com. Godot 4.2 puede conservar POST al seguirla,
-	# lo que produce HTTP 405. Por eso la seguimos manualmente como GET.
+	# script.googleusercontent.com. La seguimos manualmente como GET para evitar 405.
 	upload_response_http = HTTPRequest.new()
 	upload_response_http.name = "UploadResponseHTTPRequest"
 	upload_response_http.timeout = REQUEST_TIMEOUT
@@ -46,11 +53,24 @@ func _ready() -> void:
 	add_child(ranking_http)
 	ranking_http.request_completed.connect(_on_ranking_completed)
 
+	admin_http = HTTPRequest.new()
+	admin_http.name = "AdminHTTPRequest"
+	admin_http.timeout = REQUEST_TIMEOUT
+	admin_http.max_redirects = 0
+	admin_http.use_threads = true
+	add_child(admin_http)
+	admin_http.request_completed.connect(_on_admin_post_completed)
+
+	admin_response_http = HTTPRequest.new()
+	admin_response_http.name = "AdminResponseHTTPRequest"
+	admin_response_http.timeout = REQUEST_TIMEOUT
+	admin_response_http.max_redirects = 8
+	admin_response_http.use_threads = true
+	add_child(admin_response_http)
+	admin_response_http.request_completed.connect(_on_admin_response_completed)
+
 	_load_pending()
 	_load_failed()
-	# Reintenta automáticamente cualquier resultado que haya quedado pendiente
-	# de una ejecución anterior. Se difiere un frame para asegurar que HTTPRequest
-	# ya esté completamente listo dentro del árbol.
 	call_deferred("_try_upload_next")
 
 func submit_attempt(payload: Dictionary) -> void:
@@ -60,7 +80,6 @@ func submit_attempt(payload: Dictionary) -> void:
 	_try_upload_next()
 
 # El ranking global solo se consulta cuando el usuario pulsa CONECTAR/ACTUALIZAR.
-# Antes de leerlo se intenta sincronizar cualquier intento que haya quedado pendiente.
 func request_global_ranking(snapshot_payload: Dictionary = {}) -> void:
 	if ranking_busy:
 		return
@@ -75,12 +94,135 @@ func request_global_ranking(snapshot_payload: Dictionary = {}) -> void:
 func pending_count() -> int:
 	return pending_uploads.size()
 
+# --- ADMINISTRACIÓN ---
+# La contraseña nunca se guarda en Godot. Apps Script devuelve un token temporal
+# que se mantiene solo en memoria hasta cerrar el juego o salir del modo admin.
+func admin_login(password: String) -> void:
+	if password.is_empty():
+		admin_login_result.emit(false, "Ingresa la contraseña de administrador.")
+		return
+	_start_admin_request({"action": "admin_login", "password": password}, "login")
+
+func admin_list_players() -> void:
+	if admin_token.is_empty():
+		admin_action_result.emit(false, "La sesión de administrador no está activa.")
+		return
+	_start_admin_request({"action": "admin_list", "token": admin_token}, "list")
+
+func admin_set_test(player_id: String, value: bool) -> void:
+	_start_admin_action("admin_set_test", player_id, value)
+
+func admin_set_hidden(player_id: String, value: bool) -> void:
+	_start_admin_action("admin_set_hidden", player_id, value)
+
+func admin_delete_player(player_id: String) -> void:
+	if admin_token.is_empty():
+		admin_action_result.emit(false, "La sesión de administrador no está activa.")
+		return
+	_start_admin_request({
+		"action": "admin_delete_player",
+		"token": admin_token,
+		"id_jugador": player_id
+	}, "action")
+
+func admin_logout() -> void:
+	admin_token = ""
+	admin_context = ""
+
+func _start_admin_action(action: String, player_id: String, value: bool) -> void:
+	if admin_token.is_empty():
+		admin_action_result.emit(false, "La sesión de administrador no está activa.")
+		return
+	_start_admin_request({
+		"action": action,
+		"token": admin_token,
+		"id_jugador": player_id,
+		"value": value
+	}, "action")
+
+func _start_admin_request(payload: Dictionary, context: String) -> void:
+	if admin_busy:
+		return
+	admin_busy = true
+	admin_context = context
+	var headers := PackedStringArray(["Content-Type: application/json; charset=utf-8", "Accept: application/json"])
+	var error: int = admin_http.request(API_URL, headers, HTTPClient.METHOD_POST, JSON.stringify(payload))
+	if error != OK:
+		admin_busy = false
+		_emit_admin_error(context, "No se pudo iniciar la conexión administrativa. Error local %d." % error)
+
+func _on_admin_post_completed(result: int, response_code: int, response_headers: PackedStringArray, body: PackedByteArray) -> void:
+	var body_text: String = body.get_string_from_utf8()
+	if response_code in [301, 302, 303, 307, 308]:
+		var redirect_url: String = _header_value(response_headers, "location")
+		if redirect_url.is_empty():
+			admin_busy = false
+			_emit_admin_error(admin_context, "Google devolvió una redirección administrativa inválida.")
+			return
+		var redirect_error: int = admin_response_http.request(
+			redirect_url,
+			PackedStringArray(["Accept: application/json"]),
+			HTTPClient.METHOD_GET
+		)
+		if redirect_error != OK:
+			admin_busy = false
+			_emit_admin_error(admin_context, "No se pudo leer la respuesta administrativa de Google.")
+		return
+
+	admin_busy = false
+	_process_admin_response(result, response_code, body_text)
+
+func _on_admin_response_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
+	admin_busy = false
+	_process_admin_response(result, response_code, body.get_string_from_utf8())
+
+func _process_admin_response(result: int, response_code: int, body_text: String) -> void:
+	var context: String = admin_context
+	if result != HTTPRequest.RESULT_SUCCESS or response_code < 200 or response_code >= 300:
+		_emit_admin_error(context, "No se pudo conectar con la administración (HTTP %d)." % response_code)
+		return
+
+	var parsed: Variant = JSON.parse_string(body_text)
+	if typeof(parsed) != TYPE_DICTIONARY:
+		_emit_admin_error(context, "Google respondió con un formato administrativo inesperado.")
+		return
+
+	var data: Dictionary = parsed as Dictionary
+	if not bool(data.get("ok", false)):
+		var message: String = str(data.get("error", "Operación administrativa rechazada."))
+		if message.to_lower().contains("sesión") or message.to_lower().contains("token"):
+			admin_token = ""
+		_emit_admin_error(context, message)
+		return
+
+	match context:
+		"login":
+			admin_token = str(data.get("token", ""))
+			if admin_token.is_empty():
+				admin_login_result.emit(false, "Google no devolvió una sesión administrativa válida.")
+			else:
+				admin_login_result.emit(true, str(data.get("message", "Acceso administrador concedido.")))
+		"list":
+			var rows: Array = data.get("players", []) as Array
+			admin_players_received.emit(rows)
+		"action":
+			admin_action_result.emit(true, str(data.get("message", "Cambio aplicado correctamente.")))
+
+func _emit_admin_error(context: String, message: String) -> void:
+	match context:
+		"login":
+			admin_login_result.emit(false, message)
+		"list", "action":
+			admin_action_result.emit(false, message)
+		_:
+			admin_action_result.emit(false, message)
+
+# --- COLA DE SINCRONIZACIÓN ---
 func _enqueue(payload: Dictionary) -> void:
 	var action: String = str(payload.get("action", ""))
 	if action == "sync_ranking":
 		var ranking: Dictionary = payload.get("ranking", {}) as Dictionary
 		var player_id: String = str(ranking.get("id_jugador", ""))
-		# Mantiene solo el snapshot de ranking más reciente por jugador.
 		for i in range(pending_uploads.size() - 1, -1, -1):
 			var queued: Dictionary = pending_uploads[i] as Dictionary
 			if str(queued.get("action", "")) != "sync_ranking":
@@ -128,9 +270,6 @@ func _on_upload_completed(result: int, response_code: int, response_headers: Pac
 	var body_text: String = body.get_string_from_utf8()
 	print("[SYNC] POST result=", result, " http=", response_code, " body=", body_text.left(300))
 
-	# ContentService de Apps Script entrega el cuerpo mediante una URL temporal.
-	# No dejamos que HTTPRequest siga automáticamente el redirect porque en Godot
-	# 4.2 puede repetir el POST contra googleusercontent y Google responde 405.
 	if response_code in [301, 302, 303, 307, 308]:
 		var redirect_url: String = _header_value(response_headers, "location")
 		if redirect_url.is_empty():
@@ -141,7 +280,6 @@ func _on_upload_completed(result: int, response_code: int, response_headers: Pac
 				global_ranking_failed.emit("Google devolvió una redirección inválida (HTTP %d)." % response_code)
 			return
 
-		print("[SYNC] Siguiendo respuesta de Google como GET: ", redirect_url.left(120), "...")
 		var redirect_error: int = upload_response_http.request(
 			redirect_url,
 			PackedStringArray(["Accept: application/json"]),
@@ -165,7 +303,6 @@ func _on_upload_response_completed(result: int, response_code: int, _headers: Pa
 	_process_upload_response(result, response_code, body_text)
 
 func _process_upload_response(result: int, response_code: int, body_text: String) -> void:
-	# Fallo real de red/timeout/servidor: conservar para reintentar luego.
 	if result != HTTPRequest.RESULT_SUCCESS or response_code >= 500 or response_code == 0:
 		upload_status.emit("No se pudo conectar con Google; el envío quedó pendiente.", false)
 		if ranking_waiting_for_sync:
@@ -190,7 +327,6 @@ func _process_upload_response(result: int, response_code: int, body_text: String
 		_try_upload_next()
 		return
 
-	# Una respuesta no JSON indica despliegue/permisos inesperados o una URL incorrecta.
 	_quarantine_current("Respuesta no JSON. HTTP %d: %s" % [response_code, body_text.left(300)])
 	upload_status.emit("Google respondió con un formato inesperado; el paquete fue apartado.", false)
 	_try_upload_next()

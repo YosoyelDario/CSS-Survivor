@@ -49,3 +49,6 @@ La URL `/exec` puede mantenerse igual al actualizar la implementación existente
 - `Preguntas`: agregados calculados desde `Respuestas`, por lo que cada jugador aporta como máximo un primer intento válido por nivel.
 
 El correo nunca se devuelve en el endpoint público de ranking: el juego global muestra alias, puntaje, nivel e insignias.
+
+## Modo administrador
+La versión actual incluye administración desde el propio juego: marcar cuentas de prueba, ocultar jugadores del ranking y eliminar todos sus datos remotos. Ver `ADMIN_RANKING.md`.
