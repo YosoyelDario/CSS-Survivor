@@ -9,6 +9,10 @@ const FeedbackBuilder = preload("res://scripts/managers/feedback_builder.gd")
 const LevelRun=preload("res://scripts/managers/level_run.gd")
 const ZoneGrid=preload("res://scripts/managers/zone_grid.gd")
 const WorldController=preload("res://scripts/world_controller.gd")
+const AudioManager=preload("res://scripts/managers/audio_manager.gd")
+const QuestionTimer=preload("res://scripts/managers/question_timer.gd")
+const DataManager=preload("res://scripts/managers/data_manager.gd")
+const OnlineManager=preload("res://scripts/managers/online_manager.gd")
 
 const LoginUI=preload("res://scripts/ui/login_ui.gd")
 const MenuUI=preload("res://scripts/ui/menu_ui.gd")
@@ -21,12 +25,17 @@ const CombatUI=preload("res://scripts/ui/combat_ui.gd")
 const ResultsUI=preload("res://scripts/ui/results_ui.gd")
 const PauseUI=preload("res://scripts/ui/pause_ui.gd")
 const EvaluationUI=preload("res://scripts/ui/evaluation_ui.gd")
+const AudioSettingsUI=preload("res://scripts/ui/audio_settings_ui.gd")
 
 const INTERACT_DISTANCE:=125.0
 
 var session_manager
 var log_manager
 var question_manager
+var audio_manager
+var question_timer
+var data_manager
+var online_manager
 var world_controller
 var level_run
 var zone_grids:Array=[]
@@ -42,6 +51,7 @@ var combat_ui
 var results_ui
 var pause_ui
 var evaluation_ui
+var audio_settings_ui
 
 var game_active:=false
 var combat_open:=false
@@ -52,6 +62,7 @@ var current_question:Dictionary={}
 var current_options:Array[String]=[]
 var question_started_ms:int=0
 var new_badges:Array=[]
+var _last_timer_second:int=-1
 
 func _ready()->void:
 	InputConfig.configure()
@@ -80,6 +91,21 @@ func _create_managers()->void:
 	log_manager=LogManager.new()
 	question_manager=QuestionManager.new()
 	question_manager.load_questions()
+	audio_manager=AudioManager.new()
+	audio_manager.name="AudioManager"
+	add_child(audio_manager)
+	question_timer=QuestionTimer.new()
+	question_timer.name="QuestionTimer"
+	add_child(question_timer)
+	question_timer.tick.connect(_on_question_timer_tick)
+	question_timer.expired.connect(_on_question_timeout)
+	data_manager=DataManager.new()
+	online_manager=OnlineManager.new()
+	online_manager.name="OnlineManager"
+	add_child(online_manager)
+	online_manager.global_ranking_received.connect(_on_global_ranking_received)
+	online_manager.global_ranking_failed.connect(_on_global_ranking_failed)
+	online_manager.upload_status.connect(_on_upload_status)
 
 func _create_world()->void:
 	world_controller=WorldController.new()
@@ -99,6 +125,7 @@ func _create_interfaces()->void:
 	menu_ui.achievements_requested.connect(_show_achievements)
 	menu_ui.ranking_requested.connect(_show_ranking)
 	menu_ui.howto_requested.connect(_show_howto)
+	menu_ui.audio_requested.connect(_show_audio_settings)
 	menu_ui.change_user_requested.connect(_change_user)
 	menu_ui.exit_requested.connect(func():get_tree().quit())
 	levels_ui=LevelsUI.new(); add_child(levels_ui)
@@ -106,6 +133,7 @@ func _create_interfaces()->void:
 	levels_ui.back_requested.connect(_show_menu)
 	achievements_ui=AchievementsUI.new(); add_child(achievements_ui); achievements_ui.back_requested.connect(_show_menu)
 	ranking_ui=RankingUI.new(); add_child(ranking_ui); ranking_ui.back_requested.connect(_show_menu)
+	ranking_ui.global_connect_requested.connect(_on_global_ranking_requested)
 	howto_ui=HowToUI.new(); add_child(howto_ui); howto_ui.back_requested.connect(_show_menu)
 	hud_ui=HUDUI.new(); add_child(hud_ui)
 	combat_ui=CombatUI.new(); add_child(combat_ui)
@@ -120,11 +148,15 @@ func _create_interfaces()->void:
 	pause_ui=PauseUI.new(); add_child(pause_ui)
 	pause_ui.continue_requested.connect(_resume_from_pause)
 	pause_ui.menu_requested.connect(_abandon_to_menu)
+	pause_ui.audio_requested.connect(_show_audio_settings)
 	# El pre/post test existente se conserva, pero queda inactivo porque pretest_active=false.
 	evaluation_ui=EvaluationUI.new(); add_child(evaluation_ui); evaluation_ui.hide_evaluation()
+	audio_settings_ui=AudioSettingsUI.new(); add_child(audio_settings_ui)
+	audio_settings_ui.settings_changed.connect(_on_audio_settings_changed)
 
 func _show_login()->void:
 	_hide_non_login()
+	audio_manager.play_menu_music()
 	login_ui.show_login()
 
 func _on_login_requested(email:String)->void:
@@ -159,6 +191,9 @@ func _change_user()->void:
 	_show_login()
 
 func _show_menu()->void:
+	question_timer.stop()
+	audio_manager.set_urgent(false)
+	audio_manager.play_menu_music()
 	game_active=false
 	combat_open=false
 	paused=false
@@ -168,16 +203,18 @@ func _show_menu()->void:
 	hud_ui.set_hud_visible(false)
 	combat_ui.hide_combat()
 	results_ui.hide_results()
-	levels_ui.hide_levels(); achievements_ui.hide_achievements(); ranking_ui.hide_ranking(); howto_ui.hide_howto(); pause_ui.hide_pause(); login_ui.hide_login()
+	levels_ui.hide_levels(); achievements_ui.hide_achievements(); ranking_ui.hide_ranking(); howto_ui.hide_howto(); pause_ui.hide_pause(); login_ui.hide_login(); audio_settings_ui.hide_settings()
 	menu_ui.show_menu(session_manager.alias(),session_manager.total_points(),session_manager.badge_count(),session_manager.completed_levels(),GameConfig.total_levels(),session_manager.level_completed(1))
 
 func _hide_menu_pages()->void:
 	menu_ui.hide_menu(); levels_ui.hide_levels(); achievements_ui.hide_achievements(); ranking_ui.hide_ranking(); howto_ui.hide_howto(); results_ui.hide_results(); login_ui.hide_login()
 
 func _hide_non_login()->void:
+	question_timer.stop()
+	audio_manager.set_urgent(false)
 	game_active=false; combat_open=false; paused=false
 	world_controller.set_player_movement(false); world_controller.set_game_visible(false)
-	hud_ui.set_hud_visible(false); combat_ui.hide_combat(); results_ui.hide_results(); menu_ui.hide_menu(); levels_ui.hide_levels(); achievements_ui.hide_achievements(); ranking_ui.hide_ranking(); howto_ui.hide_howto(); pause_ui.hide_pause()
+	hud_ui.set_hud_visible(false); combat_ui.hide_combat(); results_ui.hide_results(); menu_ui.hide_menu(); levels_ui.hide_levels(); achievements_ui.hide_achievements(); ranking_ui.hide_ranking(); howto_ui.hide_howto(); pause_ui.hide_pause(); audio_settings_ui.hide_settings()
 
 func _show_levels()->void:
 	menu_ui.hide_menu(); levels_ui.show_levels(session_manager)
@@ -195,10 +232,14 @@ func _start_level(level:int)->void:
 		push_warning("Nivel %d no disponible todavía."%level)
 		return
 	_hide_menu_pages()
+	question_timer.stop()
+	audio_manager.set_urgent(false)
+	audio_manager.play_game_music()
 	new_badges.clear()
 	var cfg:=GameConfig.level(level)
 	level_run=LevelRun.new()
 	level_run.setup(level,cfg,question_manager,session_manager)
+	data_manager.begin_attempt(session_manager,level_run)
 	zone_grids.clear()
 	var rows:Array=cfg.get("zone_rows",[3,4,4,4])
 	for i in range(rows.size()):
@@ -247,153 +288,115 @@ func _prepare_question(replacement:Dictionary={})->void:
 	combat_ui.show_question(current_question,current_options)
 	combat_ui.prepare_row(current_question)
 	combat_ui.mark_selection(zone_grids[current_zone].target_and_neighbors())
+	var question_time:float=float(level_run.config.get("question_time_seconds",40.0))
+	var urgent_time:float=float(level_run.config.get("urgent_time_seconds",10.0))
+	_last_timer_second=-1
+	question_timer.start(question_time,urgent_time)
 
 func _on_answer_selected(answer: String) -> void:
-	if not combat_open or paused or current_question.is_empty():
+	_resolve_answer(answer,false)
+
+func _resolve_answer(answer:String,timed_out:bool=false)->void:
+	if not combat_open or paused or current_question.is_empty() or awaiting_continue:
 		return
 
 	combat_ui.set_buttons_enabled(false)
+	var response_time:float=question_timer.elapsed_seconds()
+	question_timer.stop()
+	audio_manager.set_urgent(false)
 
-	var response_time: float = float(
-		maxi(0, Time.get_ticks_msec() - question_started_ms)
-	) / 1000.0
+	var correct:bool=(not timed_out) and answer==str(current_question.get("answer",""))
+	var grid=zone_grids[current_zone]
+	var selection:Dictionary=grid.target_and_neighbors()
+	var affected:Array=selection.get("affected",[]) as Array
+	var affected_count:int=affected.size() if correct else 0
+	var row_number:int=int(level_run.rows_cleared(current_zone))+1
+	var logged_answer:String="SIN RESPUESTA" if timed_out else answer
 
-	var correct: bool = answer == str(
-		current_question.get("answer", "")
-	)
-
-	var grid = zone_grids[current_zone]
-
-	var selection: Dictionary = grid.target_and_neighbors()
-
-	var affected: Array = selection.get("affected", []) as Array
-	var affected_count: int = affected.size() if correct else 0
-
-	var row_number: int = int(
-		level_run.rows_cleared(current_zone)
-	) + 1
-
-	var result: Dictionary = level_run.answer(
+	var result:Dictionary=level_run.answer(
 		current_zone,
 		current_question,
-		answer,
+		logged_answer,
 		affected_count,
 		response_time,
 		current_options
 	)
 
+	# Añade metadatos analíticos al historial sin cambiar la resolución de la pregunta.
+	if not level_run.history.is_empty():
+		var history_index:int=level_run.history.size()-1
+		var history_entry:Dictionary=level_run.history[history_index] as Dictionary
+		history_entry["timed_out"]=timed_out
+		history_entry["answered_at"]=Time.get_datetime_string_from_system()
+		history_entry["time_limit"]=float(level_run.config.get("question_time_seconds",0.0))
+		history_entry["row"]=row_number
+		history_entry["lives_remaining"]=int(level_run.lives)
+		history_entry["score_after"]=int(level_run.score)
+		level_run.history[history_index]=history_entry
+
 	_write_answer_log(
-		answer,
+		logged_answer,
 		correct,
 		response_time,
 		row_number,
-		affected_count
+		affected_count,
+		timed_out
 	)
 
-	var awarded_badges: Array = session_manager.evaluate_badges_answer(
-		level_run,
-		correct
-	)
-
+	var awarded_badges:Array=session_manager.evaluate_badges_answer(level_run,correct)
 	for badge_id in awarded_badges:
-		var badge_name: String = _badge_name(str(badge_id))
-
+		var badge_name:String=_badge_name(str(badge_id))
 		if not new_badges.has(badge_name):
 			new_badges.append(badge_name)
 
 	_update_hud()
 
 	if correct:
-		var base_points: int = int(
-			result.get("base_points", 0)
-		)
-
-		var bonus_points: int = int(
-			result.get("bonus", 0)
-		)
-
-		var gained: int = base_points + bonus_points
-
-		# Resumen en una línea: puntos, racha y vida recuperada; debajo, la explicación como refuerzo.
-		var summary_text: String = "CORRECTO   +%d PTS" % gained
-		var streak_now: int = int(result.get("streak", 0))
-
-		if streak_now >= 3:
-			summary_text += "   RACHA x%d" % streak_now
-
-		var life_gained: bool = bool(result.get("life_gained", false))
-
+		var base_points:int=int(result.get("base_points",0))
+		var bonus_points:int=int(result.get("bonus",0))
+		var gained:int=base_points+bonus_points
+		var summary_text:String="CORRECTO   +%d PTS"%gained
+		var streak_now:int=int(result.get("streak",0))
+		if streak_now>=3:
+			summary_text+="   RACHA x%d"%streak_now
+		var life_gained:bool=bool(result.get("life_gained",false))
 		if life_gained:
-			summary_text += "   +1 VIDA"
+			summary_text+="   +1 VIDA"
 
 		combat_ui.show_feedback(
 			true,
 			summary_text,
-			str(current_question.get("explanation", "")),
+			str(current_question.get("explanation","")),
 			answer
 		)
 
 		if life_gained:
-			# El corazón recuperado se anima de inmediato, sin esperar al final del ataque.
 			combat_ui.update_header(
 				level_run.lives,
-				int(level_run.config.get("lives", 5)),
+				int(level_run.config.get("lives",5)),
 				level_run.score,
 				row_number,
 				int(level_run.rows_total(current_zone)),
 				float(level_run.zone_repair_percent(current_zone))
 			)
 
-		var effects: Array = current_question.get(
-			"effects",
-			[]
-		) as Array
-
-		await combat_ui.animate_attack(
-			selection,
-			effects,
-			current_question
-		)
+		audio_manager.play_sfx("shoot")
+		var effects:Array=current_question.get("effects",[]) as Array
+		await combat_ui.animate_attack(selection,effects,current_question)
+		audio_manager.play_sfx("correct")
 
 		grid.resolve_success()
-
 		if grid.front_cleared():
 			grid.advance_rows()
 
-		var rows_left: int = int(
-			level_run.rows_left(current_zone)
-		)
+		var rows_left:int=int(level_run.rows_left(current_zone))
+		var repair_percent:float=float(level_run.zone_repair_percent(current_zone))
+		world_controller.update_zone(current_zone,rows_left,repair_percent)
 
-		var repair_percent: float = float(
-			level_run.zone_repair_percent(current_zone)
-		)
-
-		world_controller.update_zone(
-			current_zone,
-			rows_left,
-			repair_percent
-		)
-
-		var next_row_number: int = int(
-			level_run.rows_cleared(current_zone)
-		) + 1
-
-		var total_rows: int = int(
-			level_run.rows_total(current_zone)
-		)
-
-		var max_lives: int = int(
-			level_run.config.get("lives", 5)
-		)
-
-		combat_ui.update_header(
-			level_run.lives,
-			max_lives,
-			level_run.score,
-			next_row_number,
-			total_rows,
-			repair_percent
-		)
+		var next_row_number:int=int(level_run.rows_cleared(current_zone))+1
+		var total_rows:int=int(level_run.rows_total(current_zone))
+		var max_lives:int=int(level_run.config.get("lives",5))
+		combat_ui.update_header(level_run.lives,max_lives,level_run.score,next_row_number,total_rows,repair_percent)
 
 		if level_run.zone_clean(current_zone):
 			await get_tree().create_timer(0.35).timeout
@@ -401,49 +404,29 @@ func _on_answer_selected(answer: String) -> void:
 		else:
 			await combat_ui.animate_advance(grid)
 			_prepare_question()
-
 	else:
-		awaiting_continue = true
+		awaiting_continue=true
+		var detail_text:String
+		if timed_out:
+			detail_text="Se acabó el tiempo. "+str(current_question.get("hint","Revisa la propiedad solicitada antes de continuar."))
+		else:
+			detail_text=FeedbackBuilder.error_detail(current_question,answer)
 
-		# Explica por qué falló la alternativa elegida (sin revelar la correcta); si no hay
-		# diagnóstico específico, muestra la pista del ejercicio.
-		var detail_text: String = FeedbackBuilder.error_detail(
-			current_question,
-			answer
-		)
+		var error_summary:String="TIEMPO AGOTADO   -1 VIDA" if timed_out else "INCORRECTO   -1 VIDA"
+		if level_run.lives<=0:
+			error_summary="TIEMPO AGOTADO   SIN VIDAS" if timed_out else "INCORRECTO   SIN VIDAS"
 
-		var error_summary: String = "INCORRECTO   -1 VIDA"
+		combat_ui.show_feedback(false,error_summary,detail_text,"" if timed_out else answer)
+		if timed_out:
+			audio_manager.play_sfx("timeout")
+		audio_manager.play_sfx("hit")
+		await combat_ui.animate_player_damage()
 
-		if level_run.lives <= 0:
-			error_summary = "INCORRECTO   SIN VIDAS"
+		var max_lives:int=int(level_run.config.get("lives",5))
+		var total_rows:int=int(level_run.rows_total(current_zone))
+		var repair_percent:float=float(level_run.zone_repair_percent(current_zone))
+		combat_ui.update_header(level_run.lives,max_lives,level_run.score,row_number,total_rows,repair_percent)
 
-		combat_ui.show_feedback(
-			false,
-			error_summary,
-			detail_text,
-			answer
-		)
-
-		var max_lives: int = int(
-			level_run.config.get("lives", 5)
-		)
-
-		var total_rows: int = int(
-			level_run.rows_total(current_zone)
-		)
-
-		var repair_percent: float = float(
-			level_run.zone_repair_percent(current_zone)
-		)
-
-		combat_ui.update_header(
-			level_run.lives,
-			max_lives,
-			level_run.score,
-			row_number,
-			total_rows,
-			repair_percent
-		)
 func _on_continue_after_error() -> void:
 	if not combat_open or not awaiting_continue or paused:
 		return
@@ -466,6 +449,8 @@ func _on_continue_after_error() -> void:
 	_prepare_question(replacement)
 
 func _return_to_map_or_finish()->void:
+	question_timer.stop()
+	audio_manager.set_urgent(false)
 	await combat_ui.animate_close()
 	combat_open=false
 	if level_run.all_zones_clean():
@@ -475,6 +460,8 @@ func _return_to_map_or_finish()->void:
 		_update_hud()
 
 func _end_attempt(game_over: bool) -> void:
+	question_timer.stop()
+	audio_manager.set_urgent(false)
 	if combat_open:
 		combat_ui.hide_combat()
 
@@ -502,6 +489,12 @@ func _end_attempt(game_over: bool) -> void:
 			if not new_badges.has(earned_name):
 				new_badges.append(earned_name)
 
+	# El envío online ocurre una sola vez al cerrar el intento. Primero se guarda en una
+	# cola local; si no hay Internet, queda pendiente sin bloquear el juego.
+	var result_name:String="game_over" if game_over else "completado"
+	var online_payload:Dictionary=data_manager.build_attempt_payload(level_run,session_manager,result_name)
+	online_manager.submit_attempt(online_payload)
+
 	# SIGUIENTE NIVEL solo se habilita si se completó este nivel y el siguiente es jugable.
 	# Se calcula después de register_attempt, que es lo que desbloquea el siguiente.
 	var next_level: int = 0
@@ -524,7 +517,8 @@ func _write_answer_log(
 	correct: bool,
 	response_time: float,
 	row_number: int,
-	affected_count: int
+	affected_count: int,
+	timed_out: bool = false
 ) -> void:
 
 	var cfg: Dictionary = level_run.config
@@ -553,7 +547,13 @@ func _write_answer_log(
 		"vidaRecuperada": bool(level_run.history.back().get("life_gained", false)) if not level_run.history.is_empty() else false,
 		"numeroIntento": int(level_run.attempt_number),
 		"afectados": affected_count if correct else 0,
-		"codigo": str(current_question.get("code", ""))
+		"codigo": str(current_question.get("code", "")),
+		"tiempoAgotado": timed_out,
+		"idIntento": data_manager.current_attempt_id(),
+		"alias": session_manager.alias(),
+		"respuestaCorrecta": str(current_question.get("answer", "")),
+		"propiedadCSS": str(current_question.get("main_property", "")),
+		"tiempoMaximoSeg": float(level_run.config.get("question_time_seconds", 0.0))
 	}
 
 	var player_email: String = str(
@@ -585,6 +585,8 @@ func _toggle_pause()->void:
 	world_controller.set_player_movement(false)
 	if combat_open:
 		combat_ui.set_buttons_enabled(false)
+		question_timer.set_paused(true)
+		audio_manager.set_urgent(false)
 	pause_ui.show_pause()
 
 func _resume_from_pause()->void:
@@ -592,14 +594,57 @@ func _resume_from_pause()->void:
 	pause_ui.hide_pause()
 	if combat_open:
 		combat_ui.set_buttons_enabled(not awaiting_continue)
+		question_timer.set_paused(false)
 	else:
 		world_controller.set_player_movement(true)
 
 func _abandon_to_menu()->void:
+	question_timer.stop()
+	audio_manager.set_urgent(false)
 	pause_ui.hide_pause(); paused=false
 	if level_run!=null:
-		session_manager.register_attempt(level_run.session_result(true))
+		var abandoned_result:Dictionary=level_run.session_result(true)
+		session_manager.register_attempt(abandoned_result)
+		var online_payload:Dictionary=data_manager.build_attempt_payload(level_run,session_manager,"abandonado")
+		online_manager.submit_attempt(online_payload)
 	_show_menu()
+
+func _on_question_timer_tick(remaining:float,total:float,urgent:bool)->void:
+	if not combat_open:
+		return
+	combat_ui.update_timer(remaining,total,urgent)
+	audio_manager.set_urgent(urgent)
+	var seconds_left:int=ceili(remaining)
+	if urgent and seconds_left>0 and seconds_left<=5 and seconds_left!=_last_timer_second:
+		audio_manager.play_sfx("tick")
+	_last_timer_second=seconds_left
+
+func _on_question_timeout()->void:
+	if not combat_open or paused or awaiting_continue or current_question.is_empty():
+		return
+	_resolve_answer("SIN RESPUESTA",true)
+
+func _on_global_ranking_requested()->void:
+	ranking_ui.show_global_loading()
+	var ranking_snapshot: Dictionary = data_manager.build_ranking_sync_payload(session_manager)
+	online_manager.request_global_ranking(ranking_snapshot)
+
+func _on_global_ranking_received(rows:Array)->void:
+	ranking_ui.show_global_ranking(rows)
+
+func _on_global_ranking_failed(message:String)->void:
+	ranking_ui.show_global_error(message)
+
+func _on_upload_status(message:String,success:bool)->void:
+	print("[SYNC] ", "OK: " if success else "ERROR: ", message)
+	if not success:
+		push_warning("[SYNC] " + message)
+
+func _show_audio_settings()->void:
+	audio_settings_ui.show_settings(audio_manager.settings())
+
+func _on_audio_settings_changed(master:float,music:float,sfx:float,muted:bool)->void:
+	audio_manager.set_settings(master,music,sfx,muted)
 
 func _badge_name(badge_id: String) -> String:
 	for badge in GameConfig.badges():

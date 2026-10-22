@@ -32,3 +32,11 @@ El prompt menciona `assets/ui/` y `assets/fonts/`, pero la versión base disponi
 ## Niveles 2 y 3
 
 Los Niveles 2 y 3 se implementaron sobre el mismo motor del Nivel 1. Las decisiones de diseño, los campos nuevos de los ejercicios y la forma de agregar contenido están en `NIVELES_2_Y_3.md`.
+
+## Audio y temporizador (actualización)
+- Nuevo `scripts/managers/audio_manager.gd`: música, SFX, volumen general/música/efectos, mute y persistencia local.
+- Nuevo `scripts/managers/question_timer.gd`: cuenta regresiva pausable por pregunta.
+- Nuevo `scripts/ui/audio_settings_ui.gd`: panel de configuración accesible desde menú y pausa.
+- Límites por nivel: 40 s / 30 s / 20 s para niveles 1/2/3.
+- Tramo urgente: 10 s / 8 s / 6 s; acelera la música y resalta el reloj.
+- Error o timeout: animación roja de daño + shake del hacker + SFX.

@@ -17,6 +17,9 @@ var difficulty_label:Label
 var hearts_box:HBoxContainer
 var points_label:Label
 var row_label:Label
+var timer_icon:TextureRect
+var timer_label:Label
+var timer_bar:ProgressBar
 var repair_bar:ProgressBar
 var type_chip:Label
 var question_label:Label
@@ -32,6 +35,8 @@ var _last_lives:int=-1
 var _button_disabled_style:StyleBox
 const OPTION_TEXT_WIDTH:=258.0   # ancho útil del texto dentro de una alternativa (288 px menos márgenes)
 var input_enabled:bool=false
+var timer_urgent:bool=false
+var _last_timer_urgent:bool=false
 
 func _ready()->void:
 	layer=30
@@ -56,6 +61,7 @@ func show_combat(grid,zone_index:int,zone_name:String,difficulty:String)->void:
 	hint_label.text=""
 	feedback_icon.visible=false
 	continue_button.visible=false
+	update_timer(0.0,1.0,false)
 
 func hide_combat()->void:
 	root.visible=false
@@ -88,6 +94,21 @@ func update_header(lives:int,max_lives:int,points:int,row_number:int,row_total:i
 	points_label.text="%d PTS"%points
 	row_label.text="Fila %d de %d"%[clampi(row_number,1,maxi(1,row_total)),row_total]
 	repair_bar.value=clampf(repair*100.0,0.0,100.0)
+
+func update_timer(remaining:float,total:float,urgent:bool)->void:
+	var safe_total:float=maxf(1.0,total)
+	var seconds_left:int=maxi(0,ceili(remaining))
+	timer_label.text="%02d s"%seconds_left
+	timer_bar.value=clampf((remaining/safe_total)*100.0,0.0,100.0)
+	timer_urgent=urgent and remaining>0.0
+	if timer_urgent!=_last_timer_urgent:
+		var color:Color=UIFactory.PALETTE.red if timer_urgent else UIFactory.PALETTE.yellow
+		timer_label.add_theme_color_override("font_color",color)
+		timer_bar.add_theme_stylebox_override("fill",UIFactory.style_box(color,color,0,7))
+		timer_icon.modulate=color
+		_last_timer_urgent=timer_urgent
+	if remaining<=0.0:
+		timer_label.text="00 s"
 
 func show_question(question:Dictionary,options:Array[String])->void:
 	current_options=options.duplicate()
@@ -196,6 +217,9 @@ func get_option_texts()->Array:
 func animate_attack(selection:Dictionary,effects:Array,question:Dictionary={})->void:
 	await arena.animate_attack(selection,effects,question)
 
+func animate_player_damage()->void:
+	await arena.animate_player_damage()
+
 func animate_advance(grid)->void:
 	await arena.animate_advance(grid)
 
@@ -205,6 +229,13 @@ func mark_selection(selection:Dictionary)->void:
 func _process(_delta:float)->void:
 	if not root.visible:
 		return
+	if timer_urgent:
+		var pulse:float=0.78+0.22*sin(float(Time.get_ticks_msec())/115.0)
+		timer_label.modulate.a=pulse
+		timer_icon.modulate.a=pulse
+	else:
+		timer_label.modulate.a=1.0
+		timer_icon.modulate.a=1.0
 	if input_enabled:
 		for i in range(4):
 			if Input.is_action_just_pressed("answer_%d"%(i+1)) and i<current_options.size():
@@ -225,14 +256,17 @@ func _build()->void:
 	var stage:=UIFactory.stage(root)
 	arena=BattleArena.new(); arena.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT); stage.add_child(arena)
 	var header:=UIFactory.panel(Rect2(45,18,1190,64),Color(0.03,0.07,0.13,0.97),UIFactory.PALETTE.cyan); stage.add_child(header)
-	zone_label=UIFactory.title("ZONA 1 • PERFIL",Rect2(20,11,320,38),14,UIFactory.PALETTE.text); header.add_child(zone_label)
-	difficulty_label=UIFactory.label("FÁCIL",Rect2(345,16,90,28),12,UIFactory.PALETTE.green); header.add_child(difficulty_label)
-	hearts_box=HBoxContainer.new(); hearts_box.position=Vector2(455,18); hearts_box.size=Vector2(145,24); hearts_box.add_theme_constant_override("separation",3); header.add_child(hearts_box)
-	header.add_child(UIFactory.icon_rect("star",Rect2(625,17,24,24)))
-	points_label=UIFactory.label("0 PTS",Rect2(654,14,130,30),14,UIFactory.PALETTE.yellow); header.add_child(points_label)
-	row_label=UIFactory.label("Fila 1 de 3",Rect2(795,14,120,30),13,UIFactory.PALETTE.text); header.add_child(row_label)
-	repair_bar=UIFactory.progress(Rect2(930,20,230,14),UIFactory.PALETTE.green); header.add_child(repair_bar)
-	var repair_text:=UIFactory.label("REPARACIÓN",Rect2(930,37,230,18),10,UIFactory.PALETTE.muted); repair_text.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; header.add_child(repair_text)
+	zone_label=UIFactory.title("ZONA 1 • PERFIL",Rect2(20,11,285,38),14,UIFactory.PALETTE.text); header.add_child(zone_label)
+	difficulty_label=UIFactory.label("FÁCIL",Rect2(305,16,85,28),12,UIFactory.PALETTE.green); header.add_child(difficulty_label)
+	hearts_box=HBoxContainer.new(); hearts_box.position=Vector2(395,18); hearts_box.size=Vector2(145,24); hearts_box.add_theme_constant_override("separation",3); header.add_child(hearts_box)
+	header.add_child(UIFactory.icon_rect("star",Rect2(550,17,24,24)))
+	points_label=UIFactory.label("0 PTS",Rect2(580,14,115,30),14,UIFactory.PALETTE.yellow); header.add_child(points_label)
+	timer_icon=UIFactory.icon_rect("clock",Rect2(705,16,24,24)); header.add_child(timer_icon)
+	timer_label=UIFactory.label("40 s",Rect2(735,12,72,30),15,UIFactory.PALETTE.yellow); timer_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; header.add_child(timer_label)
+	timer_bar=UIFactory.progress(Rect2(710,43,92,8),UIFactory.PALETTE.yellow); header.add_child(timer_bar)
+	row_label=UIFactory.label("Fila 1 de 3",Rect2(820,14,110,30),13,UIFactory.PALETTE.text); header.add_child(row_label)
+	repair_bar=UIFactory.progress(Rect2(945,20,215,14),UIFactory.PALETTE.green); header.add_child(repair_bar)
+	var repair_text:=UIFactory.label("REPARACIÓN",Rect2(945,37,215,18),10,UIFactory.PALETTE.muted); repair_text.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; header.add_child(repair_text)
 
 	var card:=UIFactory.panel(Rect2(45,452,1190,246),Color("0d172b"),Color("294f70")); stage.add_child(card)
 	type_chip=UIFactory.chip("TEÓRICA",UIFactory.PALETTE.cyan); type_chip.position=Vector2(24,16); type_chip.size=Vector2(160,28); card.add_child(type_chip)

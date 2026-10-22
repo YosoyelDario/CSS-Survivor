@@ -14,6 +14,7 @@ var background: TextureRect
 var enemy_layer: Control
 var projectile_layer: Control
 var hacker: TextureRect
+var damage_flash: ColorRect
 var queue_icon: TextureRect
 var queue_label: Label
 var enemies: Dictionary = {}
@@ -62,6 +63,13 @@ func _build() -> void:
 
 	hacker = UIFactory.texture_rect(HACKER, Rect2(596, 357, 88, 88))
 	add_child(hacker)
+
+	damage_flash = ColorRect.new()
+	damage_flash.position = Vector2(86, 92)
+	damage_flash.size = Vector2(1108, 350)
+	damage_flash.color = Color(1.0, 0.05, 0.08, 0.0)
+	damage_flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(damage_flash)
 
 	queue_icon = UIFactory.texture_rect(QUEUE_VIRUS, Rect2(1064, 122, 48, 48))
 	add_child(queue_icon)
@@ -303,6 +311,26 @@ func _place_front_row(views: Array, animate: bool, spread: float = 0.0) -> Tween
 			view.position = targets[i]["pos"]
 			view.scale = target_scale
 	return tween
+
+func animate_player_damage() -> void:
+	if hacker == null:
+		return
+	var origin: Vector2 = hacker.position
+	hacker.pivot_offset = hacker.size * 0.5
+	hacker.modulate = Color(1.0, 0.28, 0.28, 0.72)
+	var flash := create_tween()
+	flash.tween_property(damage_flash, "color:a", 0.26, 0.07)
+	flash.tween_property(damage_flash, "color:a", 0.0, 0.30)
+	var shake := create_tween()
+	shake.tween_property(hacker, "position:x", origin.x - 14.0, 0.055)
+	shake.tween_property(hacker, "position:x", origin.x + 13.0, 0.055)
+	shake.tween_property(hacker, "position:x", origin.x - 10.0, 0.055)
+	shake.tween_property(hacker, "position:x", origin.x + 8.0, 0.055)
+	shake.tween_property(hacker, "position:x", origin.x, 0.08)
+	shake.tween_property(hacker, "modulate", Color.WHITE, 0.18)
+	await shake.finished
+	hacker.position = origin
+	hacker.modulate = Color.WHITE
 
 func animate_attack(selection: Dictionary, effects: Array, question: Dictionary = {}) -> void:
 	var views: Array = _views_from(selection.get("affected", []) as Array)

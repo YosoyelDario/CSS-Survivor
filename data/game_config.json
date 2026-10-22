@@ -171,7 +171,9 @@
         "amount": 1
       },
       "clean_zone_bonus": 250,
-      "life_bonus": 200
+      "life_bonus": 200,
+      "question_time_seconds": 40,
+      "urgent_time_seconds": 10
     },
     "2": {
       "available": true,
@@ -251,7 +253,9 @@
       "enemy_style": {
         "radius": 0,
         "border_width": 1
-      }
+      },
+      "question_time_seconds": 30,
+      "urgent_time_seconds": 8
     },
     "3": {
       "available": true,
@@ -329,7 +333,9 @@
         "amount": 1
       },
       "clean_zone_bonus": 250,
-      "life_bonus": 200
+      "life_bonus": 200,
+      "question_time_seconds": 20,
+      "urgent_time_seconds": 6
     }
   }
 }

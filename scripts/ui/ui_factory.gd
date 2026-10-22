@@ -306,6 +306,25 @@ static func _draw_fallback_icon(image: Image, name: String) -> void:
 			var half := roundi(float(11 - x) * 4.0 / 7.0)
 			for y in range(8-half,9+half):
 				image.set_pixel(x,y,c)
+	elif name == "clock":
+		c = PALETTE.yellow
+		for y in range(2,14):
+			for x in range(2,14):
+				var d := Vector2(float(x)-7.5,float(y)-7.5).length()
+				if d>=5.0 and d<=6.3:
+					image.set_pixel(x,y,c)
+		_rect(image,7,4,2,5,c)
+		_rect(image,8,8,3,2,c)
+	elif name == "speaker":
+		c = PALETTE.cyan
+		_rect(image,2,6,3,5,c)
+		_rect(image,5,5,2,7,c)
+		for y in range(4,13):
+			var width := mini(4,absi(y-8))
+			for x in range(7,11-width):
+				image.set_pixel(x,y,c)
+		for p in [Vector2i(11,5),Vector2i(12,6),Vector2i(13,7),Vector2i(13,8),Vector2i(13,9),Vector2i(12,10),Vector2i(11,11)]:
+			image.set_pixelv(p,c)
 	elif name == "trophy":
 		_draw_trophy(image)
 	elif name == "medal" or name == "medal_locked":
