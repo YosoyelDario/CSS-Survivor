@@ -1,4 +1,4 @@
-const API_VERSION = "2026-10-22-sync3";
+const API_VERSION = "2026-10-22-sync4-admin";
 
 const SHEETS = {
   jugadores: "Jugadores",
@@ -11,7 +11,7 @@ const SHEETS = {
 function setupSheets() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const headers = {
-    Jugadores: ["id_jugador", "correo", "alias", "fecha_registro", "ultima_actividad"],
+    Jugadores: ["id_jugador", "correo", "alias", "fecha_registro", "ultima_actividad", "es_prueba", "oculto_ranking"],
     Intentos: ["id_intento", "id_jugador", "correo", "alias", "fecha", "nivel", "puntaje", "aciertos", "errores", "timeouts", "tiempo_total_seg", "vidas_restantes", "mejor_racha", "insignias", "resultado"],
     Respuestas: ["id_intento", "id_jugador", "correo", "alias", "fecha", "nivel", "zona", "id_pregunta", "pregunta", "tipo", "propiedad_css", "respuesta_jugador", "respuesta_correcta", "correcta", "timeout", "tiempo_respuesta_seg", "tiempo_maximo_seg", "vidas_restantes", "puntaje_actual"],
     Ranking: ["posicion", "id_jugador", "alias", "nivel_1", "nivel_2", "nivel_3", "puntaje_total", "insignias", "ultima_actualizacion"],
@@ -59,6 +59,34 @@ function doPost(e) {
 
     const data = JSON.parse(e.postData.contents);
     const action = String(data.action || "");
+
+    if (action === "admin_login") {
+      return jsonResponse(adminLogin(String(data.password || "")));
+    }
+
+    if (action === "admin_list") {
+      requireAdminToken(String(data.token || ""));
+      return jsonResponse({ ok: true, players: getAdminPlayers() });
+    }
+
+    if (action === "admin_set_test") {
+      requireAdminToken(String(data.token || ""));
+      setPlayerFlag(String(data.id_jugador || ""), "es_prueba", Boolean(data.value));
+      actualizarEstadisticasPreguntas();
+      return jsonResponse({ ok: true, message: Boolean(data.value) ? "Cuenta marcada como prueba" : "Cuenta marcada como real" });
+    }
+
+    if (action === "admin_set_hidden") {
+      requireAdminToken(String(data.token || ""));
+      setPlayerFlag(String(data.id_jugador || ""), "oculto_ranking", Boolean(data.value));
+      return jsonResponse({ ok: true, message: Boolean(data.value) ? "Jugador ocultado del ranking" : "Jugador visible nuevamente" });
+    }
+
+    if (action === "admin_delete_player") {
+      requireAdminToken(String(data.token || ""));
+      deletePlayerData(String(data.id_jugador || ""));
+      return jsonResponse({ ok: true, message: "Datos del jugador eliminados" });
+    }
 
     if (action === "sync_ranking") {
       syncRankingSnapshot(data.ranking || {});
@@ -250,7 +278,7 @@ function registrarJugador(intento) {
     }
   }
 
-  sheet.appendRow([idJugador, intento.correo || "", intento.alias || "", new Date(), new Date()]);
+  sheet.appendRow([idJugador, intento.correo || "", intento.alias || "", new Date(), new Date(), false, false]);
 }
 
 // Ranking competitivo: una sola fila por jugador con el mejor puntaje local de cada nivel.
@@ -266,6 +294,7 @@ function syncRankingSnapshot(snapshot) {
   if (!id) throw new Error("Falta id_jugador en ranking");
 
   const alias = String(snapshot.alias || "JUGADOR");
+  registrarJugador({ id_jugador: id, correo: id, alias });
   const n1 = Math.max(0, Number(snapshot.nivel_1 || 0));
   const n2 = Math.max(0, Number(snapshot.nivel_2 || 0));
   const n3 = Math.max(0, Number(snapshot.nivel_3 || 0));
@@ -345,9 +374,12 @@ function actualizarEstadisticasPreguntas() {
   const preguntasSheet = ss.getSheetByName(SHEETS.preguntas);
   const rows = respuestasSheet.getDataRange().getValues();
   const stats = {};
+  const flags = getPlayerFlagsMap();
 
   for (let i = 1; i < rows.length; i++) {
     const row = rows[i];
+    const idJugador = String(row[1] || "");
+    if (flags[idJugador] && flags[idJugador].es_prueba) continue;
     const nivel = Number(row[5] || 0);
     const idPregunta = String(row[7] || "");
     if (!idPregunta) continue;
@@ -404,12 +436,15 @@ function getRanking() {
   const sheet = ss.getSheetByName(SHEETS.ranking);
   ensureRankingSchema(sheet);
   const rows = sheet.getDataRange().getValues();
+  const flags = getPlayerFlagsMap();
   const ranking = [];
 
-  for (let i = 1; i < rows.length && ranking.length < 10; i++) {
-    if (!rows[i][2]) continue;
+  for (let i = 1; i < rows.length; i++) {
+    const id = String(rows[i][1] || "");
+    if (!id || !rows[i][2]) continue;
+    const state = flags[id] || { es_prueba: false, oculto_ranking: false };
+    if (state.es_prueba || state.oculto_ranking) continue;
     ranking.push({
-      posicion: Number(rows[i][0] || ranking.length + 1),
       alias: String(rows[i][2] || "JUGADOR"),
       nivel_1: Number(rows[i][3] || 0),
       nivel_2: Number(rows[i][4] || 0),
@@ -418,7 +453,179 @@ function getRanking() {
       insignias: String(rows[i][7] || "")
     });
   }
-  return ranking;
+
+  ranking.sort((a, b) => b.puntaje - a.puntaje || a.alias.localeCompare(b.alias));
+  return ranking.slice(0, 10).map((row, index) => ({ posicion: index + 1, ...row }));
+}
+
+// --- ADMINISTRACIÓN DEL PILOTO ---
+// Ejecuta setupAdmin() UNA VEZ desde Apps Script. Genera una contraseña aleatoria,
+// la guarda en Script Properties y la muestra en el registro de ejecución.
+function setupAdmin() {
+  const props = PropertiesService.getScriptProperties();
+  let password = props.getProperty("ADMIN_PASSWORD");
+  if (!password) {
+    const raw = Utilities.getUuid().replace(/-/g, "");
+    password = "CSS-" + raw.substring(0, 14);
+    props.setProperty("ADMIN_PASSWORD", password);
+  }
+  Logger.log("Contraseña admin CSS Survivor: " + password);
+  return password;
+}
+
+function adminLogin(password) {
+  const expected = PropertiesService.getScriptProperties().getProperty("ADMIN_PASSWORD");
+  if (!expected) {
+    return { ok: false, error: "Administrador no configurado. Ejecuta setupAdmin() en Apps Script." };
+  }
+  if (!password || password !== expected) {
+    Utilities.sleep(350);
+    return { ok: false, error: "Contraseña de administrador incorrecta." };
+  }
+
+  const token = Utilities.getUuid();
+  CacheService.getScriptCache().put("admin:" + token, "1", 1800);
+  return { ok: true, token, message: "Acceso administrador concedido" };
+}
+
+function requireAdminToken(token) {
+  if (!token || CacheService.getScriptCache().get("admin:" + token) !== "1") {
+    throw new Error("Sesión de administrador vencida. Vuelve a iniciar sesión.");
+  }
+  // Renueva la sesión mientras se está usando.
+  CacheService.getScriptCache().put("admin:" + token, "1", 1800);
+}
+
+function getPlayerFlagsMap() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEETS.jugadores);
+  const map = {};
+  if (!sheet || sheet.getLastRow() < 2) return map;
+  const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 7).getValues();
+  rows.forEach(row => {
+    const id = String(row[0] || "");
+    if (!id) return;
+    map[id] = {
+      es_prueba: row[5] === true || String(row[5]).toLowerCase() === "true",
+      oculto_ranking: row[6] === true || String(row[6]).toLowerCase() === "true"
+    };
+  });
+  return map;
+}
+
+function getAdminPlayers() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const players = {};
+  const jugadores = ss.getSheetByName(SHEETS.jugadores);
+  const ranking = ss.getSheetByName(SHEETS.ranking);
+
+  if (jugadores && jugadores.getLastRow() >= 2) {
+    const rows = jugadores.getRange(2, 1, jugadores.getLastRow() - 1, 7).getValues();
+    rows.forEach(row => {
+      const id = String(row[0] || "");
+      if (!id) return;
+      players[id] = {
+        id_jugador: id,
+        correo: String(row[1] || ""),
+        alias: String(row[2] || "JUGADOR"),
+        es_prueba: row[5] === true || String(row[5]).toLowerCase() === "true",
+        oculto_ranking: row[6] === true || String(row[6]).toLowerCase() === "true",
+        nivel_1: 0,
+        nivel_2: 0,
+        nivel_3: 0,
+        puntaje: 0
+      };
+    });
+  }
+
+  if (ranking && ranking.getLastRow() >= 2) {
+    const rows = ranking.getRange(2, 1, ranking.getLastRow() - 1, 9).getValues();
+    rows.forEach(row => {
+      const id = String(row[1] || "");
+      if (!id) return;
+      if (!players[id]) {
+        players[id] = {
+          id_jugador: id,
+          correo: id,
+          alias: String(row[2] || "JUGADOR"),
+          es_prueba: false,
+          oculto_ranking: false,
+          nivel_1: 0,
+          nivel_2: 0,
+          nivel_3: 0,
+          puntaje: 0
+        };
+      }
+      players[id].alias = String(row[2] || players[id].alias);
+      players[id].nivel_1 = Number(row[3] || 0);
+      players[id].nivel_2 = Number(row[4] || 0);
+      players[id].nivel_3 = Number(row[5] || 0);
+      players[id].puntaje = Number(row[6] || 0);
+    });
+  }
+
+  return Object.values(players).sort((a, b) => b.puntaje - a.puntaje || a.alias.localeCompare(b.alias));
+}
+
+function ensurePlayerRow(idJugador) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(SHEETS.jugadores);
+  if (!idJugador) throw new Error("Falta id_jugador");
+  const rows = sheet.getDataRange().getValues();
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][0] || "") === idJugador) return i + 1;
+  }
+
+  let alias = "JUGADOR";
+  const ranking = ss.getSheetByName(SHEETS.ranking);
+  if (ranking && ranking.getLastRow() >= 2) {
+    const rankRows = ranking.getRange(2, 2, ranking.getLastRow() - 1, 2).getValues();
+    for (const row of rankRows) {
+      if (String(row[0] || "") === idJugador) {
+        alias = String(row[1] || alias);
+        break;
+      }
+    }
+  }
+
+  sheet.appendRow([idJugador, idJugador, alias, new Date(), new Date(), false, false]);
+  return sheet.getLastRow();
+}
+
+function setPlayerFlag(idJugador, field, value) {
+  if (field !== "es_prueba" && field !== "oculto_ranking") throw new Error("Flag de jugador inválido");
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEETS.jugadores);
+  const row = ensurePlayerRow(idJugador);
+  const column = field === "es_prueba" ? 6 : 7;
+  sheet.getRange(row, column).setValue(Boolean(value));
+  sheet.getRange(row, 5).setValue(new Date());
+}
+
+function deletePlayerData(idJugador) {
+  if (!idJugador) throw new Error("Falta id_jugador");
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  deleteRowsByValue(ss.getSheetByName(SHEETS.jugadores), 1, idJugador);
+  deleteRowsByValue(ss.getSheetByName(SHEETS.intentos), 2, idJugador);
+  deleteRowsByValue(ss.getSheetByName(SHEETS.respuestas), 2, idJugador);
+  deleteRowsByValue(ss.getSheetByName(SHEETS.ranking), 2, idJugador);
+  renumberRanking();
+  actualizarEstadisticasPreguntas();
+}
+
+function deleteRowsByValue(sheet, column, expected) {
+  if (!sheet || sheet.getLastRow() < 2) return;
+  const values = sheet.getRange(2, column, sheet.getLastRow() - 1, 1).getDisplayValues();
+  for (let i = values.length - 1; i >= 0; i--) {
+    if (String(values[i][0] || "") === expected) sheet.deleteRow(i + 2);
+  }
+}
+
+function renumberRanking() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEETS.ranking);
+  if (!sheet || sheet.getLastRow() < 2) return;
+  const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 9).getValues();
+  rows.sort((a, b) => Number(b[6] || 0) - Number(a[6] || 0) || String(a[2] || "").localeCompare(String(b[2] || "")));
+  rows.forEach((row, index) => row[0] = index + 1);
+  sheet.getRange(2, 1, rows.length, 9).setValues(rows);
 }
 
 function jsonResponse(data) {

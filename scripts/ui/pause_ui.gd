@@ -1,7 +1,7 @@
 extends CanvasLayer
 signal continue_requested
 signal menu_requested
-signal audio_requested
+signal settings_requested
 const UIFactory=preload("res://scripts/ui/ui_factory.gd")
 var root:Control
 func _ready()->void:
@@ -19,5 +19,5 @@ func _build()->void:
 	var title:=UIFactory.title("PAUSA",Rect2(40,35,420,45),26,UIFactory.PALETTE.cyan); title.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; card.add_child(title)
 	var info:=UIFactory.label("Puedes continuar el intento o salir al menú. Si sales, el intento se contará como abandonado y no guardará mejores marcas.",Rect2(60,105,380,90),15,UIFactory.PALETTE.text); info.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; card.add_child(info)
 	var c:=UIFactory.button("CONTINUAR",Rect2(30,220,140,48),UIFactory.PALETTE.green); c.pressed.connect(func():continue_requested.emit()); card.add_child(c)
-	var a:=UIFactory.button("AUDIO",Rect2(180,220,140,48),Color("25405c"),"speaker"); a.pressed.connect(func():audio_requested.emit()); card.add_child(a)
+	var a:=UIFactory.button("OPCIONES",Rect2(180,220,140,48),Color("25405c")); a.pressed.connect(func():settings_requested.emit()); card.add_child(a)
 	var m:=UIFactory.button("SALIR AL MENÚ",Rect2(330,220,140,48),Color("5a2940")); m.pressed.connect(func():menu_requested.emit()); card.add_child(m)

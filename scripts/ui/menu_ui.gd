@@ -5,7 +5,7 @@ signal levels_requested
 signal achievements_requested
 signal ranking_requested
 signal howto_requested
-signal audio_requested
+signal settings_requested
 signal change_user_requested
 signal exit_requested
 
@@ -128,8 +128,8 @@ func _build() -> void:
 	change.pressed.connect(func(): change_user_requested.emit()); stage.add_child(change)
 	var exit := UIFactory.button("SALIR", Rect2(1018, 590, 160, 42), Color("442238"))
 	exit.pressed.connect(func(): exit_requested.emit()); stage.add_child(exit)
-	var audio := UIFactory.button("AUDIO", Rect2(550, 635, 180, 38), Color("25405c"), "speaker")
-	audio.pressed.connect(func(): audio_requested.emit()); stage.add_child(audio)
+	var options := UIFactory.button("OPCIONES", Rect2(535, 635, 210, 38), Color("25405c"))
+	options.pressed.connect(func(): settings_requested.emit()); stage.add_child(options)
 	var footer := UIFactory.label("CSS Survivor • versión 0.3 piloto • PUCV OII-433", Rect2(410, 684, 460, 22), 11, UIFactory.PALETTE.muted)
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; stage.add_child(footer)
 
